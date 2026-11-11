@@ -1,5 +1,36 @@
-{{-- Props: company (profil; memakai name, phone, phone_href, mobile, mobile_url (wa.me), email, address, maps_url). Ajakan menghubungi perusahaan dan ringkasan kontak dalam satu kartu ringkas, tepat di atas footer. --}}
-@props(['company'])
+{{-- Props: company (profil; memakai name, phone, phone_href, mobile, mobile_url (wa.me), email, address, maps_url), variant (card = kartu ringkas dengan ringkasan kontak, default; banner = pita penuh selebar layar berlatar foto, tanpa ringkasan kontak), image (ID foto Picsum PLACEHOLDER, hanya untuk banner). Ajakan menghubungi perusahaan, tepat di atas footer. Gaya banner diadaptasi dari CTA halaman Kontak PT Putra Maju Sukses. --}}
+@props(['company', 'variant' => 'card', 'image' => 180])
+@if ($variant === 'banner')
+<section class="relative isolate overflow-hidden bg-black-deep">
+    {{-- Foto latar, lalu lapisan gelap dan gradasi: pekat di kiri (tempat teks), memudar ke rona merah tipis di kanan. --}}
+    <img src="https://picsum.photos/id/{{ $image }}/1920/700" alt="" class="absolute inset-0 -z-30 size-full object-cover" loading="lazy" referrerpolicy="no-referrer" aria-hidden="true">
+    <span class="absolute inset-0 -z-20 bg-black-deep/85" aria-hidden="true"></span>
+    <span class="absolute inset-0 -z-10 bg-gradient-to-r from-black-deep via-black-deep/80 to-brand/30" aria-hidden="true"></span>
+
+    <div class="container-site">
+        <div class="flex flex-col gap-8 py-16 sm:py-20 lg:flex-row lg:items-center lg:justify-between lg:py-14">
+            <div class="max-w-3xl">
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand-bright">Hubungi Kami</p>
+                {{-- Bagian merah tidak boleh terpotong di tengah: bila sempit, seluruhnya turun ke baris berikutnya. --}}
+                <h2 class="mt-4 text-3xl font-black leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl">
+                    Butuh solusi untuk <span class="whitespace-nowrap text-brand-bright">kebutuhan Anda?</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base sm:leading-8">Sampaikan kebutuhan Anda kepada kami, tim kami siap membantu.</p>
+            </div>
+            <div class="flex flex-col gap-3 sm:flex-row lg:shrink-0">
+                {{-- Menuju halaman kontak (belum tersedia). --}}
+                <x-ui.button href="/kontak">
+                    Kontak Kami
+                    <x-ui.icon name="arrow-right" class="size-4" />
+                </x-ui.button>
+                @if ($company['phone'])
+                    <x-ui.button :href="'tel:'.$company['phone_href']" variant="outline-light">Telepon Kami</x-ui.button>
+                @endif
+            </div>
+        </div>
+    </div>
+</section>
+@else
 <section class="bg-gray-tint py-12 lg:py-16">
     <div class="container-site">
         {{-- Garis merah tebal di atas kartu, selaras dengan garis di atas footer. --}}
@@ -69,3 +100,4 @@
         </div>
     </div>
 </section>
+@endif
