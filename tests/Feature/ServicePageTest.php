@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class ServicePageTest extends TestCase
 {
-    public function test_service_page_lists_every_service_category(): void
+    public function test_service_page_lists_every_service_category_with_its_activities(): void
     {
         $this->withoutVite();
 
@@ -14,9 +14,23 @@ class ServicePageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('id="ruang-lingkup"', false);
+        $response->assertSee('Pilih salah satu kategori');
+        $response->assertSee('role="dialog"', false);
+        $response->assertSee('Lihat detail');
 
         foreach (config('company.services') as $service) {
             $response->assertSee($service['name']);
+
+            foreach ($service['activities'] as $activity) {
+                $response->assertSee($activity['name']);
+            }
+        }
+    }
+
+    public function test_every_service_category_has_five_placeholder_activities(): void
+    {
+        foreach (config('company.services') as $service) {
+            $this->assertCount(5, $service['activities'], $service['name']);
         }
     }
 
