@@ -5,6 +5,8 @@ export default () => ({
     mega: false,
     menu: false,
     closeTimer: null,
+    // Slug kategori layanan yang sedang dipilih di halaman Layanan (dikirim lewat event service-selected); null = tidak ada.
+    activeService: null,
 
     init() {
         this.onScroll();

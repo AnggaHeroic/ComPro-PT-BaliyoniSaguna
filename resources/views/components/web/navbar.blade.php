@@ -4,6 +4,7 @@
 <header x-data="navbar" data-site-header
         :data-scrolled="String(solid)" data-scrolled="false"
         @scroll.window.passive="onScroll()"
+        @service-selected.window="activeService = $event.detail"
         @resize.window="onResize()"
         @keydown.escape.window="closeAll()"
         @click.outside="closeAll()"
@@ -79,7 +80,7 @@
                 style="--rows: {{ max(4, (int) ceil(count($services) / 4)) }}">
                 @foreach ($services as $service)
                     <li>
-                        <a href="{{ route('services') }}" class="flex items-center gap-3 border-l-2 border-transparent py-2.5 pl-3 text-[0.9rem] leading-snug text-black-soft transition-colors hover:border-brand hover:text-brand">
+                        <a href="{{ route('services') }}#ruang-lingkup-{{ Str::slug($service['name']) }}" :aria-current="activeService === '{{ Str::slug($service['name']) }}' ? 'true' : false" class="aria-[current=true]:border-brand aria-[current=true]:bg-gray-tint aria-[current=true]:text-brand flex items-center gap-3 border-l-2 border-transparent py-2.5 pl-3 text-[0.9rem] leading-snug text-black-soft transition-colors hover:border-brand hover:text-brand">
                             {{ $service['name'] }}
                         </a>
                     </li>
@@ -106,7 +107,7 @@
                         </div>
                         <ul id="sub-layanan" x-show="open" x-cloak class="mb-3 ml-1 border-l-2 border-brand">
                             @foreach ($services as $service)
-                                <li><a href="{{ route('services') }}" class="block py-2.5 pl-4 text-sm text-black-soft/80 transition-colors hover:text-brand">{{ $service['name'] }}</a></li>
+                                <li><a href="{{ route('services') }}#ruang-lingkup-{{ Str::slug($service['name']) }}" :aria-current="activeService === '{{ Str::slug($service['name']) }}' ? 'true' : false" class="aria-[current=true]:font-semibold aria-[current=true]:text-brand block py-2.5 pl-4 text-sm text-black-soft/80 transition-colors hover:text-brand">{{ $service['name'] }}</a></li>
                             @endforeach
                         </ul>
                     @else
