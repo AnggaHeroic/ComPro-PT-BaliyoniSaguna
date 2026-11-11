@@ -63,6 +63,16 @@ class CompanyService
         return config('company.advantages');
     }
 
+    /**
+     * Konten halaman Tentang Kami (profil, visi, misi, nilai).
+     *
+     * @return array{profile_image: ?int, profile: list<string>, facts: list<array{title: string, text: string}>, direction_tagline: string, vision: string, mission: list<array{title: string, text: string}>, motto: list<string>, values: list<array{title: string, text: string}>}
+     */
+    public function about(): array
+    {
+        return config('company.about');
+    }
+
     // Tautan pencarian Google Maps dari alamat; null jika alamat kosong.
     private function mapsUrl(?string $address): ?string
     {

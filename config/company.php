@@ -42,6 +42,43 @@ return [
         ['name' => 'Sistem Parkir Elektronik', 'icon' => 'parking', 'image' => 1040, 'description' => 'Sistem parkir otomatis untuk area parkir yang tertib.'],
     ],
 
+    // Halaman Tentang Kami. DRAF teks (perlu ditinjau perusahaan); 'profile_image' = ID foto PLACEHOLDER (picsum.photos).
+    'about' => [
+        'profile_image' => 1031,
+        'profile' => [
+            'PT. Baliyoni Saguna adalah perusahaan yang telah eksis dalam industri Teknologi Informasi (TI) di Bali, didirikan pada tanggal 3 Mei 2000. Teknologi dan produk berbasis TI yang kami kembangkan telah digunakan dalam sistem pelayanan oleh pelanggan kami, dan kami terus berkarya dengan semangat kreativitas, inovasi, legalitas, optimisme, serta komitmen untuk memberikan yang terbaik.',
+            'Seiring perkembangan bisnis dalam bidang pengadaan barang dan jasa pemerintahan, jangkauan usaha kami meluas dari peralatan elektronik ke furniture dan office equipment, perkakas, air conditioner, internet service provider, lisensi perangkat lunak, alat tulis kantor, penyewaan peralatan elektronik, peralatan olahraga, dan peralatan pendidikan. Kini kami memiliki 46 anak perusahaan yang berjalan dalam pengadaan barang dan jasa pemerintahan skala regional dan nasional.',
+            'Kami juga mengembangkan marketplace online Balimall.id untuk memasarkan produk UMKM Bali secara online dan mendukung program Pemerintah Provinsi Bali, serta layanan purna jual melalui Divisi Service sebagai Authorized Service Point berbagai brand, seperti HP, Acer, Axioo, Asus, Epson, Panasonic, Daikin, dan Mitsubishi.',
+        ],
+        // Data ringkas di bawah foto profil (label kecil + isi).
+        'facts' => [
+            ['title' => 'Nama Perusahaan', 'text' => 'PT. Baliyoni Saguna'],
+            ['title' => 'Berdiri', 'text' => '3 Mei 2000'],
+            ['title' => 'Kedudukan', 'text' => 'Bali, Indonesia'],
+            ['title' => 'Anak Perusahaan', 'text' => '46 anak perusahaan'],
+            ['title' => 'Platform Marketplace', 'text' => 'Balimall.id'],
+        ],
+        // Kalimat pembuka bagian Visi dan Misi.
+        'direction_tagline' => 'Arah dan komitmen yang menjadi pedoman seluruh kegiatan perusahaan.',
+        // Visi, misi, dan moto resmi perusahaan (dari brosur). Misi = judul singkat + uraian.
+        'vision' => 'Menjadi perusahaan penyedia barang dan jasa yang terlengkap di Indonesia, berbasis edukasi, inovasi, dan layanan purna jual.',
+        'mission' => [
+            ['title' => 'People', 'text' => 'Membangun tim yang sehat fisik, mental, dan memiliki karakter yang tangguh, berpikir inovatif, serta melayani dengan tulus.'],
+            ['title' => 'Process', 'text' => 'Menjalankan proses pengadaan barang dan jasa secara akuntabel, efektif, efisien, dan transparan.'],
+            ['title' => 'Product/Service', 'text' => 'Memastikan barang dan jasa sesuai dengan spesifikasi, tepat waktu, dan disertai jaminan purna jual.'],
+            ['title' => 'Profit', 'text' => 'Memelihara profitabilitas melalui praktik bisnis yang bersih, etis, dan mengutamakan kebermanfaatan jangka panjang.'],
+            ['title' => 'Purpose', 'text' => 'Mencapai keuntungan yang selaras dengan nilai-nilai keluarga, sosial, dan masyarakat.'],
+        ],
+        'motto' => ['One Stop Solution.', 'Solusi Tuntas, Bahagia Pantas.'],
+        'values' => [
+            ['title' => 'Integritas', 'text' => 'Jujur dan konsisten dalam setiap keputusan dan transaksi.'],
+            ['title' => 'Profesionalisme', 'text' => 'Bekerja dengan standar yang jelas dan penuh tanggung jawab.'],
+            ['title' => 'Pelayanan Prima', 'text' => 'Menempatkan kebutuhan pelanggan sebagai prioritas utama.'],
+            ['title' => 'Efisiensi', 'text' => 'Proses yang ringkas, cepat, dan tepat sasaran.'],
+            ['title' => 'Kolaborasi', 'text' => 'Bertumbuh bersama mitra, holding, dan outlet Baliyoni Group.'],
+        ],
+    ],
+
     // Keunggulan (section "Mengapa Kami"). 'icon' = nama ikon di components/web/advantage-icon. Draf teks, perlu ditinjau perusahaan.
     'advantages' => [
         ['icon' => 'system', 'title' => 'Semua dalam Satu Pintu', 'text' => 'Dari peralatan elektronik, perkantoran, dan pendidikan hingga pendingin udara dan sistem parkir elektronik, semuanya tersedia di satu tempat tanpa repot berpindah penyedia.'],
@@ -54,7 +91,7 @@ return [
     // Tautan navigasi utama. Item dengan 'mega' => true menampilkan dropdown kategori layanan.
     'nav' => [
         ['label' => 'Beranda', 'href' => '/', 'match' => 'home'],
-        ['label' => 'Tentang Kami', 'href' => '/#tentang', 'match' => null],
+        ['label' => 'Tentang Kami', 'href' => '/tentang-kami', 'match' => 'about'],
         ['label' => 'Layanan', 'href' => '/#layanan', 'match' => null, 'mega' => true],
         ['label' => 'Galeri', 'href' => '/galeri', 'match' => null],
     ],
