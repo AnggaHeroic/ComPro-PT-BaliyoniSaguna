@@ -23,11 +23,17 @@
         <nav class="hidden items-center gap-9 lg:flex" aria-label="Navigasi utama">
             @foreach ($navigation as $item)
                 @if ($item['mega'] ?? false)
-                    <x-web.nav-link :transparent="$transparent" aria-controls="mega-layanan"
-                                    class="inline-flex items-center gap-1.5 aria-expanded:text-black-soft aria-expanded:after:scale-x-100"
+                    {{-- Klik langsung menuju halaman layanan; di layar sentuh (tanpa hover) ketukan membuka mega-menu. --}}
+                    <x-web.nav-link :href="$item['href']" :active="$item['match'] && request()->routeIs($item['match'])" :transparent="$transparent" aria-controls="mega-layanan"
+                                    class="group/mega inline-flex items-center gap-1.5 after:hidden aria-expanded:text-black-soft"
                                     x-ref="megaTrigger" ::aria-expanded="mega"
-                                    @click="toggleMega()" @mouseenter="hoverMega()" @mouseleave="leaveMega()">
-                        {{ $item['label'] }}
+                                    @click="if (! canHover()) { $event.preventDefault(); toggleMega() }" @mouseenter="hoverMega()" @mouseleave="leaveMega()">
+                        {{-- Garis indikator dipindah ke teks agar tidak memanjang sampai chevron (offset -bottom-2.5 = padding link + posisi garis menu lain). --}}
+                        <span @class([
+                            'relative after:absolute after:inset-x-0 after:-bottom-2.5 after:h-0.5 after:origin-left after:bg-brand-bright after:transition-transform group-hover/mega:after:scale-x-100 group-aria-expanded/mega:after:scale-x-100',
+                            'after:scale-x-100' => $item['match'] && request()->routeIs($item['match']),
+                            'after:scale-x-0' => ! ($item['match'] && request()->routeIs($item['match'])),
+                        ])>{{ $item['label'] }}</span>
                         <svg class="size-3.5 transition-transform in-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                     </x-web.nav-link>
                 @else
@@ -64,7 +70,7 @@
                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand">Layanan Kami</p>
                 <span class="mt-3 block h-0.5 w-8 bg-brand" aria-hidden="true"></span>
                 <p class="mt-4 text-sm leading-relaxed text-muted">Produk dan layanan yang kami sediakan untuk kebutuhan bisnis, instansi, dan perorangan.</p>
-                <a href="/#layanan" class="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-black-soft transition-colors hover:text-brand">
+                <a href="{{ route('services') }}" class="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-black-soft transition-colors hover:text-brand">
                     Lihat semua layanan
                     <x-ui.icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
                 </a>
@@ -73,7 +79,7 @@
                 style="--rows: {{ max(4, (int) ceil(count($services) / 4)) }}">
                 @foreach ($services as $service)
                     <li>
-                        <a href="/#layanan" class="flex items-center gap-3 border-l-2 border-transparent py-2.5 pl-3 text-[0.9rem] leading-snug text-black-soft transition-colors hover:border-brand hover:text-brand">
+                        <a href="{{ route('services') }}" class="flex items-center gap-3 border-l-2 border-transparent py-2.5 pl-3 text-[0.9rem] leading-snug text-black-soft transition-colors hover:border-brand hover:text-brand">
                             {{ $service['name'] }}
                         </a>
                     </li>
@@ -89,14 +95,18 @@
             @foreach ($navigation as $item)
                 <li class="border-b border-black-soft/10" @if ($item['mega'] ?? false) x-data="{ open: false }" @endif>
                     @if ($item['mega'] ?? false)
-                        <button type="button" aria-controls="sub-layanan" @click="open = ! open" :aria-expanded="open" aria-expanded="false"
-                                class="flex w-full items-center justify-between py-4 text-sm font-semibold uppercase tracking-wider text-black-soft transition-colors hover:text-brand aria-expanded:text-brand">
-                            <span>{{ $item['label'] }}</span>
-                            <svg class="size-4 transition-transform in-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-                        </button>
+                        <div class="flex items-center justify-between">
+                            <a href="{{ $item['href'] }}" @if ($item['match'] && request()->routeIs($item['match'])) aria-current="page" @endif
+                               class="flex-1 py-4 text-sm font-semibold uppercase tracking-wider text-black-soft transition-colors hover:text-brand aria-[current=page]:text-brand">{{ $item['label'] }}</a>
+                            <button type="button" aria-controls="sub-layanan" @click="open = ! open" :aria-expanded="open" aria-expanded="false"
+                                    class="inline-flex size-11 items-center justify-center text-black-soft transition-colors hover:text-brand aria-expanded:text-brand">
+                                <span class="sr-only">Tampilkan kategori layanan</span>
+                                <svg class="size-4 transition-transform in-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
+                        </div>
                         <ul id="sub-layanan" x-show="open" x-cloak class="mb-3 ml-1 border-l-2 border-brand">
                             @foreach ($services as $service)
-                                <li><a href="/#layanan" class="block py-2.5 pl-4 text-sm text-black-soft/80 transition-colors hover:text-brand">{{ $service['name'] }}</a></li>
+                                <li><a href="{{ route('services') }}" class="block py-2.5 pl-4 text-sm text-black-soft/80 transition-colors hover:text-brand">{{ $service['name'] }}</a></li>
                             @endforeach
                         </ul>
                     @else

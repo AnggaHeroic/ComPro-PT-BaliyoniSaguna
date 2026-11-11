@@ -92,7 +92,7 @@ return [
     'nav' => [
         ['label' => 'Beranda', 'href' => '/', 'match' => 'home'],
         ['label' => 'Tentang Kami', 'href' => '/tentang-kami', 'match' => 'about'],
-        ['label' => 'Layanan', 'href' => '/#layanan', 'match' => null, 'mega' => true],
+        ['label' => 'Layanan', 'href' => '/layanan', 'match' => 'services', 'mega' => true],
         ['label' => 'Galeri', 'href' => '/galeri', 'match' => null],
     ],
 ];
