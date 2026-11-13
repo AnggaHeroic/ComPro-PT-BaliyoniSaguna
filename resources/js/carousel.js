@@ -5,14 +5,13 @@ const RESUME_DELAY = 2500;
 
 export default (speed = 35) => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
 
     let track;
     let originals = [];
     let extra = 1;
     let pos = 0;
     let lastInteraction = -Infinity;
-    let hovering = false;
-    let focused = false;
     let visible = true;
     let wheelRemaining = 0;
     let frame;
@@ -35,16 +34,31 @@ export default (speed = 35) => {
             clone.removeAttribute('data-carousel-item');
             clone.setAttribute('data-clone', '');
             clone.setAttribute('aria-hidden', 'true');
-            clone.inert = true;
+            // Tidak memakai inert: elemen inert tidak menerima hover, sehingga kartu salinan tidak beranimasi dan jalur terasa macet.
+            // Tautan di salinan cukup dikeluarkan dari urutan tab; aria-hidden menyembunyikannya dari pembaca layar.
+            clone.querySelectorAll('a, button, [tabindex]').forEach((el) => el.setAttribute('tabindex', '-1'));
             return clone;
         });
 
     // Menjaga posisi tetap di antara salinan kiri dan kanan agar putaran tidak putus.
+    // pos hanya diubah saat terjadi lompatan; scrollLeft bisa dibulatkan browser, dan menyalinnya tiap kali membuang pecahan geseran sehingga jalur berhenti.
     const wrap = () => {
         const w = setWidth();
-        if (track.scrollLeft >= (extra + 1) * w) track.scrollLeft -= w;
-        else if (track.scrollLeft < w) track.scrollLeft += w;
-        pos = track.scrollLeft;
+        if (track.scrollLeft >= (extra + 1) * w) {
+            track.scrollLeft -= w;
+            pos -= w;
+        } else if (track.scrollLeft < w) {
+            track.scrollLeft += w;
+            pos += w;
+        }
+    };
+
+    // Status jeda dibaca langsung dari browser tiap frame, bukan dari event pointerenter/leave dan focusin/out yang bisa terlewat
+    // (kursor keluar jendela, elemen fokus terhapus saat build ulang) sehingga status 'macet' tidak bisa menempel.
+    const paused = () => {
+        const active = document.activeElement;
+
+        return (canHover.matches && track.matches(':hover')) || (track.contains(active) && active.matches(':focus-visible'));
     };
 
     const build = () => {
@@ -71,7 +85,7 @@ export default (speed = 35) => {
                 wheelRemaining -= move;
                 pos += move;
                 track.scrollLeft = pos;
-            } else if (hovering || focused || !visible || document.hidden || now - lastInteraction < RESUME_DELAY) {
+            } else if (paused() || !visible || document.hidden || now - lastInteraction < RESUME_DELAY) {
                 pos = track.scrollLeft;
             } else if (speed) {
                 pos += (speed * dt) / 1000;
@@ -140,20 +154,5 @@ export default (speed = 35) => {
 
         touch,
 
-        onEnter(e) {
-            if (e.pointerType === 'mouse') hovering = true;
-        },
-
-        onLeave() {
-            hovering = false;
-        },
-
-        onFocusIn(e) {
-            focused = e.target.matches(':focus-visible');
-        },
-
-        onFocusOut() {
-            focused = false;
-        },
     };
 };
