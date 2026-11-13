@@ -4,13 +4,13 @@
 @props(['service'])
 <li data-carousel-item
     class="group/card relative isolate aspect-[2/3] shrink-0 basis-[260px] overflow-hidden bg-black-soft sm:basis-[300px] lg:basis-[320px]">
-    {{-- Sementara menuju bagian kontak; ganti ke halaman detail layanan bila sudah tersedia. --}}
-    <a href="/#kontak" draggable="false" class="absolute inset-0 block">
+    {{-- Menuju halaman Layanan dengan kategori ini terpilih (hash yang sama dengan menu Layanan di navbar). --}}
+    <a href="{{ route('services') }}#ruang-lingkup-{{ Str::slug($service['name']) }}" draggable="false" class="absolute inset-0 block">
         {{-- Area foto: penuh saat diam, menyusut ke atas panel saat hover. Foto di-crop ulang (object-cover) mengikuti ukurannya. --}}
         <div class="absolute inset-x-0 top-0 bottom-0 overflow-hidden transition-[bottom] duration-500 ease-out reveal:bottom-[36%]">
             @if ($service['image'])
                 {{-- Foto PLACEHOLDER (Picsum). Ganti dengan foto resmi perusahaan bila tersedia. --}}
-                <img src="https://picsum.photos/id/{{ $service['image'] }}/640/960" alt="" width="640" height="960" loading="lazy" draggable="false" referrerpolicy="no-referrer"
+                <img src="https://images.unsplash.com/photo-{{ $service['image'] }}?auto=format&fit=crop&w=640&h=960&q=75" alt="" width="640" height="960" loading="lazy" draggable="false" referrerpolicy="no-referrer"
                      class="size-full select-none object-cover transition-transform duration-500 ease-out reveal:scale-105">
             @else
                 {{-- Latar polos sampai foto resmi tersedia. --}}

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Str;
+
 /**
  * Sumber data company profile untuk halaman publik.
  *
@@ -48,6 +50,68 @@ class CompanyService
     public function services(): array
     {
         return config('company.services');
+    }
+
+    /**
+     * Satu aktivitas usaha beserta kategorinya, nomor urut, dan aktivitas sebelum/sesudahnya; null bila tidak ditemukan.
+     * Pencarian memakai slug nama (sama dengan yang dipakai di URL).
+     *
+     * @return array{service: array<string, mixed>, activity: array<string, mixed>, paragraphs: list<string>, number: int, activities: list<array<string, mixed>>, previous: ?array<string, mixed>, next: ?array<string, mixed>}|null
+     */
+    public function findActivity(string $serviceSlug, string $activitySlug): ?array
+    {
+        $service = collect($this->services())->first(fn (array $item) => Str::slug($item['name']) === $serviceSlug);
+
+        if ($service === null) {
+            return null;
+        }
+
+        $activities = array_values($service['activities']);
+
+        foreach ($activities as $index => $activity) {
+            if (Str::slug($activity['name']) === $activitySlug) {
+                return [
+                    'service' => $service,
+                    'activity' => $activity,
+                    'paragraphs' => $this->activityParagraphs($service, $activity),
+                    'number' => $index + 1,
+                    'activities' => $activities,
+                    'previous' => $activities[$index - 1] ?? null,
+                    'next' => $activities[$index + 1] ?? null,
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Paragraf penjelasan aktivitas: dari 'detail' bila terisi (teks atau daftar paragraf), selain itu paragraf contoh dari config.
+     *
+     * @param  array<string, mixed>  $service
+     * @param  array<string, mixed>  $activity
+     * @return list<string>
+     */
+    private function activityParagraphs(array $service, array $activity): array
+    {
+        if (filled($activity['detail'] ?? null)) {
+            return array_values((array) $activity['detail']);
+        }
+
+        return array_map(
+            fn (string $text) => strtr($text, [':activity' => $activity['name'], ':category' => $service['name']]),
+            config('company.activity_placeholder'),
+        );
+    }
+
+    /**
+     * Foto galeri (sementara dari config; nantinya dari database CMS).
+     *
+     * @return list<array{title: string, description: string, image: string}>
+     */
+    public function gallery(): array
+    {
+        return config('company.gallery');
     }
 
     public function serviceCount(): int

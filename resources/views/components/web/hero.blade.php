@@ -1,7 +1,7 @@
 {{-- Props: tidak ada. Hero setinggi layar penuh, konten rata tengah; navbar transparan melayang di atasnya. --}}
 <section class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white">
     {{-- Foto PLACEHOLDER sementara (Picsum, bebas pakai). Ganti dengan foto resmi perusahaan bila tersedia. --}}
-    <img src="https://picsum.photos/id/1076/1920/1080" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
+    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&h=1080&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
     {{-- Lapisan gelap merata agar teks di tengah terbaca, plus vignette yang menggelapkan tepi. --}}
     <div class="absolute inset-0 -z-20 bg-black-deep/70" aria-hidden="true"></div>
     <div class="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgb(0_0_0/0.65)_100%)]" aria-hidden="true"></div>
@@ -25,7 +25,7 @@
     </svg>
 
     <div class="container-site py-28 text-center sm:py-32">
-        <div class="mx-auto flex max-w-4xl flex-col items-center">
+        <div data-hero class="mx-auto flex max-w-4xl flex-col items-center">
             <div class="flex items-center gap-3 sm:gap-4">
                 <span class="h-0.5 w-8 bg-brand-bright sm:w-12" aria-hidden="true"></span>
                 <p class="text-xs font-bold uppercase tracking-[0.25em] text-white sm:text-sm">PT. Bal<span class="text-brand-bright">i</span>yoni Saguna</p>
@@ -43,7 +43,7 @@
                     Lihat Layanan
                     <x-ui.icon name="arrow-right" class="size-4" />
                 </x-ui.button>
-                <x-ui.button href="/#kontak" variant="outline-light">Hubungi Kami</x-ui.button>
+                <x-ui.button :href="route('contact')" variant="outline-light">Hubungi Kami</x-ui.button>
             </div>
         </div>
     </div>

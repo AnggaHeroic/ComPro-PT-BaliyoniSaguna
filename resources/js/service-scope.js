@@ -15,7 +15,16 @@ export default () => ({
             this.$dispatch('service-selected', slug);
             this.$nextTick(() => this.onScroll());
         });
+        this.fromQuery();
         this.fromHash();
+    },
+
+    // Tautan /layanan?kategori=ac-split-wall#ruang-lingkup (mis. "Lihat semua kategori" di halaman detail aktivitas) menggulir ke Ruang Lingkup
+    // lewat hash biasa, sambil tetap memilih kategori terakhir sehingga aktivitasnya sudah muncul di bawahnya. Hash kategori (fromHash) menang bila ada.
+    fromQuery() {
+        const slug = new URLSearchParams(location.search).get('kategori');
+
+        if (slug && this.$root.querySelector(`[data-slug="${CSS.escape(slug)}"]`)) this.active = slug;
     },
 
     // Tautan seperti /layanan#ruang-lingkup-ac-split-wall (mis. dari menu Layanan di navbar) langsung membuka kategori terkait,
@@ -34,7 +43,8 @@ export default () => ({
     // Mengetuk kategori yang sama sekali lagi menutup panelnya.
     select(slug) {
         this.active = this.active === slug ? null : slug;
-        history.replaceState(null, '', this.active ? `#${PREFIX}${slug}` : location.pathname + location.search);
+        // Query ?kategori dibuang agar muat ulang tidak memilih ulang kategori lama.
+        history.replaceState(null, '', location.pathname + (this.active ? `#${PREFIX}${slug}` : ''));
 
         if (this.active) this.$nextTick(() => this.reveal());
     },

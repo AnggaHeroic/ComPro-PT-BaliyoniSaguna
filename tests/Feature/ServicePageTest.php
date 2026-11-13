@@ -15,7 +15,6 @@ class ServicePageTest extends TestCase
         $response->assertOk();
         $response->assertSee('id="ruang-lingkup"', false);
         $response->assertSee('Pilih salah satu kategori');
-        $response->assertSee('role="dialog"', false);
         $response->assertSee('Lihat detail');
 
         foreach (config('company.services') as $service) {

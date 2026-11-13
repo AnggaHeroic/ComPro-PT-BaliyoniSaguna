@@ -1,14 +1,14 @@
 {{-- Props: company (profil; memakai name, phone, phone_href, mobile, mobile_url (wa.me), email, address, maps_url), variant (card = kartu ringkas dengan ringkasan kontak, default; banner = pita penuh selebar layar berlatar foto, tanpa ringkasan kontak), image (ID foto Picsum PLACEHOLDER, hanya untuk banner). Ajakan menghubungi perusahaan, tepat di atas footer. Gaya banner diadaptasi dari CTA halaman Kontak PT Putra Maju Sukses. --}}
-@props(['company', 'variant' => 'card', 'image' => 180])
+@props(['company', 'variant' => 'card', 'image' => '1512403754473-27835f7b9984'])
 @if ($variant === 'banner')
 <section class="relative isolate overflow-hidden bg-black-deep">
     {{-- Foto latar, lalu lapisan gelap dan gradasi: pekat di kiri (tempat teks), memudar ke rona merah tipis di kanan. --}}
-    <img src="https://picsum.photos/id/{{ $image }}/1920/700" alt="" class="absolute inset-0 -z-30 size-full object-cover" loading="lazy" referrerpolicy="no-referrer" aria-hidden="true">
+    <img src="https://images.unsplash.com/photo-{{ $image }}?auto=format&fit=crop&w=1920&h=700&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" loading="lazy" referrerpolicy="no-referrer" aria-hidden="true">
     <span class="absolute inset-0 -z-20 bg-black-deep/85" aria-hidden="true"></span>
     <span class="absolute inset-0 -z-10 bg-gradient-to-r from-black-deep via-black-deep/80 to-brand/30" aria-hidden="true"></span>
 
     <div class="container-site">
-        <div class="flex flex-col gap-8 py-16 sm:py-20 lg:flex-row lg:items-center lg:justify-between lg:py-14">
+        <div data-reveal class="flex flex-col gap-8 py-16 sm:py-20 lg:flex-row lg:items-center lg:justify-between lg:py-14">
             <div class="max-w-3xl">
                 <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand-bright">Hubungi Kami</p>
                 {{-- Bagian merah tidak boleh terpotong di tengah: bila sempit, seluruhnya turun ke baris berikutnya. --}}
@@ -18,8 +18,8 @@
                 <p class="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base sm:leading-8">Sampaikan kebutuhan Anda kepada kami, tim kami siap membantu.</p>
             </div>
             <div class="flex flex-col gap-3 sm:flex-row lg:shrink-0">
-                {{-- Menuju halaman kontak (belum tersedia). --}}
-                <x-ui.button href="/kontak">
+                {{-- Menuju halaman kontak. --}}
+                <x-ui.button :href="route('contact')">
                     Kontak Kami
                     <x-ui.icon name="arrow-right" class="size-4" />
                 </x-ui.button>
@@ -34,7 +34,7 @@
 <section class="bg-gray-tint py-12 lg:py-16">
     <div class="container-site">
         {{-- Garis merah tebal di atas kartu, selaras dengan garis di atas footer. --}}
-        <div class="mx-auto max-w-6xl border border-t-4 border-black-soft/10 border-t-brand bg-white">
+        <div data-reveal class="mx-auto max-w-6xl border border-t-4 border-black-soft/10 border-t-brand bg-white">
             {{-- Ajakan --}}
             <div class="flex flex-col gap-6 p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
                 <div class="max-w-2xl">
@@ -45,8 +45,8 @@
                     <p class="mt-3 text-sm leading-7 text-muted sm:text-base">Sampaikan kebutuhan Anda kepada kami, tim kami siap membantu.</p>
                 </div>
                 <div class="flex flex-col gap-3 sm:flex-row lg:shrink-0">
-                    {{-- Menuju halaman kontak (belum tersedia). --}}
-                    <x-ui.button href="/kontak">
+                    {{-- Menuju halaman kontak. --}}
+                    <x-ui.button :href="route('contact')">
                         Kontak Kami
                         <x-ui.icon name="arrow-right" class="size-4" />
                     </x-ui.button>

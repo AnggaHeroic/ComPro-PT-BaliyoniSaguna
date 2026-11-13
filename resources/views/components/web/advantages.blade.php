@@ -13,7 +13,7 @@
         </x-web.section-title>
 
         {{-- Tiga kolom di baris pertama; dua sisanya di baris kedua dan berada di tengah (lg:grid-cols-6, tiap item 2 kolom). Isi tiap item rata tengah. --}}
-        <div class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-6 lg:gap-x-8 lg:gap-y-12">
+        <div data-reveal-stagger class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-6 lg:gap-x-8 lg:gap-y-12">
             @foreach ($advantages as $item)
                 <div @class(['flex flex-col items-center border-t border-white/15 pt-6 text-center lg:col-span-2', 'lg:col-start-2' => $loop->iteration === 4])>
                     <x-web.advantage-icon :name="$item['icon']" accent="stroke-brand-bright" class="size-14 text-white" />

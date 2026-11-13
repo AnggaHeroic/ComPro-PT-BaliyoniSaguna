@@ -47,7 +47,7 @@
 
         <div class="flex items-center gap-2">
             {{-- Merah di atas hero transparan, hitam setelah scroll; selain itu hitam. --}}
-            <x-ui.button href="/#kontak" :variant="$transparent ? 'primary' : 'dark'"
+            <x-ui.button :href="route('contact')" :variant="$transparent ? 'primary' : 'dark'"
                          :class="'hidden !py-2.5 uppercase tracking-wider lg:inline-flex'.($transparent ? ' group-data-[scrolled=true]:bg-black-soft group-data-[scrolled=true]:hover:bg-brand' : '')">Kontak Kami</x-ui.button>
 
             <button type="button" aria-controls="menu-mobile" @click="menu = ! menu" :aria-expanded="menu" aria-expanded="false"
@@ -120,7 +120,7 @@
                 </li>
             @endforeach
             <li class="py-4">
-                <x-ui.button href="/#kontak" variant="dark" class="w-full uppercase tracking-wider">Kontak Kami</x-ui.button>
+                <x-ui.button :href="route('contact')" variant="dark" class="w-full uppercase tracking-wider">Kontak Kami</x-ui.button>
             </li>
         </ul>
     </nav>

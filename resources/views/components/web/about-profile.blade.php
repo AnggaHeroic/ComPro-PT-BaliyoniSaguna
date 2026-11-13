@@ -2,7 +2,7 @@
 @props(['about', 'company'])
 <section id="profil" class="scroll-mt-20 bg-white">
     <div class="container-site">
-        <div class="grid gap-12 border-b border-black-soft/10 py-20 lg:grid-cols-12 lg:gap-20 lg:py-24">
+        <div data-reveal-stagger class="grid gap-12 border-b border-black-soft/10 py-20 lg:grid-cols-12 lg:gap-20 lg:py-24">
             {{-- Deskripsi perusahaan (kiri): garis merah vertikal menaungi label dan judul. --}}
             <div class="lg:col-span-7">
                 <div class="relative pl-7 sm:pl-8">
@@ -23,7 +23,7 @@
             {{-- Foto dan data ringkas (kanan). Foto PLACEHOLDER (Picsum); ganti dengan foto resmi perusahaan. --}}
             <div class="lg:col-span-5">
                 <div class="overflow-hidden bg-gray-tint">
-                    <img src="https://picsum.photos/id/{{ $about['profile_image'] }}/800/600" alt="Kantor {{ $company['name'] }}" class="h-full min-h-[280px] w-full object-cover" loading="lazy" referrerpolicy="no-referrer">
+                    <img src="https://images.unsplash.com/photo-{{ $about['profile_image'] }}?auto=format&fit=crop&w=800&h=600&q=75" alt="Kantor {{ $company['name'] }}" class="h-full min-h-[280px] w-full object-cover" loading="lazy" referrerpolicy="no-referrer">
                 </div>
                 <dl class="mt-6 divide-y divide-black-soft/10 border border-black-soft/15 bg-white px-7 sm:px-8">
                     @foreach ($about['facts'] as $fact)

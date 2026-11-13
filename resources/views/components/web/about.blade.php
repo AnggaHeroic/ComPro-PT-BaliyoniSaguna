@@ -4,11 +4,11 @@
     <div class="container-site grid items-center gap-14 lg:grid-cols-12 lg:gap-20">
         <div class="lg:col-span-7">
             <x-web.section-title eyebrow="Profil Singkat" title="Mengenal PT. Baliyoni Saguna" />
-            <div class="mt-8 max-w-2xl space-y-5 text-base leading-8 text-muted">
+            <div data-reveal class="mt-8 max-w-2xl space-y-5 text-base leading-8 text-muted">
                 <p>{{ $company['name'] }} adalah perusahaan induk dari berbagai holding dan outlet Baliyoni Group yang berkedudukan di {{ $company['city'] }}.</p>
                 <p>Dengan semboyan <strong class="font-semibold text-black-soft">One Stop Solution</strong>, kami menghadirkan beragam produk dan layanan dalam satu pintu.</p>
             </div>
-            <div class="mt-9">
+            <div data-reveal class="mt-9">
                 <x-ui.button href="/tentang-kami" variant="dark">
                     Selengkapnya
                     <x-ui.icon name="arrow-right" class="size-4" />

@@ -6,7 +6,7 @@
             Nilai yang menjadi landasan kami dalam bekerja dan melayani.
         </x-web.section-title>
 
-        <div class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8">
+        <div data-reveal-stagger class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8">
             @foreach ($values as $value)
                 <div class="border-t-2 border-black-soft pt-6">
                     <p class="font-display text-sm font-black text-brand">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</p>

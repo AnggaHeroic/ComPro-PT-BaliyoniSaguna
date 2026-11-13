@@ -1,4 +1,4 @@
-{{-- Props: services (daftar kategori layanan; memakai name, icon, description, activities berisi name, detail, summary opsional). Dua bagian berurutan dalam satu pembungkus: Ruang Lingkup (gelap, pemilih kategori) dan Aktivitas Usaha (putih, muncul setelah kategori dipilih; berupa card yang membuka modal detail lewat x-ui.modal). Perilaku ada di resources/js/service-scope.js. --}}
+{{-- Props: services (daftar kategori layanan; memakai name, icon, description, activities berisi name, summary opsional (detail dipakai di halaman detail)). Dua bagian berurutan dalam satu pembungkus: Ruang Lingkup (gelap, pemilih kategori) dan Aktivitas Usaha (putih, muncul setelah kategori dipilih; berupa card yang menuju halaman detail aktivitas). Perilaku ada di resources/js/service-scope.js. --}}
 @props(['services'])
 <div x-data="serviceScope" @hashchange.window="fromHash()" @scroll.window.passive="onScroll()">
     <section id="ruang-lingkup" class="scroll-mt-20 bg-black-deep py-20 text-white lg:py-28">
@@ -7,9 +7,9 @@
                 Beragam kategori yang dapat dipenuhi dalam satu tempat.
             </x-web.section-title>
 
-            <ul class="mt-14 grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+            <ul data-reveal-stagger class="mt-14 grid pl-px pt-px sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($services as $service)
-                    <li class="bg-black-deep">
+                    <li class="-ml-px -mt-px border border-white/10 bg-black-deep">
                         {{-- Pemilih kategori: saat disorot, latar berubah putih dengan teks merah (transisi singkat); keadaan terpilih (aria-pressed) sama, ditambah garis merah tipis di kiri. --}}
                         <button type="button" data-slug="{{ Str::slug($service['name']) }}"
                                 @click="select('{{ Str::slug($service['name']) }}')"
@@ -29,7 +29,8 @@
     <section id="aktivitas-usaha" x-ref="panel" class="scroll-mt-20 border-t-2 border-brand bg-white text-black-soft">
         <div class="container-site">
             <p x-show="active === null" class="flex items-center justify-center gap-2 py-10 text-center text-sm text-muted">
-                <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+                {{-- Chevron melompat (seperti tombol gulir di hero) sebagai petunjuk arah; berhenti bila pengguna memilih mengurangi gerakan. --}}
+                <svg class="size-4 shrink-0 motion-safe:animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
                 Pilih salah satu kategori di atas untuk melihat aktivitas usahanya.
             </p>
 
@@ -46,13 +47,12 @@
                     </div>
                     <p class="mt-4 max-w-2xl text-sm leading-7 text-muted sm:text-base">{{ $service['description'] }}</p>
 
-                    {{-- Aktivitas dalam bentuk card; klik card membuka modal berisi detailnya (konten sudah ada di HTML, hanya disembunyikan). --}}
+                    {{-- Aktivitas dalam bentuk card; klik card menuju halaman detail aktivitasnya. --}}
                     <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($service['activities'] as $activity)
-                            @php($modal = 'aktivitas-'.Str::slug($service['name']).'-'.$loop->iteration)
                             <li>
-                                <button type="button" @click="$dispatch('open-modal', '{{ $modal }}')" aria-haspopup="dialog"
-                                        class="group flex h-full w-full flex-col border border-black-soft/15 bg-white p-6 text-left transition-colors duration-150 hover:border-brand">
+                                <a href="{{ route('services.show', ['service' => Str::slug($service['name']), 'activity' => Str::slug($activity['name'])]) }}"
+                                   class="group flex h-full w-full flex-col border border-black-soft/15 bg-white p-6 text-left transition-colors duration-150 hover:border-brand">
                                     <span class="font-display text-sm font-black text-brand">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                                     <span class="mt-3 font-display text-base font-bold leading-snug transition-colors duration-150 group-hover:text-brand sm:text-lg">{{ $activity['name'] }}</span>
                                     @if (! empty($activity['summary']))
@@ -62,11 +62,7 @@
                                         Lihat detail
                                         <x-ui.icon name="arrow-right" class="size-4 transition-transform duration-150 group-hover:translate-x-1" />
                                     </span>
-                                </button>
-
-                                <x-ui.modal :name="$modal" :eyebrow="$service['name']" :title="$activity['name']">
-                                    {{ $activity['detail'] ?? 'Rincian aktivitas ini akan segera dilengkapi.' }}
-                                </x-ui.modal>
+                                </a>
                             </li>
                         @endforeach
                     </ol>

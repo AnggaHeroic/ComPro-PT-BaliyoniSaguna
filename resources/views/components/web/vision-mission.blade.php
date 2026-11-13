@@ -16,7 +16,7 @@
     </div>
 
     <div class="container-site pb-20 pt-7 sm:pb-24 sm:pt-8 lg:pb-28 lg:pt-9">
-        <div class="grid gap-4 lg:grid-cols-2">
+        <div data-reveal-stagger class="grid gap-4 lg:grid-cols-2">
             {{-- Kolom kiri: kartu visi dan kartu moto berbagi tinggi sama rata, total tingginya menyamai kartu misi. --}}
             <div class="flex flex-col gap-4">
                 <article class="relative flex flex-1 flex-col border border-black-soft/20 bg-white px-6 py-6 sm:px-8 sm:py-7 lg:py-8">
@@ -52,7 +52,7 @@
             </div>
 
             {{-- Misi: jumlah butir mengikuti isi config. Butir yang disorot mendapat garis merah di kiri dan latar tipis. --}}
-            <article class="relative border border-black-soft/20 bg-white px-6 py-6 sm:px-8 sm:py-7 lg:py-8">
+            <article data-reveal class="relative border border-black-soft/20 bg-white px-6 py-6 sm:px-8 sm:py-7 lg:py-8">
                 <span class="absolute inset-x-0 top-0 h-0.5 bg-brand" aria-hidden="true"></span>
                     <x-web.direction-icon name="mission" class="pointer-events-none absolute right-4 top-2 size-20 opacity-[0.15]" />
                 <div class="pt-3 text-center">

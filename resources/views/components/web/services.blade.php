@@ -7,7 +7,7 @@
         </x-web.section-title>
 
         {{-- Menuju halaman daftar layanan (belum tersedia). --}}
-        <div class="mt-8 flex justify-center">
+        <div data-reveal class="mt-8 flex justify-center">
             <x-ui.button href="/layanan" variant="dark">
                 Lihat Semua
                 <x-ui.icon name="arrow-right" class="size-4" />
@@ -16,7 +16,7 @@
     </div>
 
     {{-- Carousel selebar layar (tanpa padding kontainer). --}}
-    <div class="mt-12">
+    <div data-reveal class="mt-12">
         <x-web.service-carousel :services="$services" />
     </div>
 </section>

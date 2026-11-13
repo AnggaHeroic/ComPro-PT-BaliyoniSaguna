@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
@@ -28,6 +29,17 @@ class HomePageTest extends TestCase
 
         foreach (config('company.services') as $service) {
             $response->assertSee($service['name']);
+        }
+    }
+
+    public function test_home_carousel_cards_link_to_their_category_on_services_page(): void
+    {
+        $this->withoutVite();
+
+        $response = $this->get(route('home'));
+
+        foreach (config('company.services') as $service) {
+            $response->assertSee(route('services').'#ruang-lingkup-'.Str::slug($service['name']), false);
         }
     }
 
