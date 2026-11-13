@@ -13,6 +13,8 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <meta name="theme-color" content="#000000">
     @fonts
+    {{-- Animasi muncul-saat-digulir hanya aktif bila JS jalan; jika resources/js/app.js tidak termuat dalam 4 detik, tanda dicabut agar konten tidak tersembunyi. --}}
+    <script>document.documentElement.classList.add('reveal-ready');window.__revealTimer=setTimeout(function(){document.documentElement.classList.remove('reveal-ready')},4000);</script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="flex min-h-screen flex-col">

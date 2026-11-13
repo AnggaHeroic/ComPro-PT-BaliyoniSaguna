@@ -74,3 +74,117 @@
         display: none;
     }
 }
+
+/* Animasi halaman: satu gaya (naik tipis sambil memudar, ~0,6-0,7 dtk, kurva melambat) agar konsisten dan tidak mencolok.
+   Seluruhnya dimatikan bila pengguna memilih "kurangi gerakan". */
+@keyframes hero-in {
+    from {
+        opacity: 0;
+        transform: translateY(1.25rem);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Pita hero Tentang Kami naik dari bawah ke atas: tersingkap dari tepi bawah (mask) sambil bergeser naik sedikit; bentuk miringnya tetap. */
+@keyframes ribbon-in {
+    from {
+        opacity: 0;
+        transform: translateY(2.5rem);
+        -webkit-mask-size: 100% 0%;
+        mask-size: 100% 0%;
+    }
+    to {
+        opacity: 1;
+        transform: none;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+    }
+}
+
+@keyframes grow-x {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes grow-y {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: scaleY(1);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* Hero: anak langsung dari [data-hero] muncul berurutan saat halaman dibuka. data-hero="4" = empat anak pertama
+       (siku sudut hero Layanan, posisinya absolut) muncul terakhir dan teksnya mulai dari awal. */
+    [data-hero] > *,
+    .hero-in {
+        animation: hero-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    [data-hero] > :nth-child(2) { animation-delay: 0.1s; }
+    [data-hero] > :nth-child(3) { animation-delay: 0.2s; }
+    [data-hero] > :nth-child(4) { animation-delay: 0.3s; }
+    [data-hero] > :nth-child(5) { animation-delay: 0.4s; }
+    [data-hero] > :nth-child(6) { animation-delay: 0.5s; }
+    [data-hero="4"] > :nth-child(-n + 4) { animation-delay: 0.5s; }
+    [data-hero="4"] > :nth-child(5) { animation-delay: 0s; }
+    [data-hero="4"] > :nth-child(6) { animation-delay: 0.1s; }
+    [data-hero="4"] > :nth-child(7) { animation-delay: 0.2s; }
+    [data-hero="4"] > :nth-child(8) { animation-delay: 0.3s; }
+    .hero-in { animation-delay: var(--hero-delay, 0.3s); }
+
+    /* Pita miring hero Tentang Kami: naik dari bawah berurutan (putih pudar, merah lebar, merah tipis). */
+    .ribbon-in {
+        -webkit-mask: linear-gradient(#000 0 0) bottom / 100% 100% no-repeat;
+        mask: linear-gradient(#000 0 0) bottom / 100% 100% no-repeat;
+        animation: ribbon-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .ribbon-d1 { animation-delay: 0.35s; }
+    .ribbon-d2 { animation-delay: 0.55s; }
+    .ribbon-d3 { animation-delay: 0.75s; }
+
+    /* Garis hero memanjang. */
+    .grow-x-in { animation: grow-x 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both; }
+    .grow-y-in { animation: grow-y 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; transform-origin: top; }
+
+    /* Bagian halaman: muncul saat digulir ke layar (dikendalikan resources/js/reveal.js). */
+    html.reveal-ready [data-reveal]:not(.is-revealed) {
+        opacity: 0;
+        transform: translateY(1.5rem);
+    }
+    html.reveal-ready [data-reveal] {
+        transition:
+            opacity 0.6s ease-out var(--reveal-delay, 0s),
+            transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+    }
+
+    /* Kartu dalam kisi stagger: timbul satu per satu, lebih cepat dan sedikit membesar dari ukuran kecil (jeda per kartu diatur reveal.js). */
+    html.reveal-ready [data-reveal-stagger] > [data-reveal]:not(.is-revealed) {
+        transform: translateY(1rem) scale(0.96);
+    }
+    html.reveal-ready [data-reveal-stagger] > [data-reveal] {
+        transition:
+            opacity 0.4s ease-out var(--reveal-delay, 0s),
+            transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+    }
+
+    /* Garis merah di bawah judul bagian tumbuh dari kiri (atau dari tengah pada judul rata tengah). */
+    html.reveal-ready [data-reveal-line] {
+        transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+        transform-origin: left;
+    }
+    html.reveal-ready [data-reveal-line="center"] {
+        transform-origin: center;
+    }
+    html.reveal-ready [data-reveal]:not(.is-revealed) [data-reveal-line] {
+        transform: scaleX(0);
+    }
+}
