@@ -1,6 +1,6 @@
-{{-- Props: company (profil), navigation (daftar menu), services (kategori untuk mega-menu), transparent (navbar transparan di atas hero) --}}
+{{-- Props: company (profil), navigation (daftar menu), services (kategori untuk mega-menu dan sidebar), transparent (navbar transparan di atas hero) --}}
 @props(['company', 'navigation', 'services', 'transparent' => false])
-{{-- Perilaku (scroll, mega-menu, menu mobile) ada di resources/js/navbar.js. Header menjadi putih setelah scroll atau saat menu terbuka. --}}
+{{-- Perilaku (scroll, mega-menu, sidebar mobile) ada di resources/js/navbar.js. Header menjadi putih setelah scroll atau saat mega-menu terbuka. --}}
 <header x-data="navbar" data-site-header
         :data-scrolled="String(solid)" data-scrolled="false"
         @scroll.window.passive="onScroll()"
@@ -15,11 +15,24 @@
             'fixed inset-x-0 top-0 border-transparent bg-transparent' => $transparent,
             'sticky top-0 border-black-soft border-b-black-soft/10 bg-white' => ! $transparent,
         ])>
-    <div class="container-site flex h-[4.25rem] items-center justify-between gap-6 lg:h-20">
-        <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="{{ $company['name'] }} — Beranda">
-            <x-web.logo size="size-11 lg:size-12" />
-            <x-web.wordmark :tone="$transparent ? 'auto' : 'dark'" />
-        </a>
+    <div class="container-site flex h-[4.25rem] items-center justify-between gap-4 lg:h-20 lg:gap-6">
+        <div class="flex min-w-0 items-center gap-1 lg:gap-0">
+            {{-- Hamburger (mobile) di kiri logo, tanpa border; membuka sidebar navigasi. Margin negatif menyejajarkan garis ikon dengan tepi konten. --}}
+            <button type="button" aria-controls="menu-mobile" @click="menu = true" :aria-expanded="menu" aria-expanded="false"
+                    @class([
+                        '-ml-2.5 inline-flex size-11 shrink-0 items-center justify-center rounded-sm transition-colors lg:hidden',
+                        'text-white hover:bg-white/10 group-data-[scrolled=true]:text-black-soft group-data-[scrolled=true]:hover:bg-gray-tint' => $transparent,
+                        'text-black-soft hover:bg-gray-tint' => ! $transparent,
+                    ])>
+                <span class="sr-only">Buka menu navigasi</span>
+                <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+            </button>
+
+            <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-2.5 sm:gap-3" aria-label="{{ $company['name'] }} — Beranda">
+                <x-web.logo size="size-10 sm:size-11 lg:size-12" />
+                <x-web.wordmark :tone="$transparent ? 'auto' : 'dark'" />
+            </a>
+        </div>
 
         <nav class="hidden items-center gap-9 lg:flex" aria-label="Navigasi utama">
             @foreach ($navigation as $item)
@@ -45,21 +58,9 @@
             @endforeach
         </nav>
 
-        <div class="flex items-center gap-2">
-            {{-- Merah di atas hero transparan, hitam setelah scroll; selain itu hitam. --}}
-            <x-ui.button :href="route('contact')" :variant="$transparent ? 'primary' : 'dark'"
-                         :class="'hidden !py-2.5 uppercase tracking-wider lg:inline-flex'.($transparent ? ' group-data-[scrolled=true]:bg-black-soft group-data-[scrolled=true]:hover:bg-brand' : '')">Kontak Kami</x-ui.button>
-
-            <button type="button" aria-controls="menu-mobile" @click="menu = ! menu" :aria-expanded="menu" aria-expanded="false"
-                    @class([
-                        'inline-flex size-11 items-center justify-center rounded-sm transition-colors lg:hidden',
-                        'text-white hover:bg-white/10 group-data-[scrolled=true]:text-black-soft group-data-[scrolled=true]:hover:bg-gray-tint' => $transparent,
-                        'text-black-soft hover:bg-gray-tint' => ! $transparent,
-                    ])>
-                <span class="sr-only">Buka menu navigasi</span>
-                <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-            </button>
-        </div>
+        {{-- Merah di atas hero transparan, hitam setelah scroll; selain itu hitam. Di ponsel disembunyikan (tombolnya ada di sidebar). --}}
+        <x-ui.button :href="route('contact')" :variant="$transparent ? 'primary' : 'dark'"
+                     :class="'max-lg:!hidden shrink-0 !py-2.5 uppercase tracking-wider'.($transparent ? ' group-data-[scrolled=true]:bg-black-soft group-data-[scrolled=true]:hover:bg-brand' : '')">Kontak Kami</x-ui.button>
     </div>
 
     {{-- Mega-menu desktop: 4 kolom tetap, terisi per kolom (16 item = 4 baris; lebih dari 16 menambah baris). --}}
@@ -89,39 +90,73 @@
         </div>
     </div>
 
-    {{-- Menu mobile (header otomatis putih saat menu terbuka) --}}
-    <nav id="menu-mobile" x-show="menu" x-cloak @click="if ($event.target.closest('a')) menu = false" aria-label="Navigasi seluler"
-         class="max-h-[calc(100dvh-4.25rem)] overflow-y-auto border-t border-black-soft/10 bg-white lg:hidden">
-        <ul class="container-site py-2">
+    {{-- Sidebar mobile: panel gelap meluncur dari kiri di atas latar redup; klik latar, tombol tutup, atau Esc menutupnya. Halaman di belakangnya dikunci agar tidak ikut tergulir. --}}
+    <div x-show="menu" x-cloak @click="menu = false" aria-hidden="true"
+         x-transition:enter="transition-opacity duration-300 ease-out" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity duration-200 ease-in" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-40 bg-black-deep/70 backdrop-blur-[2px] lg:hidden"></div>
+
+    <nav id="menu-mobile" x-show="menu" x-cloak aria-label="Navigasi seluler"
+         x-effect="document.body.classList.toggle('overflow-hidden', menu)"
+         @click="if ($event.target.closest('a')) menu = false"
+         x-transition:enter="transition-transform duration-300 ease-out" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition-transform duration-200 ease-in" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
+         class="fixed inset-y-0 left-0 isolate z-50 flex w-[85%] max-w-sm flex-col overflow-hidden border-t-4 border-brand bg-black-soft text-white shadow-[8px_0_32px_rgb(0_0_0/0.4)] lg:hidden">
+        {{-- Aksen kotak tipis bertumpuk (selaras hero Beranda), dekoratif saja. --}}
+        <svg class="pointer-events-none absolute -bottom-24 -right-24 -z-10 size-80" viewBox="0 0 400 400" fill="none" stroke="white" stroke-width="1" aria-hidden="true">
+            <rect x="140" y="140" width="120" height="120" stroke-opacity=".08"/>
+            <rect x="95" y="95" width="210" height="210" stroke="#ff0000" stroke-opacity=".3"/>
+            <rect x="50" y="50" width="300" height="300" stroke-opacity=".06"/>
+        </svg>
+        <div class="flex h-16 shrink-0 items-center justify-between border-b border-white/10 pl-5 pr-2">
+            <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-2.5" aria-label="{{ $company['name'] }} — Beranda">
+                <x-web.logo size="size-9" />
+                <x-web.wordmark tone="light" class="!text-base" />
+            </a>
+            <button type="button" @click="menu = false" class="inline-flex size-11 shrink-0 items-center justify-center text-white/70 transition-colors hover:text-white">
+                <span class="sr-only">Tutup menu navigasi</span>
+                <x-ui.icon name="close" class="size-6" />
+            </button>
+        </div>
+
+        <p class="shrink-0 px-5 pt-7 text-[11px] font-bold uppercase tracking-[0.25em] text-brand-bright">Menu</p>
+        <ul class="flex-1 overflow-y-auto overscroll-contain pb-4 pt-3">
             @foreach ($navigation as $item)
-                <li class="border-b border-black-soft/10" @if ($item['mega'] ?? false) x-data="{ open: false }" @endif>
+                @php($current = $item['match'] && request()->routeIs($item['match']))
+                <li class="border-b border-white/10" @if ($item['mega'] ?? false) x-data="{ open: {{ $current ? 'true' : 'false' }} }" @endif>
                     @if ($item['mega'] ?? false)
                         <div class="flex items-center justify-between">
-                            <a href="{{ $item['href'] }}" @if ($item['match'] && request()->routeIs($item['match'])) aria-current="page" @endif
-                               class="flex-1 py-4 text-sm font-semibold uppercase tracking-wider text-black-soft transition-colors hover:text-brand aria-[current=page]:text-brand">{{ $item['label'] }}</a>
+                            <a href="{{ $item['href'] }}" @if ($current) aria-current="page" @endif
+                               class="group flex flex-1 items-center border-l-2 border-transparent py-4 pl-5 font-display text-lg font-bold tracking-tight text-white/80 transition-colors hover:text-white aria-[current=page]:border-brand-bright aria-[current=page]:bg-white/[0.06] aria-[current=page]:text-white">
+                                <span>{{ $item['label'] }}</span>
+                            </a>
                             <button type="button" aria-controls="sub-layanan" @click="open = ! open" :aria-expanded="open" aria-expanded="false"
-                                    class="inline-flex size-11 items-center justify-center text-black-soft transition-colors hover:text-brand aria-expanded:text-brand">
+                                    class="mr-2 inline-flex size-11 items-center justify-center text-white/60 transition-colors hover:text-white aria-expanded:text-brand-bright">
                                 <span class="sr-only">Tampilkan kategori layanan</span>
                                 <svg class="size-4 transition-transform in-aria-expanded:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                             </button>
                         </div>
-                        <ul id="sub-layanan" x-show="open" x-cloak class="mb-3 ml-1 border-l-2 border-brand">
+                        <ul id="sub-layanan" x-show="open" x-cloak x-transition.opacity.duration.200ms class="mb-3 ml-5 border-l-2 border-white/15">
                             @foreach ($services as $service)
-                                <li><a href="{{ route('services') }}#ruang-lingkup-{{ Str::slug($service['name']) }}" :aria-current="activeService === '{{ Str::slug($service['name']) }}' ? 'true' : false" class="aria-[current=true]:font-semibold aria-[current=true]:text-brand block py-2.5 pl-4 text-sm text-black-soft/80 transition-colors hover:text-brand">{{ $service['name'] }}</a></li>
+                                <li><a href="{{ route('services') }}#ruang-lingkup-{{ Str::slug($service['name']) }}" :aria-current="activeService === '{{ Str::slug($service['name']) }}' ? 'true' : false" class="aria-[current=true]:font-semibold aria-[current=true]:text-brand-bright block py-2.5 pl-5 text-sm text-white/60 transition-colors hover:text-white">{{ $service['name'] }}</a></li>
                             @endforeach
                         </ul>
                     @else
-                        <a href="{{ $item['href'] }}" @if ($item['match'] && request()->routeIs($item['match'])) aria-current="page" @endif
-                           class="flex items-center justify-between py-4 text-sm font-semibold uppercase tracking-wider text-black-soft transition-colors hover:text-brand aria-[current=page]:text-brand">
-                            <span>{{ $item['label'] }}</span>
-                            <x-ui.icon name="arrow-right" class="size-4" />
+                        <a href="{{ $item['href'] }}" @if ($current) aria-current="page" @endif
+                           class="group flex items-center justify-between border-l-2 border-transparent py-4 pl-5 pr-5 font-display text-lg font-bold tracking-tight text-white/80 transition-colors hover:text-white aria-[current=page]:border-brand-bright aria-[current=page]:bg-white/[0.06] aria-[current=page]:text-white">
+                            <span>{{ $item['label'] }}</span><x-ui.icon name="arrow-right" class="size-4 text-white/25 transition-all group-hover:translate-x-1 group-hover:text-brand-bright group-aria-[current=page]:text-brand-bright" />
                         </a>
                     @endif
                 </li>
             @endforeach
-            <li class="py-4">
-                <x-ui.button :href="route('contact')" variant="dark" class="w-full uppercase tracking-wider">Kontak Kami</x-ui.button>
-            </li>
         </ul>
+
+        <div class="shrink-0 border-t border-white/10 p-5">
+            <x-ui.button :href="route('contact')" class="w-full uppercase tracking-wider">
+                Kontak Kami
+                <x-ui.icon name="arrow-right" class="size-4" />
+            </x-ui.button>
+            <p class="mt-4 text-center text-[11px] font-semibold uppercase tracking-[0.25em] text-white/35">One Stop Solution</p>
+        </div>
     </nav>
 </header>

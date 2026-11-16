@@ -8,7 +8,7 @@
             'auto' => 'text-white group-data-[scrolled=true]:text-black-soft',
             default => 'text-black-soft',
         },
-        $size === 'lg' ? 'text-2xl' : 'text-[1.2rem] lg:text-[1.45rem]',
+        $size === 'lg' ? 'text-2xl' : 'text-[1.05rem] max-[350px]:text-[0.95rem] sm:text-[1.2rem] lg:text-[1.45rem]',
     ];
 @endphp
 {{-- Wordmark bergaya logo Baliyoni Group: satu baris huruf tebal seragam, hanya "i" yang merah. --}}

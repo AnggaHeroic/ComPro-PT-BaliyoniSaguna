@@ -13,7 +13,7 @@ export default () => ({
     },
 
     get solid() {
-        return this.scrolled || this.mega || this.menu;
+        return this.scrolled || this.mega;
     },
 
     onScroll() {
