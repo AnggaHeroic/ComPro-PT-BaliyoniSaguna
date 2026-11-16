@@ -35,7 +35,7 @@
                 <span class="block text-4xl sm:text-5xl lg:text-6xl">One Stop Solution</span>
                 <span class="mt-3 block text-xl text-brand-bright sm:text-2xl lg:text-3xl">Solusi Tuntas, Bahagia Pantas</span>
             </h1>
-            <p class="mt-8 max-w-2xl text-lg leading-relaxed text-white/80">
+            <p class="mt-7 max-w-2xl text-base leading-relaxed sm:mt-8 sm:text-lg text-white/80">
                 Perusahaan induk dari berbagai holding dan outlet Baliyoni Group. Kami menyediakan peralatan elektronik, perkantoran, pendidikan, pendingin udara, hingga sistem parkir elektronik.
             </p>
             <div class="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">

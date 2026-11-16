@@ -10,11 +10,11 @@
     <div class="absolute inset-x-0 top-0 -z-20 h-44 bg-linear-to-b from-black-deep/80 to-transparent" aria-hidden="true"></div>
     <div class="absolute inset-x-0 bottom-0 h-0.5 bg-brand" aria-hidden="true"></div>
 
-    <div class="container-site py-28 text-center sm:py-32">
+    <div class="container-site py-24 text-center sm:py-32">
         <div data-hero class="mx-auto flex max-w-3xl flex-col items-center">
             {{-- Garis vertikal turun ke persimpangan dengan garis horizontal selebar layar yang memudar di kedua ujung; berlian merah menandai titik temunya. --}}
             <span class="flex flex-col items-center" aria-hidden="true">
-                <span class="grow-y-in h-14 w-px bg-linear-to-b from-transparent to-brand-bright"></span>
+                <span class="grow-y-in h-10 w-px sm:h-14 bg-linear-to-b from-transparent to-brand-bright"></span>
                 <span class="flex w-screen items-center">
                     <span class="grow-x-in origin-right h-px flex-1 bg-linear-to-r from-transparent to-white/25"></span>
                     <span class="mx-4 size-2 rotate-45 bg-brand-bright"></span>
@@ -26,11 +26,11 @@
                 <span class="block">Wujudkan Kebutuhan</span>
                 <span class="block text-brand-bright">Bersama Kami</span>
             </h1>
-            <p class="mt-6 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
+            <p class="mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:mt-6 sm:text-lg">
                 Sampaikan kebutuhan atau pertanyaan Anda. Tim kami siap membantu dan akan menjawab secepatnya.
             </p>
             @if ($formTo || $mapTo)
-                <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                <div class="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
                     @if ($formTo)
                         <x-ui.button :href="$formTo">
                             Kirim Pesan
@@ -43,7 +43,7 @@
                 </div>
             @endif
             {{-- Penutup bergaya sama: garis horizontal memudar dengan berlian kosong di tengah. --}}
-            <span class="mt-10 flex w-screen items-center" aria-hidden="true">
+            <span class="mt-8 flex w-screen items-center sm:mt-10" aria-hidden="true">
                 <span class="h-px flex-1 bg-linear-to-r from-transparent to-white/25"></span>
                 <span class="mx-4 size-2 rotate-45 border border-brand-bright"></span>
                 <span class="h-px flex-1 bg-linear-to-l from-transparent to-white/25"></span>
