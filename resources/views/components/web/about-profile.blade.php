@@ -2,18 +2,18 @@
 @props(['about', 'company'])
 <section id="profil" class="scroll-mt-20 bg-white">
     <div class="container-site">
-        <div data-reveal-stagger class="grid gap-12 border-b border-black-soft/10 py-20 lg:grid-cols-12 lg:gap-20 lg:py-24">
+        <div data-reveal-stagger class="grid gap-12 border-b border-black-soft/10 py-16 sm:py-20 lg:grid-cols-12 lg:gap-20 lg:py-24">
             {{-- Deskripsi perusahaan (kiri): garis merah vertikal menaungi label dan judul. --}}
             <div class="lg:col-span-7">
                 <div class="relative pl-7 sm:pl-8">
                     <span class="absolute inset-y-0 left-0 w-0.5 bg-brand" aria-hidden="true"></span>
                     <p class="text-xs font-bold uppercase tracking-[0.16em] text-brand">Profil Perusahaan</p>
-                    <h2 class="mt-6 max-w-2xl text-3xl font-semibold leading-[1.08] tracking-[-0.025em] text-black-soft sm:text-4xl lg:text-[2.75rem]">
+                    <h2 class="mt-4 max-w-2xl text-balance text-[1.625rem] font-semibold leading-[1.15] tracking-[-0.025em] text-black-soft sm:mt-6 sm:text-4xl sm:leading-[1.08] lg:text-[2.75rem]">
                         Dari <span class="text-brand">Teknologi Informasi</span> hingga Pengadaan Barang dan Jasa
                     </h2>
                 </div>
 
-                <div class="mt-8 max-w-2xl space-y-6 pl-7 text-justify text-sm leading-7 text-muted sm:pl-8 sm:text-base sm:leading-8">
+                <div class="mt-8 max-w-2xl space-y-5 pl-7 text-justify sm:space-y-6 text-sm leading-7 text-muted sm:pl-8 sm:text-base sm:leading-8">
                     @foreach ($about['profile'] as $paragraph)
                         <p>{{ $paragraph }}</p>
                     @endforeach

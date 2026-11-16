@@ -1,21 +1,21 @@
 {{-- Props: services (daftar kategori layanan; memakai name, icon, description, activities berisi name, summary opsional (detail dipakai di halaman detail)). Dua bagian berurutan dalam satu pembungkus: Ruang Lingkup (gelap, pemilih kategori) dan Aktivitas Usaha (putih, muncul setelah kategori dipilih; berupa card yang menuju halaman detail aktivitas). Perilaku ada di resources/js/service-scope.js. --}}
 @props(['services'])
 <div x-data="serviceScope" @hashchange.window="fromHash()" @scroll.window.passive="onScroll()">
-    <section id="ruang-lingkup" class="scroll-mt-20 bg-black-deep py-20 text-white lg:py-28">
+    <section id="ruang-lingkup" class="scroll-mt-20 bg-black-deep py-16 text-white sm:py-20 lg:py-28">
         <div class="container-site">
             <x-web.section-title eyebrow="Ruang Lingkup" title="Produk dan Layanan Kami" invert center>
                 Beragam kategori yang dapat dipenuhi dalam satu tempat.
             </x-web.section-title>
 
-            <ul data-reveal-stagger class="mt-14 grid pl-px pt-px sm:grid-cols-2 lg:grid-cols-4">
+            <ul data-reveal-stagger class="mt-10 grid grid-cols-2 pl-px pt-px sm:mt-14 lg:grid-cols-4">
                 @foreach ($services as $service)
                     <li class="-ml-px -mt-px border border-white/10 bg-black-deep">
                         {{-- Pemilih kategori: saat disorot, latar berubah putih dengan teks merah (transisi singkat); keadaan terpilih (aria-pressed) sama, ditambah garis merah tipis di kiri. --}}
                         <button type="button" data-slug="{{ Str::slug($service['name']) }}"
                                 @click="select('{{ Str::slug($service['name']) }}')"
                                 :aria-pressed="active === '{{ Str::slug($service['name']) }}'" aria-pressed="false" aria-controls="aktivitas-usaha"
-                                class="group flex h-full w-full items-center gap-4 p-5 text-left transition-colors duration-150 hover:bg-white hover:text-brand aria-pressed:bg-white aria-pressed:text-brand aria-pressed:shadow-[inset_3px_0_0_0_var(--color-brand)]">
-                            <x-web.service-icon :name="$service['icon']" accent="stroke-brand" class="size-9 shrink-0 text-white transition-colors duration-150 group-hover:text-black-soft group-aria-pressed:text-black-soft" />
+                                class="group flex h-full w-full flex-col items-start gap-3 p-4 text-left sm:flex-row sm:items-center sm:gap-4 sm:p-5 transition-colors duration-150 hover:bg-white hover:text-brand aria-pressed:bg-white aria-pressed:text-brand aria-pressed:shadow-[inset_3px_0_0_0_var(--color-brand)]">
+                            <x-web.service-icon :name="$service['icon']" accent="stroke-brand" class="size-8 shrink-0 text-white transition-colors sm:size-9 duration-150 group-hover:text-black-soft group-aria-pressed:text-black-soft" />
                             <span class="text-sm font-semibold leading-snug">{{ $service['name'] }}</span>
                         </button>
                     </li>
@@ -34,7 +34,7 @@
                 Pilih salah satu kategori di atas untuk melihat aktivitas usahanya.
             </p>
 
-            <div x-show="active !== null" x-cloak class="py-16 lg:py-24">
+            <div x-show="active !== null" x-cloak class="py-12 sm:py-16 lg:py-24">
             @foreach ($services as $service)
                 <div x-show="active === '{{ Str::slug($service['name']) }}'" x-cloak x-transition.opacity.duration.200ms>
                     {{-- Judul kategori: ikon di kiri, label dan nama di sampingnya, deskripsi di bawah. --}}

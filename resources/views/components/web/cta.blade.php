@@ -36,7 +36,7 @@
         {{-- Garis merah tebal di atas kartu, selaras dengan garis di atas footer. --}}
         <div data-reveal class="mx-auto max-w-6xl border border-t-4 border-black-soft/10 border-t-brand bg-white">
             {{-- Ajakan --}}
-            <div class="flex flex-col gap-6 p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
+            <div class="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
                 <div class="max-w-2xl">
                     <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand">Hubungi Kami</p>
                     <h2 class="mt-3 text-2xl font-black leading-tight tracking-tight text-black-soft sm:text-3xl">
@@ -60,13 +60,13 @@
             <div class="grid divide-y divide-black-soft/10 border-t border-black-soft/10 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
                 {{-- Telepon dan WhatsApp satu kelompok (seperti footer); div karena tiap nomor punya tautan sendiri. --}}
                 @if ($company['phone'] || $company['mobile'])
-                    <div class="group flex flex-col items-center p-6 text-center lg:px-8">
+                    <div class="group grid grid-cols-[2.75rem_1fr] items-center gap-x-4 px-6 py-4 text-left lg:flex lg:flex-col lg:p-6 lg:px-8 lg:text-center">
                         {{-- Ikon ikut berubah merah bila salah satu nomor (telepon atau WA) disorot. --}}
-                        <span class="flex size-11 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-has-[a:hover]:bg-brand">
+                        <span class="row-span-2 flex size-11 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-has-[a:hover]:bg-brand">
                             <x-ui.icon name="phone" class="size-5" />
                         </span>
-                        <p class="mt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Telepon</p>
-                        <div class="mt-1 space-y-0.5">
+                        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted lg:mt-3">Telepon</p>
+                        <div class="mt-0.5 space-y-0.5 lg:mt-1">
                             @if ($company['phone'])
                                 <a href="tel:{{ $company['phone_href'] }}" class="block text-sm font-semibold leading-6 text-black-soft transition-colors hover:text-brand">Telp. {{ $company['phone'] }}</a>
                             @endif
@@ -78,22 +78,22 @@
                     </div>
                 @endif
                 @if ($company['email'])
-                    <a href="mailto:{{ $company['email'] }}" class="group flex flex-col items-center p-6 text-center lg:px-8">
-                        <span class="flex size-11 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-hover:bg-brand">
+                    <a href="mailto:{{ $company['email'] }}" class="group grid grid-cols-[2.75rem_1fr] items-center gap-x-4 px-6 py-4 text-left lg:flex lg:flex-col lg:p-6 lg:px-8 lg:text-center">
+                        <span class="row-span-2 flex size-11 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-hover:bg-brand">
                             <x-ui.icon name="mail" class="size-5" />
                         </span>
                         <span class="mt-3 block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Email</span>
-                        <span class="mt-1 block break-all text-sm font-semibold leading-6 text-black-soft transition-colors group-hover:text-brand">{{ $company['email'] }}</span>
+                        <span class="mt-0.5 block break-all text-sm font-semibold leading-6 text-black-soft transition-colors group-hover:text-brand">{{ $company['email'] }}</span>
                     </a>
                 @endif
                 @if ($company['address'])
-                    <a href="{{ $company['maps_url'] }}" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center p-6 text-center lg:px-8"
+                    <a href="{{ $company['maps_url'] }}" target="_blank" rel="noopener noreferrer" class="group grid grid-cols-[2.75rem_1fr] items-center gap-x-4 px-6 py-4 text-left lg:flex lg:flex-col lg:p-6 lg:px-8 lg:text-center"
                        aria-label="Lihat alamat {{ $company['name'] }} di Google Maps">
-                        <span class="flex size-11 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-hover:bg-brand">
+                        <span class="row-span-2 flex size-11 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-hover:bg-brand">
                             <x-ui.icon name="map-pin" class="size-5" />
                         </span>
                         <span class="mt-3 block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Alamat</span>
-                        <span class="mt-1 block text-sm font-semibold leading-6 text-black-soft transition-colors group-hover:text-brand">{{ $company['address'] }}</span>
+                        <span class="mt-0.5 block text-sm font-semibold leading-6 text-black-soft transition-colors group-hover:text-brand">{{ $company['address'] }}</span>
                     </a>
                 @endif
             </div>

@@ -1,6 +1,6 @@
 {{-- Props: services (daftar layanan; tiap item berisi name, icon, image) --}}
 @props(['services'])
-<section id="layanan" class="scroll-mt-20 overflow-hidden bg-gray-tint py-20 lg:py-28">
+<section id="layanan" class="scroll-mt-20 overflow-hidden bg-gray-tint py-16 sm:py-20 lg:py-28">
     <div class="container-site">
         <x-web.section-title eyebrow="Layanan Kami" title="Produk dan Layanan" center>
             Beragam kategori yang kami sediakan untuk memenuhi kebutuhan Anda.

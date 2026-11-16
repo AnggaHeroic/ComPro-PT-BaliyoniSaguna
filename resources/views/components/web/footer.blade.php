@@ -2,7 +2,7 @@
 @props(['company', 'navigation'])
 {{-- Footer hitam pekat dengan garis merah di atas, selaras dengan blok hitam pada logo. --}}
 <footer id="kontak" class="border-t-4 border-brand bg-black-deep text-white/70">
-    <div @class(['container-site grid gap-12 py-16', 'lg:grid-cols-12 lg:gap-16' => $company['has_contact'], 'md:grid-cols-2' => ! $company['has_contact']])>
+    <div @class(['container-site grid gap-10 py-12 sm:gap-12 sm:py-16', 'lg:grid-cols-12 lg:gap-16' => $company['has_contact'], 'md:grid-cols-2' => ! $company['has_contact']])>
         <div @class(['lg:col-span-5' => $company['has_contact']])>
             <div class="flex items-center gap-3">
                 <x-web.logo size="size-14" />

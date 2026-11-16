@@ -3,7 +3,7 @@
 @section('content')
     <x-web.contact-hero formTo="#informasi-kontak" :mapTo="$company['address'] ? '#lokasi' : null" scrollTo="#informasi-kontak" />
 
-    <section id="informasi-kontak" class="scroll-mt-20 bg-white py-20 lg:py-28">
+    <section id="informasi-kontak" class="scroll-mt-20 bg-white py-16 sm:py-20 lg:py-28">
         <div class="container-site grid gap-14 lg:grid-cols-12 lg:gap-16">
             {{-- Informasi kontak tanpa kartu; di layar lebar diberi jarak atas (padding + tepi formulir) agar judulnya sejajar dengan kolom pertama formulir. Baris bergaris tipis, ikon hitam berubah merah saat disorot. --}}
             <div data-reveal class="lg:col-span-5 lg:pt-[calc(2rem+4px)]">
@@ -68,7 +68,7 @@
 
     @if ($company['address'])
         {{-- Peta lokasi (embed Google Maps dari alamat). --}}
-        <section id="lokasi" class="scroll-mt-20 bg-gray-tint py-20 lg:py-24">
+        <section id="lokasi" class="scroll-mt-20 bg-gray-tint py-16 sm:py-20 lg:py-24">
             <div class="container-site">
                 <x-web.section-title eyebrow="Lokasi" title="Kantor Kami" center />
                 <div data-reveal class="mt-12 overflow-hidden border border-black-soft/10 bg-white">

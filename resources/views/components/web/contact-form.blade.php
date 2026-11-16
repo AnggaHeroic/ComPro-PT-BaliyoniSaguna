@@ -1,6 +1,6 @@
 {{-- Props: company (memakai mobile_url (wa.me), mobile, dan email), subject (perihal awal, opsional). Semua kolom wajib; email dan telepon cukup salah satu (atribut required dinamis lewat Alpine). Formulir tanpa backend: pengunjung memilih kirim lewat WhatsApp perusahaan atau lewat email (membuka aplikasi email dengan pesan terisi). Perilaku ada di resources/js/contact-form.js. --}}
 @props(['company', 'subject' => ''])
-@php($field = 'mt-2 block w-full border border-black-soft/20 bg-white px-4 py-2.5 text-sm text-black-soft placeholder:text-muted/70 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand')
+@php($field = 'mt-2 block w-full border border-black-soft/20 bg-white px-4 py-3 text-base text-black-soft sm:py-2.5 sm:text-sm placeholder:text-muted/70 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand')
 <form x-data="contactForm(@js($subject), @js($company['mobile_url']), @js($company['email']))" @submit.prevent="send($event.submitter?.value)"
       class="border border-t-4 border-black-soft/10 border-t-brand bg-white p-6 sm:p-8">
     <h2 class="sr-only">Formulir kirim pesan</h2>

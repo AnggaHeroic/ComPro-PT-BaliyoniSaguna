@@ -1,6 +1,6 @@
 {{-- Props: advantages (daftar keunggulan; tiap item berisi icon, title, text) --}}
 @props(['advantages'])
-<section id="mengapa-kami" class="relative isolate scroll-mt-20 overflow-hidden bg-black-deep py-20 text-white lg:py-28">
+<section id="mengapa-kami" class="relative isolate scroll-mt-20 overflow-hidden bg-black-deep py-16 text-white sm:py-20 lg:py-28">
     {{-- Aksen: kotak tipis bertumpuk, dekoratif saja. --}}
     <svg class="absolute -left-40 top-1/2 -z-10 hidden size-[28rem] -translate-y-1/2 lg:block" viewBox="0 0 400 400" fill="none" stroke="white" stroke-width="1" aria-hidden="true">
         <rect x="140" y="140" width="120" height="120" stroke-opacity=".05"/>
