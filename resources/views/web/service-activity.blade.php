@@ -107,19 +107,19 @@
                     </div>
                 </div>
 
-                <div class="border border-black-soft/10 bg-gray-tint p-6">
-                    <div class="flex items-center gap-4">
+                <a href="{{ route('services', ['kategori' => $serviceSlug]).'#ruang-lingkup' }}" class="group block border border-black-soft/10 bg-gray-tint p-6">
+                    <span class="flex items-center gap-4">
                         <x-web.service-icon :name="$service['icon']" accent="stroke-brand" class="size-10 shrink-0 text-black-soft" />
-                        <div>
-                            <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Kategori</p>
-                            <p class="mt-1 font-display text-base font-bold leading-snug">{{ $service['name'] }}</p>
-                        </div>
-                    </div>
-                    <a href="{{ route('services', ['kategori' => $serviceSlug]).'#ruang-lingkup' }}" class="group mt-5 inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:text-brand">
+                        <span>
+                            <span class="block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Kategori</span>
+                            <span class="mt-1 block font-display text-base font-bold leading-snug">{{ $service['name'] }}</span>
+                        </span>
+                    </span>
+                    <span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold transition-colors group-hover:text-brand">
                         Lihat semua kategori
                         <x-ui.icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
-                    </a>
-                </div>
+                    </span>
+                </a>
             </aside>
         </div>
     </section>
