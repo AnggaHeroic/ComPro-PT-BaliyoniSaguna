@@ -2,10 +2,22 @@
 
 namespace Tests\Feature;
 
+use Database\Seeders\SiteContentSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AboutPageTest extends TestCase
 {
+    use RefreshDatabase;
+
+    // Halaman publik membaca kategori dan aktivitas dari database.
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(SiteContentSeeder::class);
+    }
+
     public function test_about_page_shows_profile_vision_and_mission(): void
     {
         $this->withoutVite();
