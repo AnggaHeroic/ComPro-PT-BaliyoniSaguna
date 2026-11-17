@@ -55,18 +55,34 @@ class LoginTest extends TestCase
         $this->post('/login', [])->assertSessionHasErrors(['email', 'password']);
     }
 
-    public function test_login_is_throttled_after_too_many_failures(): void
+    public function test_login_is_locked_after_three_failures_regardless_of_email(): void
+    {
+        $this->withoutVite();
+        $user = User::factory()->create();
+
+        $this->post('/login', ['email' => $user->email, 'password' => 'salah']);
+        $this->post('/login', ['email' => 'lain@example.com', 'password' => 'salah']);
+
+        // Kegagalan ketiga memicu kunci, dengan email apa pun. Peringatannya tampil di halaman login dan hilang sendiri setelah 10 detik
+        // (halaman dibaca sebelum assertSessionHasErrors, karena pemeriksaan itu ikut menghabiskan data flash).
+        $this->post('/login', ['email' => 'lagi@example.com', 'password' => 'salah']);
+        $this->get('/login')->assertSee('Terlalu banyak percobaan masuk. Coba lagi dalam beberapa menit.')->assertSee('setTimeout(() => show = false, 10000)', false);
+
+        // Kata sandi benar pun ditolak selama kunci.
+        $this->post('/login', ['email' => $user->email, 'password' => 'password'])
+            ->assertSessionHasErrors(['lockout' => 'Terlalu banyak percobaan masuk. Coba lagi dalam beberapa menit.']);
+        $this->assertGuest();
+    }
+
+    public function test_two_failures_do_not_lock_the_login(): void
     {
         $user = User::factory()->create();
 
-        foreach (range(1, 5) as $ignored) {
-            $this->post('/login', ['email' => $user->email, 'password' => 'salah']);
-        }
+        $this->post('/login', ['email' => $user->email, 'password' => 'salah']);
+        $this->post('/login', ['email' => $user->email, 'password' => 'salah']);
+        $this->post('/login', ['email' => $user->email, 'password' => 'password'])->assertRedirect();
 
-        $this->post('/login', ['email' => $user->email, 'password' => 'password'])
-            ->assertSessionHasErrors('email');
-
-        $this->assertGuest();
+        $this->assertAuthenticated();
     }
 
     public function test_guest_is_redirected_from_admin_to_login(): void
