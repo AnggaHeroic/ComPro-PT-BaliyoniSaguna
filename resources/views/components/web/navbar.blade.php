@@ -15,7 +15,7 @@
             'fixed inset-x-0 top-0 border-transparent bg-transparent' => $transparent,
             'sticky top-0 border-black-soft border-b-black-soft/10 bg-white' => ! $transparent,
         ])>
-    <div class="container-site flex h-[4.25rem] items-center justify-between gap-4 lg:h-20 lg:gap-6">
+    <div class="container-site relative flex h-[4.25rem] items-center justify-between gap-4 lg:h-20 lg:gap-6">
         <div class="flex min-w-0 items-center gap-1 lg:gap-0">
             {{-- Hamburger (mobile) di kiri logo, tanpa border; membuka sidebar navigasi. Margin negatif menyejajarkan garis ikon dengan tepi konten. --}}
             <button type="button" aria-controls="menu-mobile" @click="menu = true" :aria-expanded="menu" aria-expanded="false"
@@ -61,6 +61,19 @@
         {{-- Merah di atas hero transparan, hitam setelah scroll; selain itu hitam. Di ponsel disembunyikan (tombolnya ada di sidebar). --}}
         <x-ui.button :href="route('contact')" :variant="$transparent ? 'primary' : 'dark'"
                      :class="'max-lg:!hidden shrink-0 !py-2.5 uppercase tracking-wider'.($transparent ? ' group-data-[scrolled=true]:bg-black-soft group-data-[scrolled=true]:hover:bg-brand' : '')">Kontak Kami</x-ui.button>
+
+        {{-- Tombol kecil kembali ke dashboard (hanya saat admin login). Absolut di ruang kosong tepat di kanan tombol Kontak Kami (padding container), jadi tidak menggeser menu apa pun. Di ponsel ada di sidebar. --}}
+        @auth
+            <a href="{{ route('admin.dashboard') }}" title="Kembali ke Dashboard Admin" aria-label="Kembali ke Dashboard Admin"
+               @class([
+                   'absolute left-[calc(100%-2rem+0.25rem)] top-1/2 hidden h-8 w-7 -translate-y-1/2 items-center justify-center gap-1.5 rounded-sm text-xs font-semibold transition-colors lg:inline-flex min-[1280px]:left-[calc(100%-2rem+0.875rem)] 2xl:left-[calc(100%-2rem+1.25rem)] 2xl:w-auto 2xl:px-2.5',
+                   'bg-white text-black-soft hover:bg-gray-tint group-data-[scrolled=true]:bg-black-soft group-data-[scrolled=true]:text-white group-data-[scrolled=true]:hover:bg-brand' => $transparent,
+                   'bg-black-soft text-white hover:bg-brand' => ! $transparent,
+               ])>
+                <x-ui.icon name="dashboard" class="size-3.5" />
+                <span class="hidden 2xl:inline">Admin</span>
+            </a>
+        @endauth
     </div>
 
     {{-- Mega-menu desktop: 4 kolom tetap, terisi per kolom (16 item = 4 baris; lebih dari 16 menambah baris). --}}
@@ -152,6 +165,12 @@
         </ul>
 
         <div class="shrink-0 border-t border-white/10 p-5">
+            @auth
+                <a href="{{ route('admin.dashboard') }}" class="group mb-4 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60 transition-colors hover:text-white">
+                    <x-ui.icon name="dashboard" class="size-4" />
+                    Kembali ke Dashboard Admin
+                </a>
+            @endauth
             <x-ui.button :href="route('contact')" class="w-full uppercase tracking-wider">
                 Kontak Kami
                 <x-ui.icon name="arrow-right" class="size-4" />
