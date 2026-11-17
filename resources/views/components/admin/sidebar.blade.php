@@ -3,7 +3,7 @@
     $groups = [
         'Utama' => [
             ['label' => 'Dashboard', 'icon' => 'dashboard', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard')],
-            ['label' => 'Pesan Masuk', 'icon' => 'inbox', 'href' => null],
+            ['label' => 'Riwayat Aktivitas', 'icon' => 'history', 'href' => route('admin.activity-logs.index'), 'active' => request()->routeIs('admin.activity-logs.*')],
         ],
         'Konten' => [
             ['label' => 'Kategori Usaha', 'icon' => 'layers', 'href' => route('admin.categories.index'), 'active' => request()->routeIs('admin.categories.*')],
@@ -18,10 +18,6 @@
             ['label' => 'Galeri', 'icon' => 'image', 'href' => route('admin.pages.edit', 'gallery'), 'active' => request()->is('admin/pages/gallery')],
             ['label' => 'Kontak', 'icon' => 'phone', 'href' => route('admin.pages.edit', 'contact'), 'active' => request()->is('admin/pages/contact')],
             ['label' => 'Umum', 'icon' => 'settings', 'href' => route('admin.pages.edit', 'general'), 'active' => request()->is('admin/pages/general')],
-        ],
-        'Sistem' => [
-            ['label' => 'Riwayat Aktivitas', 'icon' => 'history', 'href' => route('admin.activity-logs.index'), 'active' => request()->routeIs('admin.activity-logs.*')],
-            ['label' => 'Pengaturan', 'icon' => 'settings', 'href' => null],
         ],
     ];
 @endphp

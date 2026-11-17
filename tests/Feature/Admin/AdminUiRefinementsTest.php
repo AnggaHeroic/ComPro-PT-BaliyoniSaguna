@@ -204,15 +204,21 @@ class AdminUiRefinementsTest extends TestCase
         $this->assertGreaterThan(strpos($html, '</main>'), strpos($html, 'role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"'));
     }
 
-    public function test_sidebar_has_a_public_pages_group_with_inactive_items_for_now(): void
+    public function test_sidebar_has_a_public_pages_group_ordered_like_the_navbar(): void
     {
-        $html = $this->get(route('admin.dashboard'))->assertOk()->assertSee('Isi Halaman')->getContent();
+        $html = $this->get(route('admin.dashboard'))->assertOk()->assertSee('Isi Halaman')->assertDontSee('Segera')->assertDontSee('Pesan Masuk')->assertDontSee('Pengaturan')->getContent();
 
-        foreach (['Beranda', 'Layanan', 'Tentang Kami', 'Kontak'] as $label) {
-            $this->assertMatchesRegularExpression('/aria-disabled="true"[^>]*>\s*<svg[\s\S]*?<\/svg>\s*'.preg_quote($label, '/').'/', $html, $label);
-        }
+        // Urutan sama dengan navbar website (Umum, data bersama semua halaman, terakhir), dan semuanya sudah aktif (tautan).
+        $positions = array_map(fn (string $slug) => strpos($html, route('admin.pages.edit', $slug)), ['home', 'about', 'services', 'gallery', 'contact', 'general']);
+        $this->assertNotContains(false, $positions);
+        $sorted = $positions;
+        sort($sorted);
+        $this->assertSame($sorted, $positions);
 
-        $this->assertLessThan(strpos($html, 'Riwayat Aktivitas'), strpos($html, 'Isi Halaman'));
+        // Riwayat Aktivitas ada di grup Utama (tepat di bawah Dashboard), jadi tidak ada grup Sistem lagi.
+        $this->assertLessThan(strpos($html, 'Isi Halaman'), strpos($html, 'Riwayat Aktivitas'));
+        $this->assertLessThan(strpos($html, 'Riwayat Aktivitas'), strpos($html, 'Dashboard'));
+        $this->assertStringNotContainsString('>Sistem</p>', $html);
     }
 
     public function test_every_list_search_has_a_search_button(): void
@@ -240,7 +246,7 @@ class AdminUiRefinementsTest extends TestCase
         $this->assertStringContainsString('scrollbar-dark', $html);
         $this->assertStringContainsString('>Utama</p>', $html);
         $this->assertStringNotContainsString('>Menu</p>', $html);
-        $this->assertSame(4, preg_match_all('/<p class="[^"]*text-brand-bright[^"]*">(Utama|Konten|Isi Halaman|Sistem)<\/p>/', $html));
+        $this->assertSame(3, preg_match_all('/<p class="[^"]*text-brand-bright[^"]*">(Utama|Konten|Isi Halaman)<\/p>/', $html));
         $this->assertStringNotContainsString('text-white/40">Konten', $html);
     }
 }

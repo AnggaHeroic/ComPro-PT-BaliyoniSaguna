@@ -95,7 +95,7 @@ class LoginTest extends TestCase
         $this->withoutVite();
         $user = User::factory()->create();
 
-        $this->actingAs($user)->get(route('admin.dashboard'))->assertOk()->assertSee($user->name)->assertSee('Kategori Layanan')->assertSee('Profil Perusahaan');
+        $this->actingAs($user)->get(route('admin.dashboard'))->assertOk()->assertSee($user->name)->assertSee('Kategori Layanan')->assertSee('Aktivitas Terbaru');
         $this->actingAs($user)->get(route('login'))->assertRedirect(route('admin.dashboard'));
     }
 
