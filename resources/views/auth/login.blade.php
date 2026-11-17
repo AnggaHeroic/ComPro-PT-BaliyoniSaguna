@@ -6,6 +6,14 @@
     <p class="mt-3 text-sm leading-relaxed text-muted">Gunakan akun pengelola untuk mengakses dashboard. Akses terbatas untuk pengelola resmi.</p>
 
     {{-- Peringatan kunci login hilang sendiri setelah 10 detik. --}}
+    {{-- Pesan setelah keluar otomatis karena tidak aktif. --}}
+    @if (session('status'))
+        <div role="status" class="mt-6 flex items-start gap-3 border border-black-soft/15 bg-gray-tint px-4 py-3 text-sm font-medium text-black-soft">
+            <x-ui.icon name="history" class="mt-0.5 size-4 shrink-0 text-brand" />
+            <p>{{ session('status') }}</p>
+        </div>
+    @endif
+
     @error('lockout')
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show" x-transition.opacity.duration.300ms role="alert"
              class="mt-6 flex items-start gap-3 border border-brand/30 bg-brand/5 px-4 py-3 text-sm font-medium text-brand">

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ isset($title) ? $title.' | Admin' : 'Admin' }} | {{ $company['name'] }}</title>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -44,5 +45,6 @@
     {{-- Popup berada langsung di bawah <body>, di luar wadah konten, agar selalu tepat di tengah layar. --}}
     <x-ui.flash-message />
     <x-ui.confirm-dialog />
+    <x-admin.idle-guard />
 </body>
 </html>

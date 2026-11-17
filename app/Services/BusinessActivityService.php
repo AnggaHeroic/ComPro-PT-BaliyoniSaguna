@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\OrderHelper;
 use App\Helpers\SlugHelper;
 use App\Helpers\UploadHelper;
+use App\Models\ActivityLog;
 use App\Models\BusinessActivity;
 use App\Models\ServiceCategory;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,6 +17,8 @@ use Throwable;
 
 class BusinessActivityService
 {
+    public function __construct(private ActivityLogService $logService) {}
+
     public function paginate(?string $search, ?int $categoryId, ?string $status, int $perPage = 15): LengthAwarePaginator
     {
         return $this->filtered($search, $categoryId, $status)->paginate($perPage);
@@ -131,6 +134,10 @@ class BusinessActivityService
                 OrderHelper::apply(BusinessActivity::where('service_category_id', (int) $categoryId), $ids, 'aktivitas');
             }
         });
+
+        // Satu catatan untuk seluruh pengurutan, menyebut kategori yang urutannya berubah.
+        $names = ServiceCategory::whereIn('id', array_map('intval', array_keys($orders)))->orderBy('name')->pluck('name')->all();
+        $this->logService->record(ActivityLog::ACTION_REORDERED, BusinessActivity::class, 0, $names === [] ? null : 'Kategori: '.implode(', ', $names));
     }
 
     private function filtered(?string $search, ?int $categoryId, ?string $status): Builder

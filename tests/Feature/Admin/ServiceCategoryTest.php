@@ -140,7 +140,9 @@ class ServiceCategoryTest extends TestCase
             ->assertSessionHas('success');
 
         $this->assertSame([1, 2, 3], [$c->fresh()->sort_order, $a->fresh()->sort_order, $b->fresh()->sort_order]);
-        $this->assertSame($logs, ActivityLog::count());
+        // Satu catatan "Urutan" untuk seluruh pengurutan, bukan satu per baris.
+        $this->assertSame($logs + 1, ActivityLog::count());
+        $this->assertSame(ActivityLog::ACTION_REORDERED, ActivityLog::latest('id')->first()->action);
     }
 
     public function test_reorder_with_a_stale_list_is_rejected(): void

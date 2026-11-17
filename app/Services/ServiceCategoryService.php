@@ -6,6 +6,7 @@ use App\Exceptions\ActionBlockedException;
 use App\Helpers\OrderHelper;
 use App\Helpers\SlugHelper;
 use App\Helpers\UploadHelper;
+use App\Models\ActivityLog;
 use App\Models\ServiceCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,6 +18,8 @@ class ServiceCategoryService
 {
     /** Lebar maksimum ikon kustom (px); ikon tampil kecil, jadi tidak perlu besar. */
     private const ICON_MAX_WIDTH = 256;
+
+    public function __construct(private ActivityLogService $logService) {}
 
     public function paginate(?string $search, ?string $status, int $perPage = 15): LengthAwarePaginator
     {
@@ -176,6 +179,9 @@ class ServiceCategoryService
     public function reorder(array $ids): void
     {
         OrderHelper::apply(ServiceCategory::query(), $ids, 'kategori');
+
+        // Perubahan urutan menyentuh banyak baris sekaligus; dicatat sebagai satu catatan, bukan per baris.
+        $this->logService->record(ActivityLog::ACTION_REORDERED, ServiceCategory::class);
     }
 
     private function filtered(?string $search, ?string $status): Builder
