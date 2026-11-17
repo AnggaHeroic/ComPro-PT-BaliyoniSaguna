@@ -21,6 +21,7 @@ class ActivityLog extends Model
         ServiceCategory::class => 'Kategori Usaha',
         BusinessActivity::class => 'Aktivitas Usaha',
         GalleryPhoto::class => 'Foto Galeri',
+        Page::class => 'Isi Halaman',
     ];
 
     /** Sebutan kolom yang diubah, agar riwayat mudah dibaca. */

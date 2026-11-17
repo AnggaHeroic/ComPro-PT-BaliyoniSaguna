@@ -24,6 +24,7 @@ trait IndonesianMessages
             'integer' => ':attribute tidak valid.',
             'distinct' => ':attribute berisi data ganda.',
             'array' => ':attribute tidak valid.',
+            'email' => ':attribute harus berupa alamat email yang valid.',
             'regex' => 'Format :attribute tidak valid.',
             'date' => ':attribute bukan tanggal yang valid.',
         ];

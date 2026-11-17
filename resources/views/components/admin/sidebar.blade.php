@@ -10,13 +10,14 @@
             ['label' => 'Aktivitas Usaha', 'icon' => 'briefcase', 'href' => route('admin.activities.index'), 'active' => request()->routeIs('admin.activities.*')],
             ['label' => 'Foto Galeri', 'icon' => 'image', 'href' => route('admin.gallery.index'), 'active' => request()->routeIs('admin.gallery.*')],
         ],
-        // Pengelolaan teks halaman publik (menu saja dulu; belum aktif).
+        // Pengelolaan teks dan gambar halaman publik, berurutan seperti navbar website (Umum = data bersama semua halaman).
         'Isi Halaman' => [
-            ['label' => 'Beranda', 'icon' => 'home', 'href' => null],
-            ['label' => 'Layanan', 'icon' => 'grid', 'href' => null],
-            ['label' => 'Tentang Kami', 'icon' => 'info', 'href' => null],
-            ['label' => 'Galeri', 'icon' => 'image', 'href' => null],
-            ['label' => 'Kontak', 'icon' => 'phone', 'href' => null],
+            ['label' => 'Beranda', 'icon' => 'home', 'href' => route('admin.pages.edit', 'home'), 'active' => request()->is('admin/pages/home')],
+            ['label' => 'Tentang Kami', 'icon' => 'info', 'href' => route('admin.pages.edit', 'about'), 'active' => request()->is('admin/pages/about')],
+            ['label' => 'Layanan', 'icon' => 'grid', 'href' => route('admin.pages.edit', 'services'), 'active' => request()->is('admin/pages/services')],
+            ['label' => 'Galeri', 'icon' => 'image', 'href' => route('admin.pages.edit', 'gallery'), 'active' => request()->is('admin/pages/gallery')],
+            ['label' => 'Kontak', 'icon' => 'phone', 'href' => route('admin.pages.edit', 'contact'), 'active' => request()->is('admin/pages/contact')],
+            ['label' => 'Umum', 'icon' => 'settings', 'href' => route('admin.pages.edit', 'general'), 'active' => request()->is('admin/pages/general')],
         ],
         'Sistem' => [
             ['label' => 'Riwayat Aktivitas', 'icon' => 'history', 'href' => route('admin.activity-logs.index'), 'active' => request()->routeIs('admin.activity-logs.*')],
