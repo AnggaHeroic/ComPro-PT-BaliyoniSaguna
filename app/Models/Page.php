@@ -47,10 +47,6 @@ class Page extends Model
             }
         }
 
-        if (array_key_exists('defaults', $changes)) {
-            $sections['Setelan default'] = true;
-        }
-
         return $sections;
     }
 }

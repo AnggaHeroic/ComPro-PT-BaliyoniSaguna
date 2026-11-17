@@ -49,6 +49,11 @@ export default function setupUnsavedGuard(Alpine) {
         }
     });
 
+    // Keluar otomatis karena tidak aktif atau pengalihan sah lain: tidak perlu diperingatkan.
+    window.addEventListener('admin:allow-leave', () => {
+        allowLeave = true;
+    });
+
     window.addEventListener('beforeunload', (event) => {
         if (allowLeave || !isDirty()) return;
 

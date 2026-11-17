@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\UploadHelper;
+use App\Models\ActivityLog;
 use App\Models\Page;
 use Illuminate\Http\UploadedFile;
 use Throwable;
@@ -23,10 +24,34 @@ class PageContentService
     /** Isian form yang sedang dipratinjau per halaman (hanya terisi selama previewing() berjalan). @var array<string, array<string, mixed>> */
     private array $preview = [];
 
+    public function __construct(private ActivityLogService $logService) {}
+
     /** @return array<string, array<string, mixed>> */
     public function definitions(): array
     {
         return config('page_contents');
+    }
+
+    /**
+     * Halaman yang bisa diubah admin (kunci => label), tanpa data bersama "Umum"; urutannya sama dengan navbar website.
+     *
+     * @return array<string, string>
+     */
+    public function pages(): array
+    {
+        $labels = array_map(fn (array $page) => $page['label'], $this->definitions());
+
+        return array_diff_key($labels, ['general' => true]);
+    }
+
+    /**
+     * Semua halaman beserta "Umum" untuk daftar pintasan pengelolaan (kunci => label).
+     *
+     * @return array<string, string>
+     */
+    public function menu(): array
+    {
+        return array_map(fn (array $page) => $page['label'], $this->definitions());
     }
 
     public function has(string $slug): bool
@@ -226,8 +251,10 @@ class PageContentService
     {
         $before = $this->imagePaths($page);
 
-        $page->update(['content' => null]);
+        // Dicatat sebagai "Reset default", bukan perubahan biasa, jadi catatan otomatis model dilewati.
+        Page::withoutEvents(fn () => $page->update(['content' => null]));
         $this->resolved = [];
+        $this->logService->record(ActivityLog::ACTION_RESET, Page::class, $page->getKey(), $page->activityLabel());
 
         $this->deleteUnusedImages($page, $before);
     }
@@ -250,12 +277,13 @@ class PageContentService
             }
         }
 
-        $page->update([
+        Page::withoutEvents(fn () => $page->update([
             'content' => null,
             'defaults' => $defaults === [] ? null : $defaults,
             'defaults_set_at' => $defaults === [] ? null : now(),
-        ]);
+        ]));
         $this->resolved = [];
+        $this->logService->record(ActivityLog::ACTION_DEFAULT, Page::class, $page->getKey(), $page->activityLabel());
 
         $this->deleteUnusedImages($page, $before);
     }
@@ -266,12 +294,13 @@ class PageContentService
      */
     public function clearDefault(Page $page): void
     {
-        $page->update([
+        Page::withoutEvents(fn () => $page->update([
             'content' => [...($page->defaults ?? []), ...($page->content ?? [])] ?: null,
             'defaults' => null,
             'defaults_set_at' => null,
-        ]);
+        ]));
         $this->resolved = [];
+        $this->logService->record(ActivityLog::ACTION_DEFAULT_CLEARED, Page::class, $page->getKey(), $page->activityLabel());
     }
 
     /**

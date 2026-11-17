@@ -112,7 +112,9 @@ class GalleryPhotoTest extends TestCase
 
         $this->put(route('admin.gallery.reorder'), ['order' => [$c->id, $a->id, $b->id]])->assertSessionHas('success');
         $this->assertSame([1, 2, 3], [$c->fresh()->sort_order, $a->fresh()->sort_order, $b->fresh()->sort_order]);
-        $this->assertSame($logs, ActivityLog::count());
+        // Satu catatan "Urutan" untuk seluruh pengurutan, bukan satu per baris.
+        $this->assertSame($logs + 1, ActivityLog::count());
+        $this->assertSame(ActivityLog::ACTION_REORDERED, ActivityLog::latest('id')->first()->action);
 
         $this->put(route('admin.gallery.reorder'), ['order' => [$a->id]])->assertSessionHas('error');
     }

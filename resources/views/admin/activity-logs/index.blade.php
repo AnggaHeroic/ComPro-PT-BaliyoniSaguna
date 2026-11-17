@@ -6,15 +6,36 @@
     @endphp
 
     <div class="space-y-6">
-        <x-admin.page-header eyebrow="Sistem" title="Riwayat Aktivitas" description="Catatan perubahan data yang dilakukan admin di dashboard, dari yang terbaru." />
+        <x-admin.page-header eyebrow="Utama" title="Riwayat Aktivitas" description="Catatan perubahan konten dan akses akun admin di dashboard, dari yang terbaru." />
 
         <div class="border border-black-soft/10 bg-white">
+            {{-- Jenis catatan: semua, perubahan konten, atau akses akun. Tab membawa pencarian dan tanggal; menu dan aksi dikosongkan karena pilihannya beda per jenis. --}}
+            <nav class="flex flex-wrap gap-1 border-b border-black-soft/10 px-3" aria-label="Jenis catatan">
+                @foreach ($groups as $key => $item)
+                    <a href="{{ route('admin.activity-logs.index', array_filter(['jenis' => $key === $defaultGroup ? null : $key, 'q' => $filters['q'] ?? null, 'dari' => $filters['dari'] ?? null, 'sampai' => $filters['sampai'] ?? null], fn ($value) => filled($value))) }}"
+                       @if ($group === $key) aria-current="page" @endif
+                       @class([
+                           '-mb-px inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3 text-sm transition-colors',
+                           'border-brand font-semibold text-black-soft' => $group === $key,
+                           'border-transparent font-medium text-muted hover:text-black-soft' => $group !== $key,
+                       ])>
+                        {{ $item['label'] }}
+                        <span class="bg-gray-tint px-1.5 py-0.5 text-[11px] font-semibold text-muted">{{ $counts[$key] }}</span>
+                    </a>
+                @endforeach
+            </nav>
+
             <form method="GET" action="{{ route('admin.activity-logs.index') }}" class="flex flex-wrap items-center gap-3 border-b border-black-soft/10 px-4 py-3">
+                @if ($group !== $defaultGroup)
+                    <input type="hidden" name="jenis" value="{{ $group }}">
+                @endif
+                @if ($menus !== [])
                 <div class="w-full sm:w-44">
                     <x-ui.select name="menu" :options="array_combine($menus, $menus)" :selected="$filters['menu'] ?? null" placeholder="Semua menu" class="!py-2.5" onchange="this.form.submit()" aria-label="Filter menu" />
                 </div>
+                @endif
                 <div class="w-full sm:w-40">
-                    <x-ui.select name="action" :options="['created' => 'Ditambah', 'updated' => 'Diubah', 'deleted' => 'Dihapus']" :selected="$filters['action'] ?? null" placeholder="Semua aksi" class="!py-2.5" onchange="this.form.submit()" aria-label="Filter aksi" />
+                    <x-ui.select name="action" :options="$actions" :selected="$filters['action'] ?? null" placeholder="Semua aksi" class="!py-2.5" onchange="this.form.submit()" aria-label="Filter aksi" />
                 </div>
                 <x-admin.search :value="$filters['q'] ?? ''" placeholder="Cari keterangan atau nama pengguna" />
 
@@ -22,7 +43,7 @@
 
                 <div class="flex items-center gap-3 sm:ml-auto">
                     @if ($filtered)
-                        <a href="{{ route('admin.activity-logs.index') }}" class="text-sm font-semibold text-muted transition-colors hover:text-brand">Reset</a>
+                        <a href="{{ route('admin.activity-logs.index', $group === $defaultGroup ? [] : ['jenis' => $group]) }}" class="text-sm font-semibold text-muted transition-colors hover:text-brand">Reset</a>
                     @endif
                     <span class="text-sm text-muted">{{ $logs->total() }} catatan</span>
                 </div>

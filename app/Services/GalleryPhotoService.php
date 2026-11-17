@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\OrderHelper;
 use App\Helpers\UploadHelper;
+use App\Models\ActivityLog;
 use App\Models\GalleryPhoto;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
@@ -12,6 +13,8 @@ use Throwable;
 
 class GalleryPhotoService
 {
+    public function __construct(private ActivityLogService $logService) {}
+
     /**
      * Foto draft (belum tampil di website), yang terbaru di atas.
      *
@@ -114,6 +117,8 @@ class GalleryPhotoService
     public function reorder(array $ids): void
     {
         OrderHelper::apply(GalleryPhoto::published(), $ids, 'foto');
+
+        $this->logService->record(ActivityLog::ACTION_REORDERED, GalleryPhoto::class);
     }
 
     private function titleFromFilename(UploadedFile $file): string

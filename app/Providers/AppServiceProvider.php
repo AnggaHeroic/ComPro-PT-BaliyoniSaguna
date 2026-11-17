@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Listeners\RecordAdminAccess;
 use App\Services\CompanyService;
 use App\Services\PageContentService;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -49,6 +53,10 @@ class AppServiceProvider extends ServiceProvider
         // Hanya panel admin yang memakai paginasi; tampilannya mengikuti tema admin.
         Paginator::defaultView('pagination.admin');
         Paginator::defaultSimpleView('pagination.admin');
+
+        // Masuk dan keluar admin masuk ke riwayat aktivitas.
+        Event::listen(Login::class, [RecordAdminAccess::class, 'login']);
+        Event::listen(Logout::class, [RecordAdminAccess::class, 'logout']);
 
         // Layout admin dan login hanya butuh profil perusahaan; tanpa navbar, jadi daftar layanan tidak perlu dimuat.
         View::composer(['layouts.guest', 'layouts.app'], function ($view): void {
