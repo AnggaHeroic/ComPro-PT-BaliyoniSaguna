@@ -3,23 +3,24 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $password = config('admin.password');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Tanpa kata sandi di .env, akun tidak dibuat agar tidak ada akun dengan sandi bawaan.
+        if (! $password) {
+            $this->command?->warn('ADMIN_PASSWORD belum diisi di .env, akun admin tidak dibuat.');
+
+            return;
+        }
+
+        User::updateOrCreate(
+            ['email' => config('admin.email')],
+            ['name' => config('admin.name'), 'password' => $password],
+        );
     }
 }
