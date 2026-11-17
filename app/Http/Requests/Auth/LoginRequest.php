@@ -7,7 +7,6 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -48,7 +47,8 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Coba masuk. Salah memasukkan email atau kata sandi sebanyak batas (admin.login.max_attempts)
+     * mengunci percobaan berikutnya selama admin.login.lockout_seconds detik.
      *
      * @throws ValidationException
      */
@@ -57,42 +57,57 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+            $attempts = RateLimiter::hit($this->attemptsKey(), 300);
+
+            if ($attempts >= (int) config('admin.login.max_attempts')) {
+                RateLimiter::clear($this->attemptsKey());
+                RateLimiter::hit($this->lockKey(), (int) config('admin.login.lockout_seconds'));
+
+                $this->throwLockout();
+            }
 
             throw ValidationException::withMessages([
-                // Sengaja tidak membedakan email salah atau kata sandi salah.
+                // Sengaja tidak membedakan email salah atau kata sandi salah, dan sisa percobaan tidak ditampilkan.
                 'email' => 'Email atau kata sandi tidak sesuai.',
             ]);
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::clear($this->attemptsKey());
     }
 
     /**
-     * Ensure the login request is not rate limited.
+     * Tolak percobaan selama masa tunggu.
      *
      * @throws ValidationException
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (! RateLimiter::tooManyAttempts($this->lockKey(), 1)) {
             return;
         }
 
         event(new Lockout($this));
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $this->throwLockout();
+    }
 
+    // Lama tunggu sengaja tidak disebutkan.
+    private function throwLockout(): never
+    {
         throw ValidationException::withMessages([
-            'email' => "Terlalu banyak percobaan masuk. Coba lagi dalam {$seconds} detik.",
+            // Kunci 'lockout' (bukan 'email') agar halaman login menampilkannya sebagai peringatan yang hilang sendiri.
+            'lockout' => 'Terlalu banyak percobaan masuk. Coba lagi dalam beberapa menit.',
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
-    public function throttleKey(): string
+    /** Dihitung per alamat IP, supaya mengganti-ganti email tidak melewati batas. */
+    private function attemptsKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return 'login-attempts|'.$this->ip();
+    }
+
+    private function lockKey(): string
+    {
+        return 'login-lock|'.$this->ip();
     }
 }
