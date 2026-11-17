@@ -4,6 +4,7 @@
  * Dipakai dua cara:
  *  - Form dengan atribut data-confirm-title meminta konfirmasi dulu sebelum dikirim
  *    (juga data-confirm-message, data-confirm-label, data-confirm-tone="danger|default"; danger = merah untuk aksi permanen seperti hapus, default = hitam untuk peringatan biasa).
+ *  - Aksi besar bisa meminta persetujuan dua kali: tambahkan data-confirm-second-title (juga -message, -label, -tone).
  *  - Kode JS lain: const jawaban = await Alpine.store('confirm').ask({ title, message, label, secondaryLabel, tone, hideCancel }).
  *    Jawaban: true (tombol utama), 'secondary' (tombol kedua), atau false (batal).
  */
@@ -49,7 +50,17 @@ export default function setupConfirm(Alpine) {
                 tone: form.dataset.confirmTone ?? 'danger',
             });
 
-            if (ok === true) {
+            // Aksi besar meminta persetujuan kedua (data-confirm-second-title) sebelum dikirim.
+            const sure = ok === true && form.dataset.confirmSecondTitle
+                ? await Alpine.store('confirm').ask({
+                    title: form.dataset.confirmSecondTitle,
+                    message: form.dataset.confirmSecondMessage ?? '',
+                    label: form.dataset.confirmSecondLabel ?? 'Ya',
+                    tone: form.dataset.confirmSecondTone ?? form.dataset.confirmTone ?? 'danger',
+                })
+                : ok;
+
+            if (sure === true) {
                 form.dataset.confirmed = '1';
                 form.requestSubmit(event.submitter ?? undefined);
             }

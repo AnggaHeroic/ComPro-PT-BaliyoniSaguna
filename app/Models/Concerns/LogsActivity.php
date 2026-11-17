@@ -29,12 +29,23 @@ trait LogsActivity
         return (string) ($this->name ?? class_basename($this).' #'.$this->getKey());
     }
 
+    /**
+     * Isi kolom 'changes' pada riwayat. Model boleh menimpa untuk meringkas perubahan (mis. nama bagian yang berubah).
+     *
+     * @param  array<string, mixed>  $changes
+     * @return array<string, mixed>
+     */
+    public function activityChanges(array $changes): array
+    {
+        return $changes;
+    }
+
     protected static function logActivity(Model $model, string $action): void
     {
         $changes = null;
 
         if ($action === ActivityLog::ACTION_UPDATED) {
-            $changes = Arr::except($model->getChanges(), ['updated_at']);
+            $changes = $model->activityChanges(Arr::except($model->getChanges(), ['updated_at']));
 
             // Perubahan urutan (seret-dan-lepas) menyentuh banyak baris sekaligus; tidak dicatat satu per satu.
             if (array_keys($changes) === [] || array_keys($changes) === ['sort_order']) {

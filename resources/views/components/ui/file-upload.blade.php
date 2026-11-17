@@ -1,5 +1,5 @@
-{{-- Props: name (wajib; field hapus bernama remove_{name}), label, current (URL gambar saat ini, untuk halaman ubah), hint, previewClass (ukuran kotak pratinjau), fit (object-cover|object-contain). Pratinjau gambar sebelum diunggah (Alpine). --}}
-@props(['name' => 'image', 'label' => null, 'current' => null, 'hint' => null, 'previewClass' => 'aspect-[4/3] w-full max-w-[14rem]', 'fit' => 'object-cover'])
+{{-- Props: name (wajib; field hapus bernama remove_{name}), label, current (URL gambar saat ini, untuk halaman ubah), hint, removeLabel (teks kotak hapus), removable (false = kotak hapus disembunyikan), previewClass (ukuran kotak pratinjau), fit (object-cover|object-contain). Pratinjau gambar sebelum diunggah (Alpine). --}}
+@props(['name' => 'image', 'label' => null, 'current' => null, 'hint' => null, 'previewClass' => 'aspect-[4/3] w-full max-w-[14rem]', 'fit' => 'object-cover', 'removeLabel' => 'Hapus gambar saat ini', 'removable' => true])
 <div x-data="{
          preview: @js($current),
          remove: false,
@@ -22,10 +22,10 @@
             @if ($hint)
                 <p class="text-xs text-muted">{{ $hint }}</p>
             @endif
-            @if ($current)
+            @if ($current && $removable)
                 <label class="flex w-fit cursor-pointer items-center gap-2 text-sm text-muted">
                     <input type="checkbox" name="remove_{{ $name }}" value="1" x-model="remove" class="size-4 rounded-sm border-black-soft/30 accent-brand">
-                    Hapus gambar saat ini
+                    {{ $removeLabel }}
                 </label>
             @endif
             @error($name)

@@ -11,7 +11,8 @@
  *   data-unsaved-dirty   form dianggap sudah berubah sejak awal (mis. dimuat ulang setelah galat validasi)
  *   data-unsaved-skip    pada tautan: tidak diperingatkan (mis. tombol Batal yang memang membuang perubahan)
  */
-const IGNORED_NAMES = ['_token', '_method'];
+// 'bagian' = penanda bagian yang sedang dibuka di form isi halaman (bukan isian).
+const IGNORED_NAMES = ['_token', '_method', 'bagian'];
 
 export default function setupUnsavedGuard(Alpine) {
     const forms = () => [...document.querySelectorAll('form[data-unsaved-guard]')];
