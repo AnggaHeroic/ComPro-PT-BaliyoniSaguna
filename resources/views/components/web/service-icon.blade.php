@@ -1,5 +1,5 @@
-{{-- Props: name (nama ikon sesuai config company.services), accent (class stroke untuk detail, default stroke-brand) --}}
-@props(['name', 'accent' => 'stroke-brand'])
+{{-- Props: name (kunci ikon bawaan, lihat ServiceCategory::ICONS), accent (class stroke untuk detail, default stroke-brand), image (URL ikon kustom unggahan admin; bila ada dipakai menggantikan ikon bawaan). Pada latar gelap (class text-white) ikon kustom dijadikan putih agar tetap terlihat. --}}
+@props(['name', 'accent' => 'stroke-brand', 'image' => null])
 @php
     // Ikon garis kustom (viewBox 48). Warna utama: currentColor; detail memakai class stroke-brand (diganti sesuai $accent).
     $icons = [
@@ -19,6 +19,22 @@
         'lab' => '<path d="M19 8h10"/><path d="M21 8v12L9 38a3 3 0 0 0 3 5h24a3 3 0 0 0 3-5L27 20V8"/><path d="M14 32h20" class="stroke-brand"/>',
         'software' => '<rect x="6" y="9" width="36" height="30" rx="2"/><path d="M6 17h36"/><path d="m18 24-5 5 5 5M30 24l5 5-5 5" class="stroke-brand"/><path d="m26 22-4 14"/>',
         'parking' => '<path d="M6 40h12M12 40V22"/><rect x="9" y="14" width="6" height="8" rx="1"/><path d="M15 18h27"/><rect x="15" y="16" width="27" height="5" class="stroke-brand"/><path d="M22 16v5M29 16v5M36 16v5" class="stroke-brand"/><circle cx="34" cy="33" r="7"/><path d="M31 38V28h4a2.5 2.5 0 0 1 0 5h-4"/>',
+        'laptop' => '<rect x="10" y="10" width="28" height="20" rx="2"/><path d="M5 36h38"/><path d="M8 30h32l3 6H5z"/><path d="M18 20h12" class="stroke-brand"/>',
+        'cctv' => '<rect x="6" y="14" width="26" height="14" rx="3"/><path d="m32 18 10-4v18l-10-4"/><path d="M19 28v8M12 40h14"/><circle cx="19" cy="21" r="4" class="stroke-brand"/>',
+        'printer' => '<rect x="12" y="8" width="24" height="12"/><rect x="6" y="20" width="36" height="16" rx="2"/><rect x="12" y="30" width="24" height="10" class="stroke-brand"/>',
+        'furniture' => '<path d="M14 8h20v16H14z"/><path d="M10 24h28v6H10z"/><path d="M14 30v12M34 30v12"/><path d="M19 14h10" class="stroke-brand"/>',
+        'book' => '<path d="M8 10h14a4 4 0 0 1 4 4v26a3 3 0 0 0-3-3H8z"/><path d="M40 10H26"/><path d="M40 10v27H29a3 3 0 0 0-3 3"/><path d="M13 17h8M13 23h8" class="stroke-brand"/>',
+        'truck' => '<path d="M4 12h24v22H4z"/><path d="M28 20h8l8 8v6H28z"/><circle cx="14" cy="36" r="4" class="stroke-brand"/><circle cx="36" cy="36" r="4" class="stroke-brand"/>',
+        'cart' => '<path d="M4 8h6l5 22h22l4-16H13"/><circle cx="19" cy="38" r="3" class="stroke-brand"/><circle cx="34" cy="38" r="3" class="stroke-brand"/>',
+        'building' => '<rect x="10" y="6" width="22" height="36"/><path d="M32 18h8v24H32"/><path d="M16 14h4M24 14h4M16 22h4M24 22h4M16 30h4M24 30h4"/><path d="M19 42v-6h4v6" class="stroke-brand"/>',
+        'bolt' => '<path d="M26 4 10 26h12l-2 18 18-24H26z"/><path d="m24 14-6 10" class="stroke-brand"/>',
+        'cleaning' => '<path d="m30 6 12 12"/><path d="M36 12 22 26"/><path d="M22 26c-6-2-12 2-14 12 8 0 14-2 16-8"/><path d="m12 36 4-4M18 38l3-3" class="stroke-brand"/>',
+        'medical' => '<rect x="6" y="14" width="36" height="26" rx="3"/><path d="M17 14V9h14v5"/><path d="M24 21v12M18 27h12" class="stroke-brand"/>',
+        'package' => '<path d="M24 5 6 14v20l18 9 18-9V14z"/><path d="m6 14 18 9 18-9M24 23v20"/><path d="m15 9.5 18 9" class="stroke-brand"/>',
     ];
 @endphp
+@if ($image)
+    <img src="{{ $image }}" alt="" loading="lazy" referrerpolicy="no-referrer" {{ $attributes->class(['shrink-0 object-contain', 'brightness-0 invert' => str_contains((string) $attributes->get('class'), 'text-white')]) }}>
+@else
 <svg {{ $attributes->class('shrink-0') }} viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! str_replace('stroke-brand', $accent, $icons[$name] ?? '') !!}</svg>
+@endif
