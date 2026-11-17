@@ -3,12 +3,20 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(SiteContentSeeder::class);
+    }
 
     public function test_login_page_is_displayed_and_not_indexed(): void
     {

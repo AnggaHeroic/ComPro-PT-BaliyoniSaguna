@@ -1,13 +1,27 @@
-{{-- Props: tidak ada. Sidebar CMS: tetap di kiri pada desktop, laci geser pada ponsel (dibuka lewat event window "toggle-sidebar" dari topbar). Menu "Segera" belum aktif. --}}
+{{-- Props: tidak ada. Sidebar CMS: tetap di kiri pada desktop, laci geser pada ponsel (dibuka lewat event window "toggle-sidebar" dari topbar). Item tanpa href ("Segera") belum aktif. --}}
 @php
-    $menu = [
-        ['label' => 'Dashboard', 'icon' => 'dashboard', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard')],
-    ];
-    $upcoming = [
-        ['label' => 'Layanan', 'icon' => 'layers'],
-        ['label' => 'Galeri', 'icon' => 'image'],
-        ['label' => 'Pesan Masuk', 'icon' => 'inbox'],
-        ['label' => 'Pengaturan', 'icon' => 'settings'],
+    $groups = [
+        'Utama' => [
+            ['label' => 'Dashboard', 'icon' => 'dashboard', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard')],
+            ['label' => 'Pesan Masuk', 'icon' => 'inbox', 'href' => null],
+        ],
+        'Konten' => [
+            ['label' => 'Kategori Usaha', 'icon' => 'layers', 'href' => route('admin.categories.index'), 'active' => request()->routeIs('admin.categories.*')],
+            ['label' => 'Aktivitas Usaha', 'icon' => 'briefcase', 'href' => route('admin.activities.index'), 'active' => request()->routeIs('admin.activities.*')],
+            ['label' => 'Foto Galeri', 'icon' => 'image', 'href' => route('admin.gallery.index'), 'active' => request()->routeIs('admin.gallery.*')],
+        ],
+        // Pengelolaan teks halaman publik (menu saja dulu; belum aktif).
+        'Isi Halaman' => [
+            ['label' => 'Beranda', 'icon' => 'home', 'href' => null],
+            ['label' => 'Layanan', 'icon' => 'grid', 'href' => null],
+            ['label' => 'Tentang Kami', 'icon' => 'info', 'href' => null],
+            ['label' => 'Galeri', 'icon' => 'image', 'href' => null],
+            ['label' => 'Kontak', 'icon' => 'phone', 'href' => null],
+        ],
+        'Sistem' => [
+            ['label' => 'Riwayat Aktivitas', 'icon' => 'history', 'href' => route('admin.activity-logs.index'), 'active' => request()->routeIs('admin.activity-logs.*')],
+            ['label' => 'Pengaturan', 'icon' => 'settings', 'href' => null],
+        ],
     ];
 @endphp
 <div x-data="{ open: false }" @toggle-sidebar.window="open = ! open" @keydown.escape.window="open = false"
@@ -28,30 +42,29 @@
             </button>
         </div>
 
-        <nav class="flex-1 overflow-y-auto overscroll-contain py-6" aria-label="Menu admin">
-            <p class="px-5 text-[11px] font-bold uppercase tracking-[0.25em] text-brand-bright">Menu</p>
-            <ul class="mt-3">
-                @foreach ($menu as $item)
-                    <li>
-                        <a href="{{ $item['href'] }}" @if ($item['active']) aria-current="page" @endif
-                           class="group flex items-center gap-3 border-l-2 border-transparent px-5 py-3 text-sm font-semibold text-white/70 transition-colors hover:text-white aria-[current=page]:border-brand-bright aria-[current=page]:bg-white/[0.06] aria-[current=page]:text-white">
-                            <x-ui.icon :name="$item['icon']" class="size-[1.125rem] group-aria-[current=page]:text-brand-bright" />
-                            {{ $item['label'] }}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-
-            <p class="mt-8 px-5 text-[11px] font-bold uppercase tracking-[0.25em] text-white/40">Konten</p>
-            <ul class="mt-3">
-                @foreach ($upcoming as $item)
-                    <li class="flex cursor-not-allowed items-center gap-3 border-l-2 border-transparent px-5 py-3 text-sm font-semibold text-white/30" aria-disabled="true">
-                        <x-ui.icon :name="$item['icon']" class="size-[1.125rem]" />
-                        {{ $item['label'] }}
-                        <span class="ml-auto border border-white/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white/40">Segera</span>
-                    </li>
-                @endforeach
-            </ul>
+        <nav class="scrollbar-dark flex-1 overflow-y-auto overscroll-contain py-6" aria-label="Menu admin">
+            @foreach ($groups as $title => $items)
+                <p @class(['px-5 text-[11px] font-bold uppercase tracking-[0.25em]', 'mt-8' => ! $loop->first, 'text-brand-bright'])>{{ $title }}</p>
+                <ul class="mt-3">
+                    @foreach ($items as $item)
+                        <li>
+                            @if ($item['href'])
+                                <a href="{{ $item['href'] }}" @if ($item['active']) aria-current="page" @endif
+                                   class="group flex items-center gap-3 border-l-2 border-transparent px-5 py-3 text-sm font-semibold text-white/70 transition-colors hover:text-white aria-[current=page]:border-brand-bright aria-[current=page]:bg-white/[0.06] aria-[current=page]:text-white">
+                                    <x-ui.icon :name="$item['icon']" class="size-[1.125rem] group-aria-[current=page]:text-brand-bright" />
+                                    {{ $item['label'] }}
+                                </a>
+                            @else
+                                <span class="flex cursor-not-allowed items-center gap-3 border-l-2 border-transparent px-5 py-3 text-sm font-semibold text-white/30" aria-disabled="true">
+                                    <x-ui.icon :name="$item['icon']" class="size-[1.125rem]" />
+                                    {{ $item['label'] }}
+                                    <span class="ml-auto border border-white/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white/40">Segera</span>
+                                </span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @endforeach
         </nav>
 
         <div class="shrink-0 border-t border-white/10 p-5">

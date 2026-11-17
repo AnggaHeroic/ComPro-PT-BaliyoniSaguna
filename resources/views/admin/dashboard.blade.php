@@ -2,12 +2,7 @@
 
 @section('content')
     <div class="mx-auto max-w-6xl space-y-8">
-        <x-admin.page-header eyebrow="{{ $summary['today'] }}" title="Selamat datang, {{ auth()->user()->name }}" description="Ringkasan konten website {{ $company['short_name'] }}.">
-            <x-ui.button :href="route('home')" target="_blank" rel="noopener" variant="dark" class="!py-2.5 uppercase tracking-wider">
-                Lihat Website
-                <x-ui.icon name="external" class="size-4" />
-            </x-ui.button>
-        </x-admin.page-header>
+        <x-admin.page-header eyebrow="{{ $summary['today'] }}" title="Selamat datang, {{ auth()->user()->name }}" description="Ringkasan konten website {{ $company['short_name'] }}." />
 
         <section aria-label="Ringkasan" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             @foreach ($summary['stats'] as $stat)
@@ -16,12 +11,12 @@
         </section>
 
         <div class="grid gap-6 lg:grid-cols-3">
-            <section class="border border-black-soft/10 bg-white lg:col-span-2" aria-labelledby="profil-perusahaan">
-                <div class="flex items-center justify-between border-b border-black-soft/10 px-5 py-4 sm:px-6">
-                    <h2 id="profil-perusahaan" class="text-sm font-bold uppercase tracking-[0.18em] text-black-soft">Profil Perusahaan</h2>
+            <section class="flex flex-col border border-black-soft/10 bg-white lg:col-span-2" aria-labelledby="profil-perusahaan">
+                <div class="flex h-14 items-center justify-between border-b border-black-soft/10 px-5 sm:px-6">
+                    <h2 id="profil-perusahaan" class="text-xs font-bold uppercase tracking-[0.14em] text-black-soft">Profil Perusahaan</h2>
                     <span class="border border-black-soft/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted">Hanya baca</span>
                 </div>
-                <dl class="divide-y divide-black-soft/10 text-sm">
+                <dl class="flex-1 divide-y divide-black-soft/10 text-sm">
                     @foreach ([
                         'Nama' => $company['name'],
                         'Lokasi' => $company['city'],
@@ -41,11 +36,11 @@
                 <p class="border-t border-black-soft/10 bg-gray-tint px-5 py-3 text-xs text-muted sm:px-6">Data ini masih dibaca dari konfigurasi. Pengelolaan lewat CMS akan tersedia pada tahap berikutnya.</p>
             </section>
 
-            <section class="border border-black-soft/10 bg-white" aria-labelledby="pintasan">
-                <div class="border-b border-black-soft/10 px-5 py-4 sm:px-6">
-                    <h2 id="pintasan" class="text-sm font-bold uppercase tracking-[0.18em] text-black-soft">Pintasan Website</h2>
+            <section class="flex flex-col border border-black-soft/10 bg-white" aria-labelledby="pintasan">
+                <div class="flex h-14 items-center border-b border-black-soft/10 px-5 sm:px-6">
+                    <h2 id="pintasan" class="text-xs font-bold uppercase tracking-[0.14em] text-black-soft">Pintasan Website</h2>
                 </div>
-                <ul class="divide-y divide-black-soft/10">
+                <ul class="flex-1 divide-y divide-black-soft/10">
                     @foreach ([
                         'Beranda' => route('home'),
                         'Layanan' => route('services'),
@@ -61,6 +56,7 @@
                         </li>
                     @endforeach
                 </ul>
+                <p class="border-t border-black-soft/10 bg-gray-tint px-5 py-3 text-xs text-muted sm:px-6">Setiap tautan terbuka di tab baru.</p>
             </section>
         </div>
     </div>

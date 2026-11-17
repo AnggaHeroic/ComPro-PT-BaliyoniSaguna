@@ -2,11 +2,23 @@
 
 namespace Tests\Feature;
 
+use Database\Seeders\SiteContentSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
+    use RefreshDatabase;
+
+    // Halaman publik membaca kategori dan aktivitas dari database.
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(SiteContentSeeder::class);
+    }
+
     public function test_home_page_shows_company_sections(): void
     {
         $this->withoutVite();
