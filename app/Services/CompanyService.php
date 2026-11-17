@@ -2,16 +2,26 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Str;
+use App\Models\BusinessActivity;
+use App\Models\GalleryPhoto;
+use App\Models\ServiceCategory;
 
 /**
  * Sumber data company profile untuk halaman publik.
  *
- * Saat ini data dibaca dari config/company.php. Ketika data dipindah ke database (CMS),
- * cukup ubah isi service ini; controller dan view tidak perlu berubah.
+ * Kategori dan aktivitas usaha dibaca dari database (dikelola di CMS admin). Bagian lain
+ * (profil, navigasi, galeri, tentang kami) masih dari config/company.php sampai modulnya dibuat.
  */
 class CompanyService
 {
+    /** @var list<array<string, mixed>>|null */
+    private ?array $services = null;
+
+    public function __construct(
+        private ServiceCategoryService $categoryService,
+        private GalleryPhotoService $galleryService,
+    ) {}
+
     /**
      * @return array<string, mixed>
      */
@@ -45,11 +55,33 @@ class CompanyService
     }
 
     /**
-     * @return list<array{name: string, icon: string, image: ?int, description: string}>
+     * Kategori terbit beserta aktivitas terbitnya (dari database), urut sesuai pengaturan admin.
+     * 'image' kategori/aktivitas berupa URL penuh atau null; aktivitas tanpa foto memakai foto kategorinya.
+     *
+     * @return list<array{name: string, slug: string, icon: string, icon_image: ?string, image: ?string, description: string, activities: list<array{name: string, slug: string, kbli: ?string, summary: ?string, detail: ?list<string>, image: ?string}>}>
      */
     public function services(): array
     {
-        return config('company.services');
+        // Dipanggil beberapa kali per permintaan (navbar, footer, halaman), jadi hasilnya disimpan.
+        return $this->services ??= $this->categoryService->publishedWithActivities()
+            ->map(fn (ServiceCategory $category) => [
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'icon' => $category->icon,
+                'icon_image' => $category->icon_image_url,
+                'image' => $category->image_url,
+                'description' => (string) $category->description,
+                'activities' => $category->activities->map(fn (BusinessActivity $activity) => [
+                    'name' => $activity->name,
+                    'slug' => $activity->slug,
+                    'kbli' => $activity->kbli_code,
+                    'summary' => $activity->summary,
+                    'detail' => $this->paragraphs($activity->detail),
+                    'image' => $activity->image_url ?? $category->image_url,
+                ])->values()->all(),
+            ])
+            ->values()
+            ->all();
     }
 
     /**
@@ -60,7 +92,7 @@ class CompanyService
      */
     public function findActivity(string $serviceSlug, string $activitySlug): ?array
     {
-        $service = collect($this->services())->first(fn (array $item) => Str::slug($item['name']) === $serviceSlug);
+        $service = collect($this->services())->first(fn (array $item) => $item['slug'] === $serviceSlug);
 
         if ($service === null) {
             return null;
@@ -69,7 +101,7 @@ class CompanyService
         $activities = array_values($service['activities']);
 
         foreach ($activities as $index => $activity) {
-            if (Str::slug($activity['name']) === $activitySlug) {
+            if ($activity['slug'] === $activitySlug) {
                 return [
                     'service' => $service,
                     'activity' => $activity,
@@ -105,13 +137,34 @@ class CompanyService
     }
 
     /**
-     * Foto galeri (sementara dari config; nantinya dari database CMS).
+     * Pecah teks detail menjadi paragraf (dipisah baris kosong); null bila kosong.
      *
-     * @return list<array{title: string, description: string, image: string}>
+     * @return ?list<string>
+     */
+    private function paragraphs(?string $text): ?array
+    {
+        if (blank($text)) {
+            return null;
+        }
+
+        return array_values(array_filter(array_map('trim', preg_split('/\R{2,}/', trim($text)))));
+    }
+
+    /**
+     * Foto galeri terbit (dari database) sesuai urutan yang diatur admin. 'image' berupa URL penuh.
+     *
+     * @return list<array{title: string, description: ?string, image: string}>
      */
     public function gallery(): array
     {
-        return config('company.gallery');
+        return $this->galleryService->published()
+            ->map(fn (GalleryPhoto $photo) => [
+                'title' => $photo->title,
+                'description' => $photo->description,
+                'image' => $photo->image_url,
+            ])
+            ->values()
+            ->all();
     }
 
     public function serviceCount(): int

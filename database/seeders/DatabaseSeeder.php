@@ -9,6 +9,13 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->seedAdmin();
+
+        $this->call(SiteContentSeeder::class);
+    }
+
+    private function seedAdmin(): void
+    {
         $password = config('admin.password');
 
         // Tanpa kata sandi di .env, akun tidak dibuat agar tidak ada akun dengan sandi bawaan.

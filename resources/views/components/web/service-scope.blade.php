@@ -11,11 +11,11 @@
                 @foreach ($services as $service)
                     <li class="-ml-px -mt-px border border-white/10 bg-black-deep">
                         {{-- Pemilih kategori: saat disorot, latar berubah putih dengan teks merah (transisi singkat); keadaan terpilih (aria-pressed) sama, ditambah garis merah tipis di kiri. --}}
-                        <button type="button" data-slug="{{ Str::slug($service['name']) }}"
-                                @click="select('{{ Str::slug($service['name']) }}')"
-                                :aria-pressed="active === '{{ Str::slug($service['name']) }}'" aria-pressed="false" aria-controls="aktivitas-usaha"
+                        <button type="button" data-slug="{{ $service['slug'] }}"
+                                @click="select('{{ $service['slug'] }}')"
+                                :aria-pressed="active === '{{ $service['slug'] }}'" aria-pressed="false" aria-controls="aktivitas-usaha"
                                 class="group flex h-full w-full flex-col items-start gap-3 p-4 text-left sm:flex-row sm:items-center sm:gap-4 sm:p-5 transition-colors duration-150 hover:bg-white hover:text-brand aria-pressed:bg-white aria-pressed:text-brand aria-pressed:shadow-[inset_3px_0_0_0_var(--color-brand)]">
-                            <x-web.service-icon :name="$service['icon']" accent="stroke-brand" class="size-8 shrink-0 text-white transition-colors sm:size-9 duration-150 group-hover:text-black-soft group-aria-pressed:text-black-soft" />
+                            <x-web.service-icon :name="$service['icon']" :image="$service['icon_image']" accent="stroke-brand" class="size-8 shrink-0 text-white transition-colors sm:size-9 duration-150 group-hover:text-black-soft group-aria-pressed:text-black-soft" />
                             <span class="text-sm font-semibold leading-snug">{{ $service['name'] }}</span>
                         </button>
                     </li>
@@ -36,10 +36,10 @@
 
             <div x-show="active !== null" x-cloak class="py-12 sm:py-16 lg:py-24">
             @foreach ($services as $service)
-                <div x-show="active === '{{ Str::slug($service['name']) }}'" x-cloak x-transition.opacity.duration.200ms>
+                <div x-show="active === '{{ $service['slug'] }}'" x-cloak x-transition.opacity.duration.200ms>
                     {{-- Judul kategori: ikon di kiri, label dan nama di sampingnya, deskripsi di bawah. --}}
                     <div class="flex items-center gap-4">
-                        <x-web.service-icon :name="$service['icon']" accent="stroke-brand" class="size-12 shrink-0 text-black-soft" />
+                        <x-web.service-icon :name="$service['icon']" :image="$service['icon_image']" accent="stroke-brand" class="size-12 shrink-0 text-black-soft" />
                         <div>
                             <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand">Aktivitas Usaha</p>
                             <h3 class="mt-1 font-display text-2xl font-black leading-tight sm:text-3xl">{{ $service['name'] }}</h3>
@@ -51,7 +51,7 @@
                     <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($service['activities'] as $activity)
                             <li>
-                                <a href="{{ route('services.show', ['service' => Str::slug($service['name']), 'activity' => Str::slug($activity['name'])]) }}"
+                                <a href="{{ route('services.show', ['service' => $service['slug'], 'activity' => $activity['slug']]) }}"
                                    class="group flex h-full w-full flex-col border border-black-soft/15 bg-white p-6 text-left transition-colors duration-150 hover:border-brand">
                                     <span class="font-display text-sm font-black text-brand">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                                     <span class="mt-3 font-display text-base font-bold leading-snug transition-colors duration-150 group-hover:text-brand sm:text-lg">{{ $activity['name'] }}</span>

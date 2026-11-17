@@ -1,9 +1,9 @@
-{{-- Props: title (wajib), eyebrow (label merah kecil), image (ID foto Unsplash, bagian setelah 'photo-'), crumbs (jejak halaman: daftar ['label', 'href'] dengan href null untuk halaman aktif). Slot = deskripsi singkat; slot bernama icon (opsional) = ikon: di desktop berada di tengah lingkaran besar yang membuka foto di kanan (sisi kiri gelap, batasnya cekungan berupa busur putih), di ponsel berupa lingkaran kecil di atas label; beri class size-full pada ikonnya. Header halaman detail: tidak sepenuh layar. --}}
+{{-- Props: title (wajib), eyebrow (label merah kecil), image (URL penuh foto latar), crumbs (jejak halaman: daftar ['label', 'href'] dengan href null untuk halaman aktif). Slot = deskripsi singkat; slot bernama icon (opsional) = ikon: di desktop berada di tengah lingkaran besar yang membuka foto di kanan (sisi kiri gelap, batasnya cekungan berupa busur putih), di ponsel berupa lingkaran kecil di atas label; beri class size-full pada ikonnya. Header halaman detail: tidak sepenuh layar. --}}
 @props(['title', 'eyebrow' => null, 'image' => null, 'crumbs' => []])
 @php($hasIcon = isset($icon) && $icon->isNotEmpty())
 <section class="relative isolate overflow-hidden bg-black-deep text-white lg:flex lg:min-h-[max(75vh,34rem)] lg:items-center">
     @if ($image)
-        <img src="https://images.unsplash.com/photo-{{ $image }}?auto=format&fit=crop&w=1920&h=800&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer" aria-hidden="true">
+        <img src="{{ $image }}" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer" aria-hidden="true">
     @endif
     {{-- Tanpa ikon (atau di ponsel): foto ditutup gelap merata dengan gradasi dari kiri. --}}
     <span @class(['absolute inset-0 -z-20 bg-black-deep/80', 'lg:hidden' => $hasIcon]) aria-hidden="true"></span>
