@@ -1,4 +1,4 @@
-{{-- Props: name (arrow-right|arrow-left|close|zoom-in|zoom-out|mail|phone|whatsapp|map-pin|eye|eye-off|lock|logout|dashboard|layers|image|settings|external|menu|briefcase|inbox|shield|check|monitor) --}}
+{{-- Props: name (arrow-right|arrow-left|close|zoom-in|zoom-out|mail|phone|whatsapp|map-pin|eye|eye-off|lock|logout|dashboard|layers|image|settings|external|menu|briefcase|inbox|shield|check|monitor|search|chevron-up|chevron-down|grip|plus|warning|history|calendar|upload|pencil|trash|home|info|grid) --}}
 @props(['name'])
 @php
     $paths = [
@@ -24,6 +24,20 @@
         'shield' => '<path d="M12 3 4 6v6c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/>',
         'check' => '<path d="m5 12 5 5 9-10"/>',
         'monitor' => '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+        'search' => '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+        'chevron-up' => '<path d="m6 15 6-6 6 6"/>',
+        'chevron-down' => '<path d="m6 9 6 6 6-6"/>',
+        'grip' => '<circle cx="9" cy="6" r="1.2"/><circle cx="15" cy="6" r="1.2"/><circle cx="9" cy="12" r="1.2"/><circle cx="15" cy="12" r="1.2"/><circle cx="9" cy="18" r="1.2"/><circle cx="15" cy="18" r="1.2"/>',
+        'plus' => '<path d="M12 5v14M5 12h14"/>',
+        'warning' => '<path d="M12 4 3 20h18L12 4Z"/><path d="M12 10v4M12 17.5v.01"/>',
+        'history' => '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 8v4l3 2"/>',
+        'calendar' => '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+        'upload' => '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',
+        'pencil' => '<path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16z"/><path d="m14 6 4 4"/>',
+        'trash' => '<path d="M5 7h14M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3"/>',
+        'home' => '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+        'info' => '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>',
+        'grid' => '<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',
         'lock' => '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
         'logout' => '<path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/>',
     ];
