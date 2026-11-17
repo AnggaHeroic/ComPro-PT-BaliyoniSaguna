@@ -1,9 +1,9 @@
-{{-- Props: title (baris putih), highlight (baris merah di bawah title), eyebrow, image (ID foto Picsum PLACEHOLDER), variant (split = teks di kiri dengan panel miring, default; center = teks rata tengah di atas foto, dengan slot opsional label (pengganti eyebrow bila ada kata berwarna) dan scrollTo (tautan petunjuk gulir); keduanya layar penuh). Slot = deskripsi. Hero halaman dalam, diadaptasi dari varian "split" hero Layanan & Jasa di project Bali Oase Semesta (navy diganti hitam): foto penuh, panel gelap semi-transparan bersisi miring, pita terang, dan dua pita merah memudar. Butuh navbar transparan (transparentNav). --}}
-@props(['title', 'highlight' => null, 'eyebrow' => null, 'image' => '1448670439281-3a2c30e6d4da', 'variant' => 'split'])
+{{-- Props: title (teks judul, atau HtmlString berwarna dari PageContentSet::rich(); baris dan kata merah diatur lewat penanda *kata*), eyebrow, image (URL foto latar; atribut tambahan, mis. data-cms-section, diteruskan ke <section>), variant (split = teks di kiri dengan panel miring, default; center = teks rata tengah di atas foto, dengan slot opsional label (pengganti eyebrow bila ada kata berwarna) dan scrollTo (tautan petunjuk gulir); keduanya layar penuh). Slot = deskripsi. Hero halaman dalam, diadaptasi dari varian "split" hero Layanan & Jasa di project Bali Oase Semesta (navy diganti hitam): foto penuh, panel gelap semi-transparan bersisi miring, pita terang, dan dua pita merah memudar. Butuh navbar transparan (transparentNav). --}}
+@props(['title', 'eyebrow' => null, 'image' => 'https://images.unsplash.com/photo-1448670439281-3a2c30e6d4da?auto=format&fit=crop&w=1920&h=900&q=75', 'variant' => 'split'])
 @if ($variant === 'center')
 {{-- Varian center: teks rata tengah di atas foto yang digelapkan merata, tanpa panel miring, agar berbeda dari varian split tetapi tetap hitam, merah, dan tegas. --}}
-<section class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white">
-    <img src="https://images.unsplash.com/photo-{{ $image }}?auto=format&fit=crop&w=1920&h=900&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
+<section {{ $attributes }} class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white">
+    <img src="{{ $image }}" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
     {{-- Foto digelapkan merata dan didesaturasi; rona merah tipis naik dari bawah agar senada dengan aksen merek. --}}
     <div class="absolute inset-0 -z-30 bg-black-deep/75" aria-hidden="true"></div>
     <div class="absolute inset-0 -z-30 bg-neutral-500/60 mix-blend-saturation" aria-hidden="true"></div>
@@ -28,9 +28,6 @@
         @endif
         <h1 @class(['mt-6' => $eyebrow || isset($label), 'text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl'])>
             <span class="block">{{ $title }}</span>
-            @if ($highlight)
-                <span class="block text-brand-bright">{{ $highlight }}</span>
-            @endif
         </h1>
         {{-- Tanpa label, garis pendek merah menjadi penanda di bawah judul. --}}
         @unless ($eyebrow || isset($label))
@@ -51,9 +48,9 @@
 </section>
 @else
 {{-- --hero-edge = posisi x tepi miring di bagian atas hero (62% lebar, dijaga agar tidak melewati tepi kanan). Semua pita dihitung dari nilai ini. --}}
-<section class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white [--hero-edge:min(62%,100%_-_2rem)]">
+<section {{ $attributes }} class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white [--hero-edge:min(62%,100%_-_2rem)]">
     {{-- Foto PLACEHOLDER sementara (Picsum). Ganti dengan foto resmi perusahaan bila tersedia. Foto memenuhi seluruh lebar hero; di desktop bagian kirinya tertutup panel gelap semi-transparan. --}}
-    <img src="https://images.unsplash.com/photo-{{ $image }}?auto=format&fit=crop&w=1920&h=900&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
+    <img src="{{ $image }}" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
     {{-- Lapisan hitam yang menipis ke kanan, desaturasi sisi kanan saja (abu-abu dengan blend saturation), dan gradasi gelap dari bawah. --}}
     <div class="absolute inset-0 -z-30 bg-linear-to-r from-black-deep/55 from-50% to-black-deep/20" aria-hidden="true"></div>
     <div class="absolute inset-0 -z-30 bg-linear-to-r from-transparent from-50% to-neutral-500/70 mix-blend-saturation" aria-hidden="true"></div>
@@ -78,9 +75,6 @@
             @endif
             <h1 class="mt-4 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-4xl xl:text-5xl">
                 <span class="block">{{ $title }}</span>
-                @if ($highlight)
-                    <span class="block text-brand-bright">{{ $highlight }}</span>
-                @endif
             </h1>
             @if (trim($slot))
                 <p class="mt-6 max-w-lg text-base leading-relaxed text-white/80 sm:text-lg">{{ $slot }}</p>

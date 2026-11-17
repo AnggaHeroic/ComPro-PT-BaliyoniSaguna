@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\BusinessActivity;
 use App\Models\GalleryPhoto;
 use App\Models\ServiceCategory;
+use Illuminate\Support\HtmlString;
 
 /**
  * Sumber data company profile untuk halaman publik.
@@ -20,29 +21,80 @@ class CompanyService
     public function __construct(
         private ServiceCategoryService $categoryService,
         private GalleryPhotoService $galleryService,
+        private PageContentService $pageContentService,
     ) {}
 
     /**
+     * Profil perusahaan untuk navbar, footer, CTA, dan halaman Kontak. Diatur admin lewat Isi Halaman > Umum.
+     *
      * @return array<string, mixed>
      */
     public function profile(): array
     {
+        $general = $this->pageContentService->resolve('general');
+        $email = trim($general('email'));
+        $phone = trim($general('phone'));
+        $mobile = trim($general('mobile'));
+        $address = trim($general('address'));
+
         return [
-            'name' => config('company.name'),
-            'short_name' => config('company.short_name'),
-            'tagline' => config('company.tagline'),
-            'description' => config('company.description'),
-            'city' => config('company.city'),
-            'email' => config('company.email'),
-            'phone' => config('company.phone'),
-            'phone_href' => config('company.phone_href'),
-            'mobile' => config('company.mobile'),
+            'name' => $general('site_name'),
+            'tagline' => $general('tagline'),
+            'description' => $general('footer_description'),
+            'city' => $general('city'),
+            'email' => $email,
+            'phone' => $phone,
+            'phone_href' => $phone === '' ? null : '+'.$this->internationalDigits($phone),
+            'mobile' => $mobile,
             // Nomor HP dibuka lewat WhatsApp (wa.me), jadi hanya digit tanpa tanda +.
-            'mobile_url' => filled(config('company.mobile_href')) ? 'https://wa.me/'.ltrim(config('company.mobile_href'), '+') : null,
-            'address' => config('company.address'),
-            'maps_url' => $this->mapsUrl(config('company.address')),
+            'mobile_url' => $mobile === '' ? null : 'https://wa.me/'.$this->internationalDigits($mobile),
+            'address' => $address,
+            'maps_url' => $this->mapsUrl($address),
             // Footer hanya menampilkan kolom kontak jika minimal satu data kontak terisi.
-            'has_contact' => filled(config('company.email')) || filled(config('company.phone')) || filled(config('company.mobile')) || filled(config('company.address')),
+            'has_contact' => $email !== '' || $phone !== '' || $mobile !== '' || $address !== '',
+        ];
+    }
+
+    /**
+     * Teks ajakan menghubungi untuk kedua variasinya (kartu dan banner), diatur lewat Isi Halaman > Umum.
+     * Judul berwarna: kata bertanda * memakai warna aksen yang sesuai latar variasinya.
+     *
+     * @return array<string, array{eyebrow: string, title: HtmlString, description: string, button: string, phone_button: string, image?: string}>
+     */
+    public function cta(): array
+    {
+        $general = $this->pageContentService->resolve('general');
+        $variants = ['card' => 'text-brand', 'banner' => 'whitespace-nowrap text-brand-bright'];
+        $cta = [];
+
+        foreach ($variants as $variant => $accent) {
+            $cta[$variant] = [
+                'eyebrow' => $general("cta_{$variant}_eyebrow"),
+                'title' => $general->rich("cta_{$variant}_title", $accent),
+                'description' => $general("cta_{$variant}_description"),
+                'button' => $general("cta_{$variant}_button"),
+                'phone_button' => $general("cta_{$variant}_button_phone"),
+            ];
+        }
+
+        // Hanya banner yang berlatar foto.
+        $cta['banner']['image'] = $general->image('cta_banner_image');
+
+        return $cta;
+    }
+
+    /**
+     * Logo dan tulisan di sampingnya (wordmark) yang dipakai navbar, footer, halaman login, dan menu admin.
+     *
+     * @return array{logo_url: string, wordmark: HtmlString}
+     */
+    public function brand(): array
+    {
+        $general = $this->pageContentService->resolve('general');
+
+        return [
+            'logo_url' => $general->image('logo'),
+            'wordmark' => $general->rich('brand_text', 'text-brand-bright'),
         ];
     }
 
@@ -173,21 +225,39 @@ class CompanyService
     }
 
     /**
-     * @return list<array{icon: string, title: string, text: string}>
+     * Data halaman publik di luar isi teks yang diatur admin (dipakai controller publik dan pratinjau admin).
+     *
+     * @return array<string, mixed>
      */
-    public function advantages(): array
+    public function pageData(string $slug): array
     {
-        return config('company.advantages');
+        return match ($slug) {
+            'home' => $this->homePage(),
+            'gallery' => ['gallery' => $this->gallery()],
+            'contact' => ['subject' => ''],
+            default => [],
+        };
     }
 
     /**
-     * Konten halaman Tentang Kami (profil, visi, misi, nilai).
+     * Data khusus halaman Beranda (selain isi teks yang diatur admin).
      *
-     * @return array{profile_image: ?int, profile: list<string>, facts: list<array{title: string, text: string}>, direction_tagline: string, vision: string, mission: list<array{title: string, text: string}>, motto: list<string>, values: list<array{title: string, text: string}>}
+     * @return array{serviceCount: int, advantageIcons: list<string>}
      */
-    public function about(): array
+    public function homePage(): array
     {
-        return config('company.about');
+        return [
+            'serviceCount' => $this->serviceCount(),
+            'advantageIcons' => config('company.advantage_icons'),
+        ];
+    }
+
+    /** Nomor telepon dalam format internasional (hanya digit): awalan 0 menjadi 62. */
+    private function internationalDigits(string $number): string
+    {
+        $digits = preg_replace('/\D/', '', $number);
+
+        return str_starts_with($digits, '0') ? '62'.substr($digits, 1) : $digits;
     }
 
     // Tautan pencarian Google Maps dari alamat; null jika alamat kosong.

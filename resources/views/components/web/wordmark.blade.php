@@ -1,4 +1,4 @@
-{{-- Props: tone (dark|light|auto; auto = putih di atas hero transparan, hitam setelah scroll, butuh induk .group[data-scrolled]), size (md|lg) --}}
+{{-- Tulisan di samping logo, diatur admin lewat Isi Halaman > Umum ($brand disuplai view composer). Props: tone (dark|light|auto; auto = putih di atas hero transparan, hitam setelah scroll, butuh induk .group[data-scrolled]), size (md|lg) --}}
 @props(['tone' => 'dark', 'size' => 'md'])
 @php
     $classes = [
@@ -11,5 +11,5 @@
         $size === 'lg' ? 'text-2xl' : 'text-[1.05rem] max-[350px]:text-[0.95rem] sm:text-[1.2rem] lg:text-[1.45rem]',
     ];
 @endphp
-{{-- Wordmark bergaya logo Baliyoni Group: satu baris huruf tebal seragam, hanya "i" yang merah. --}}
-<span {{ $attributes->class($classes) }}>PT. Bal<span class="text-brand-bright">i</span>yoni Saguna</span>
+{{-- Satu baris huruf tebal seragam; kata yang diberi tanda * oleh admin (bawaan: huruf "i") berwarna merah. --}}
+<span {{ $attributes->class($classes) }}>{{ $brand['wordmark'] }}</span>

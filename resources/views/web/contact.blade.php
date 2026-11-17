@@ -1,23 +1,25 @@
-@extends('layouts.public', ['transparentNav' => true, 'title' => 'Kontak Kami', 'description' => 'Hubungi PT Baliyoni Saguna: telepon, WhatsApp, email, alamat kantor, dan formulir pesan.'])
+@extends('layouts.public', ['transparentNav' => true, 'title' => 'Kontak Kami', 'description' => $content('seo_description')])
 
 @section('content')
-    <x-web.contact-hero formTo="#informasi-kontak" :mapTo="$company['address'] ? '#lokasi' : null" scrollTo="#informasi-kontak" />
+    <x-web.contact-hero :content="$content" :data-cms-section="$content->sectionKey('hero')" formTo="#informasi-kontak" :mapTo="$company['address'] ? '#lokasi' : null" scrollTo="#informasi-kontak" />
 
-    <section id="informasi-kontak" class="scroll-mt-20 bg-white py-16 sm:py-20 lg:py-28">
+    <section{{ $content->mark('info') }} id="informasi-kontak" class="scroll-mt-20 bg-white py-16 sm:py-20 lg:py-28">
         <div class="container-site grid gap-14 lg:grid-cols-12 lg:gap-16">
             {{-- Informasi kontak tanpa kartu; di layar lebar diberi jarak atas (padding + tepi formulir) agar judulnya sejajar dengan kolom pertama formulir. Baris bergaris tipis, ikon hitam berubah merah saat disorot. --}}
             <div data-reveal class="lg:col-span-5 lg:pt-[calc(2rem+4px)]">
-                <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand">Informasi Kontak</p>
-                <h2 class="mt-3 text-balance text-2xl font-black leading-tight tracking-tight text-black-soft sm:text-3xl">Jangkau Kami dengan Mudah</h2>
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand">{{ $content('info_eyebrow') }}</p>
+                <h2 class="mt-3 text-balance text-2xl font-black leading-tight tracking-tight text-black-soft sm:text-3xl">{{ $content->rich('info_title') }}</h2>
 
                 <ul class="mt-6 divide-y divide-black-soft/10 border-y border-black-soft/10">
                     @if ($company['phone'] || $company['mobile'])
-                        <li class="group flex gap-4 py-5">
+                        {{-- Satu nomor saja: label menyesuaikan dan ikon sejajar di tengah barisnya. --}}
+                        @php($bothNumbers = $company['phone'] && $company['mobile'])
+                        <li @class(['group flex gap-4 py-5', 'items-center' => ! $bothNumbers])>
                             <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-has-[a:hover]:bg-brand">
                                 <x-ui.icon name="phone" class="size-5" />
                             </span>
                             <div>
-                                <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Telepon dan WhatsApp</p>
+                                <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{{ $bothNumbers ? 'Telepon dan WhatsApp' : ($company['phone'] ? 'Telepon' : 'WhatsApp') }}</p>
                                 @if ($company['phone'])
                                     <a href="tel:{{ $company['phone_href'] }}" class="mt-1 block text-sm font-semibold leading-6 text-black-soft transition-colors hover:text-brand">Telp. {{ $company['phone'] }}</a>
                                 @endif
@@ -68,9 +70,9 @@
 
     @if ($company['address'])
         {{-- Peta lokasi (embed Google Maps dari alamat). --}}
-        <section id="lokasi" class="scroll-mt-20 bg-gray-tint py-16 sm:py-20 lg:py-24">
+        <section{{ $content->mark('location') }} id="lokasi" class="scroll-mt-20 bg-gray-tint py-16 sm:py-20 lg:py-24">
             <div class="container-site">
-                <x-web.section-title eyebrow="Lokasi" title="Kantor Kami" center />
+                <x-web.section-title :eyebrow="$content('location_eyebrow')" :title="$content->rich('location_title')" center />
                 <div data-reveal class="mt-12 overflow-hidden border border-black-soft/10 bg-white">
                     <iframe src="https://www.google.com/maps?q={{ urlencode($company['address']) }}&output=embed"
                             title="Lokasi {{ $company['name'] }}" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
@@ -78,7 +80,7 @@
                 </div>
                 <p class="mt-4 text-center">
                     <a href="{{ $company['maps_url'] }}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 text-sm font-semibold text-black-soft transition-colors hover:text-brand">
-                        Buka di Google Maps
+                        {{ $content('location_link') }}
                         <x-ui.icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
                     </a>
                 </p>

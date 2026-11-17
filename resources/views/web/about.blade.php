@@ -1,11 +1,11 @@
-@extends('layouts.public', ['transparentNav' => true, 'title' => 'Tentang Kami', 'description' => 'Profil, visi, misi, dan nilai-nilai PT Baliyoni Saguna, perusahaan induk Baliyoni Group.'])
+@extends('layouts.public', ['transparentNav' => true, 'title' => 'Tentang Kami', 'description' => $content('seo_description')])
 
 @section('content')
-    <x-web.page-header eyebrow="Tentang Kami" title="Mengenal" highlight="PT. Baliyoni Saguna">
-        Perusahaan induk dari berbagai holding dan outlet Baliyoni Group, menghadirkan beragam produk dan layanan dalam satu pintu.
+    <x-web.page-header :data-cms-section="$content->sectionKey('hero')" :eyebrow="$content('hero_eyebrow')" :title="$content->rich('hero_title', 'text-brand-bright')" :image="$content->image('hero_image')">
+        {{ $content('hero_description') }}
     </x-web.page-header>
-    <x-web.about-profile :about="$about" :company="$company" />
-    <x-web.vision-mission :about="$about" />
-    <x-web.company-values :values="$about['values']" />
+    <x-web.about-profile :content="$content" />
+    <x-web.vision-mission :content="$content" />
+    <x-web.company-values :content="$content" />
     <x-web.cta :company="$company" variant="banner" />
 @endsection

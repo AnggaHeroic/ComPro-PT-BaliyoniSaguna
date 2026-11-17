@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\CompanyService;
 use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -26,8 +27,9 @@ class ContactAndGalleryPageTest extends TestCase
         $response = $this->get(route('contact'));
 
         $response->assertOk();
-        $response->assertSee(config('company.email'));
-        $response->assertSee(config('company.address'));
+        $company = app(CompanyService::class)->profile();
+        $response->assertSee($company['email']);
+        $response->assertSee($company['address']);
         $response->assertSee('Kirim lewat WhatsApp');
         $response->assertSee('Kirim lewat Email');
         $response->assertSee('Isi salah satu: email atau nomor telepon');

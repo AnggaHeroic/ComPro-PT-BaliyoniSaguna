@@ -3,17 +3,15 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Services\CompanyService;
+use App\Services\PageContentService;
 use Illuminate\View\View;
 
 class AboutController extends Controller
 {
-    public function __construct(private CompanyService $companyService) {}
+    public function __construct(private PageContentService $pageContentService) {}
 
     public function index(): View
     {
-        return view('web.about', [
-            'about' => $this->companyService->about(),
-        ]);
+        return view('web.about', ['content' => $this->pageContentService->resolve('about')]);
     }
 }

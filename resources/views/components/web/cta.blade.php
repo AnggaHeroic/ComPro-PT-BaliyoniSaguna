@@ -1,30 +1,38 @@
-{{-- Props: company (profil; memakai name, phone, phone_href, mobile, mobile_url (wa.me), email, address, maps_url), variant (card = kartu ringkas dengan ringkasan kontak, default; banner = pita penuh selebar layar berlatar foto, tanpa ringkasan kontak), image (ID foto Picsum PLACEHOLDER, hanya untuk banner). Ajakan menghubungi perusahaan, tepat di atas footer. Gaya banner diadaptasi dari CTA halaman Kontak PT Putra Maju Sukses. --}}
-@props(['company', 'variant' => 'card', 'image' => '1512403754473-27835f7b9984'])
+{{-- Props: company (profil; memakai name, phone, phone_href, mobile, mobile_url (wa.me), email, address, maps_url), variant (card = kartu ringkas dengan ringkasan kontak, default; banner = pita penuh selebar layar berlatar foto, tanpa ringkasan kontak), foto latar banner juga diatur admin. Ajakan menghubungi perusahaan, tepat di atas footer. Teks tiap variasi diatur admin lewat Isi Halaman > Umum ($cta disuplai view composer di AppServiceProvider). Gaya banner diadaptasi dari CTA halaman Kontak PT Putra Maju Sukses. --}}
+@props(['company', 'variant' => 'card'])
+@php
+    $text = $cta[$variant];
+
+    // Ringkasan kontak (varian kartu) hanya memuat kelompok yang terisi; kolomnya menyesuaikan jumlah supaya isinya tetap rata dan di tengah.
+    $contactGroups = count(array_filter([$company['phone'] || $company['mobile'], $company['email'], $company['address']]));
+    $contactColumns = [1 => 'lg:grid-cols-1', 2 => 'lg:grid-cols-2', 3 => 'lg:grid-cols-3'][max($contactGroups, 1)];
+    $phoneLabel = ! $company['phone'] && $company['mobile'] ? 'WhatsApp' : 'Telepon';
+@endphp
 @if ($variant === 'banner')
 <section class="relative isolate overflow-hidden bg-black-deep">
     {{-- Foto latar, lalu lapisan gelap dan gradasi: pekat di kiri (tempat teks), memudar ke rona merah tipis di kanan. --}}
-    <img src="https://images.unsplash.com/photo-{{ $image }}?auto=format&fit=crop&w=1920&h=700&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" loading="lazy" referrerpolicy="no-referrer" aria-hidden="true">
+    <img src="{{ $text['image'] }}" alt="" class="absolute inset-0 -z-30 size-full object-cover" loading="lazy" referrerpolicy="no-referrer" aria-hidden="true">
     <span class="absolute inset-0 -z-20 bg-black-deep/85" aria-hidden="true"></span>
     <span class="absolute inset-0 -z-10 bg-gradient-to-r from-black-deep via-black-deep/80 to-brand/30" aria-hidden="true"></span>
 
     <div class="container-site">
         <div data-reveal class="flex flex-col gap-8 py-16 sm:py-20 lg:flex-row lg:items-center lg:justify-between lg:py-14">
             <div class="max-w-3xl">
-                <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand-bright">Hubungi Kami</p>
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand-bright">{{ $text['eyebrow'] }}</p>
                 {{-- Bagian merah tidak boleh terpotong di tengah: bila sempit, seluruhnya turun ke baris berikutnya. --}}
                 <h2 class="mt-4 text-3xl font-black leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl">
-                    Butuh solusi untuk <span class="whitespace-nowrap text-brand-bright">kebutuhan Anda?</span>
+                    {{ $text['title'] }}
                 </h2>
-                <p class="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base sm:leading-8">Sampaikan kebutuhan Anda kepada kami, tim kami siap membantu.</p>
+                <p class="mt-4 max-w-2xl text-sm leading-7 text-white/70 sm:text-base sm:leading-8">{{ $text['description'] }}</p>
             </div>
             <div class="flex flex-col gap-3 sm:flex-row lg:shrink-0">
                 {{-- Menuju halaman kontak. --}}
                 <x-ui.button :href="route('contact')">
-                    Kontak Kami
+                    {{ $text['button'] }}
                     <x-ui.icon name="arrow-right" class="size-4" />
                 </x-ui.button>
                 @if ($company['phone'])
-                    <x-ui.button :href="'tel:'.$company['phone_href']" variant="outline-light">Telepon Kami</x-ui.button>
+                    <x-ui.button :href="'tel:'.$company['phone_href']" variant="outline-light">{{ $text['phone_button'] }}</x-ui.button>
                 @endif
             </div>
         </div>
@@ -38,26 +46,26 @@
             {{-- Ajakan --}}
             <div class="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
                 <div class="max-w-2xl">
-                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand">Hubungi Kami</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand">{{ $text['eyebrow'] }}</p>
                     <h2 class="mt-3 text-2xl font-black leading-tight tracking-tight text-black-soft sm:text-3xl">
-                        Butuh solusi untuk <span class="text-brand">kebutuhan Anda?</span>
+                        {{ $text['title'] }}
                     </h2>
-                    <p class="mt-3 text-sm leading-7 text-muted sm:text-base">Sampaikan kebutuhan Anda kepada kami, tim kami siap membantu.</p>
+                    <p class="mt-3 text-sm leading-7 text-muted sm:text-base">{{ $text['description'] }}</p>
                 </div>
                 <div class="flex flex-col gap-3 sm:flex-row lg:shrink-0">
                     {{-- Menuju halaman kontak. --}}
                     <x-ui.button :href="route('contact')">
-                        Kontak Kami
+                        {{ $text['button'] }}
                         <x-ui.icon name="arrow-right" class="size-4" />
                     </x-ui.button>
                     @if ($company['phone'])
-                        <x-ui.button :href="'tel:'.$company['phone_href']" variant="outline">Telepon Kami</x-ui.button>
+                        <x-ui.button :href="'tel:'.$company['phone_href']" variant="outline">{{ $text['phone_button'] }}</x-ui.button>
                     @endif
                 </div>
             </div>
 
             {{-- Ringkasan kontak: tiga kolom, isi rata tengah dengan ikon bulat di atas. Ukuran ikon dan teks sama di ketiganya. --}}
-            <div class="grid divide-y divide-black-soft/10 border-t border-black-soft/10 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+            <div class="grid divide-y divide-black-soft/10 border-t border-black-soft/10 {{ $contactColumns }} lg:divide-x lg:divide-y-0">
                 {{-- Telepon dan WhatsApp satu kelompok (seperti footer); div karena tiap nomor punya tautan sendiri. --}}
                 @if ($company['phone'] || $company['mobile'])
                     <div class="group grid grid-cols-[2.75rem_1fr] items-center gap-x-4 px-6 py-4 text-left lg:flex lg:flex-col lg:p-6 lg:px-8 lg:text-center">
@@ -65,7 +73,7 @@
                         <span class="row-span-2 flex size-11 items-center justify-center rounded-full bg-black-soft text-white transition-colors duration-200 group-has-[a:hover]:bg-brand">
                             <x-ui.icon name="phone" class="size-5" />
                         </span>
-                        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted lg:mt-3">Telepon</p>
+                        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted lg:mt-3">{{ $phoneLabel }}</p>
                         <div class="mt-0.5 space-y-0.5 lg:mt-1">
                             @if ($company['phone'])
                                 <a href="tel:{{ $company['phone_href'] }}" class="block text-sm font-semibold leading-6 text-black-soft transition-colors hover:text-brand">Telp. {{ $company['phone'] }}</a>

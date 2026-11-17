@@ -27,9 +27,9 @@ class AboutPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('id="profil"', false);
         $response->assertSee('id="visi-misi"', false);
-        $response->assertSee(config('company.about.vision'));
+        $response->assertSee(config('page_contents.about.sections.direction.fields.vision_text.default'));
 
-        foreach (config('company.about.mission') as $item) {
+        foreach (config('page_contents.about.sections.direction.fields.mission_items.default') as $item) {
             $response->assertSee($item['title']);
             $response->assertSee($item['text']);
         }
