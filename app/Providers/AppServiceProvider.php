@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Navbar dan footer ada di setiap halaman publik, jadi datanya disuplai di sini
         // agar tidak diulang di tiap controller. Layout membaca data dari view halaman (@extends).
-        View::composer('web.*', function ($view): void {
+        View::composer(['web.*', 'layouts.guest'], function ($view): void {
             $companyService = app(CompanyService::class);
 
             $view->with([
