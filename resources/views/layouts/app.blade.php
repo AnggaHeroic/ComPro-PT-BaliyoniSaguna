@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ isset($title) ? $title.' | Admin' : 'Admin' }} | {{ config('company.name') }}</title>
+    <title>{{ isset($title) ? $title.' | Admin' : 'Admin' }} | {{ $company['name'] }}</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     @fonts
@@ -38,7 +38,7 @@
             </div>
         </main>
 
-        <footer class="border-t border-black-soft/10 px-5 py-5 text-xs text-muted sm:px-8">&copy; {{ date('Y') }} {{ config('company.name') }}. Panel administrasi.</footer>
+        <footer class="border-t border-black-soft/10 px-5 py-5 text-xs text-muted sm:px-8">&copy; {{ date('Y') }} {{ $company['name'] }}. Panel administrasi.</footer>
     </div>
 
     {{-- Popup berada langsung di bawah <body>, di luar wadah konten, agar selalu tepat di tengah layar. --}}

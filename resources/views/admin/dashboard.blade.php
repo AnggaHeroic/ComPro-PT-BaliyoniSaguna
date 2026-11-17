@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="mx-auto max-w-6xl space-y-8">
-        <x-admin.page-header eyebrow="{{ $summary['today'] }}" title="Selamat datang, {{ auth()->user()->name }}" description="Ringkasan konten website {{ $company['short_name'] }}." />
+        <x-admin.page-header eyebrow="{{ $summary['today'] }}" title="Selamat datang, {{ auth()->user()->name }}" description="Ringkasan konten website {{ $company['name'] }}." />
 
         <section aria-label="Ringkasan" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             @foreach ($summary['stats'] as $stat)
@@ -14,7 +14,7 @@
             <section class="flex flex-col border border-black-soft/10 bg-white lg:col-span-2" aria-labelledby="profil-perusahaan">
                 <div class="flex h-14 items-center justify-between border-b border-black-soft/10 px-5 sm:px-6">
                     <h2 id="profil-perusahaan" class="text-xs font-bold uppercase tracking-[0.14em] text-black-soft">Profil Perusahaan</h2>
-                    <span class="border border-black-soft/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted">Hanya baca</span>
+                    <a href="{{ route('admin.pages.edit', 'general') }}" class="text-xs font-semibold text-muted transition-colors hover:text-brand">Ubah</a>
                 </div>
                 <dl class="flex-1 divide-y divide-black-soft/10 text-sm">
                     @foreach ([
@@ -33,7 +33,7 @@
                         @endif
                     @endforeach
                 </dl>
-                <p class="border-t border-black-soft/10 bg-gray-tint px-5 py-3 text-xs text-muted sm:px-6">Data ini masih dibaca dari konfigurasi. Pengelolaan lewat CMS akan tersedia pada tahap berikutnya.</p>
+                <p class="border-t border-black-soft/10 bg-gray-tint px-5 py-3 text-xs text-muted sm:px-6">Data ini diatur lewat menu Isi Halaman &gt; Umum dan tampil di navbar, footer, dan halaman Kontak.</p>
             </section>
 
             <section class="flex flex-col border border-black-soft/10 bg-white" aria-labelledby="pintasan">

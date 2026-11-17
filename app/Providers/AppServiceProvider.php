@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\CompanyService;
+use App\Services\PageContentService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -14,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Isi halaman dibaca beberapa kali per permintaan (logo, kontak, tiap halaman); satu instance menyimpan hasil bacanya.
+        $this->app->singleton(PageContentService::class);
     }
 
     /**
@@ -34,12 +36,22 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
+        // Logo dan wordmark dipakai di navbar, footer, login, dan menu admin; datanya diatur lewat Isi Halaman > Umum.
+        View::composer(['components.web.logo', 'components.web.wordmark'], function ($view): void {
+            $view->with('brand', app(CompanyService::class)->brand());
+        });
+
+        // Teks ajakan menghubungi (dua variasi) dipakai komponen cta di beberapa halaman; diatur lewat Isi Halaman > Umum.
+        View::composer('components.web.cta', function ($view): void {
+            $view->with('cta', app(CompanyService::class)->cta());
+        });
+
         // Hanya panel admin yang memakai paginasi; tampilannya mengikuti tema admin.
         Paginator::defaultView('pagination.admin');
         Paginator::defaultSimpleView('pagination.admin');
 
-        // Halaman login hanya butuh profil perusahaan; tanpa navbar, jadi daftar layanan tidak perlu dimuat.
-        View::composer('layouts.guest', function ($view): void {
+        // Layout admin dan login hanya butuh profil perusahaan; tanpa navbar, jadi daftar layanan tidak perlu dimuat.
+        View::composer(['layouts.guest', 'layouts.app'], function ($view): void {
             $view->with('company', app(CompanyService::class)->profile());
         });
     }

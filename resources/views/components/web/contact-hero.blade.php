@@ -1,7 +1,7 @@
-{{-- Props: image (ID foto Unsplash PLACEHOLDER), formTo (tautan tombol utama, ke formulir), mapTo (tautan tombol kedua, ke peta; kosongkan bila tidak ada), scrollTo (tautan petunjuk gulir). Hero halaman Kontak: teks rata tengah di atas foto gelap, dengan garis vertikal tipis yang turun ke persimpangan garis horizontal selebar layar (berlian merah) di atas label, dan penutup garis serupa di bawah tombol. Sengaja tanpa data kontak karena sudah ada di bagian bawah halaman. Butuh navbar transparan (transparentNav). --}}
-@props(['image' => '1699884745550-07d309f2f61d', 'formTo' => null, 'mapTo' => null, 'scrollTo' => null])
-<section class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white">
-    <img src="https://images.unsplash.com/photo-{{ $image }}?auto=format&fit=crop&w=1920&h=1080&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
+{{-- Props: content (PageContentSet halaman Kontak; teks dan foto latar diatur admin), atribut tambahan diteruskan ke <section>, formTo (tautan tombol utama, ke formulir), mapTo (tautan tombol kedua, ke peta; kosongkan bila tidak ada), scrollTo (tautan petunjuk gulir). Hero halaman Kontak: teks rata tengah di atas foto gelap, dengan garis vertikal tipis yang turun ke persimpangan garis horizontal selebar layar (berlian merah) di atas label, dan penutup garis serupa di bawah tombol. Sengaja tanpa data kontak karena sudah ada di bagian bawah halaman. Butuh navbar transparan (transparentNav). --}}
+@props(['content', 'formTo' => null, 'mapTo' => null, 'scrollTo' => null])
+<section {{ $attributes }} class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white">
+    <img src="{{ $content->image('hero_image') }}" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
     {{-- Foto didesaturasi dan digelapkan merata, vignette menggelapkan tepi, rona merah tipis naik dari bawah. --}}
     <div class="absolute inset-0 -z-30 bg-black-deep/75" aria-hidden="true"></div>
     <div class="absolute inset-0 -z-30 bg-neutral-500/60 mix-blend-saturation" aria-hidden="true"></div>
@@ -21,24 +21,23 @@
                     <span class="grow-x-in origin-left h-px flex-1 bg-linear-to-l from-transparent to-white/25"></span>
                 </span>
             </span>
-            <p class="mt-5 text-sm font-bold uppercase tracking-[0.3em] text-brand-bright">Kontak Kami</p>
+            <p class="mt-5 text-sm font-bold uppercase tracking-[0.3em] text-brand-bright">{{ $content('hero_label') }}</p>
             <h1 class="mt-5 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-                <span class="block">Wujudkan Kebutuhan</span>
-                <span class="block text-brand-bright">Bersama Kami</span>
+                {{ $content->rich('hero_title', 'text-brand-bright') }}
             </h1>
             <p class="mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:mt-6 sm:text-lg">
-                Sampaikan kebutuhan atau pertanyaan Anda. Tim kami siap membantu dan akan menjawab secepatnya.
+                {{ $content('hero_description') }}
             </p>
             @if ($formTo || $mapTo)
                 <div class="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
                     @if ($formTo)
                         <x-ui.button :href="$formTo">
-                            Kirim Pesan
+                            {{ $content('hero_button_form') }}
                             <x-ui.icon name="arrow-right" class="size-4" />
                         </x-ui.button>
                     @endif
                     @if ($mapTo)
-                        <x-ui.button :href="$mapTo" variant="outline-light">Lihat Lokasi</x-ui.button>
+                        <x-ui.button :href="$mapTo" variant="outline-light">{{ $content('hero_button_map') }}</x-ui.button>
                     @endif
                 </div>
             @endif

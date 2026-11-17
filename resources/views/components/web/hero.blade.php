@@ -1,7 +1,8 @@
-{{-- Props: tidak ada. Hero setinggi layar penuh, konten rata tengah; navbar transparan melayang di atasnya. --}}
-<section class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white">
-    {{-- Foto PLACEHOLDER sementara (Picsum, bebas pakai). Ganti dengan foto resmi perusahaan bila tersedia. --}}
-    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&h=1080&q=75" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
+{{-- Props: content (PageContentSet halaman Beranda). Hero setinggi layar penuh, konten rata tengah; navbar transparan melayang di atasnya. --}}
+@props(['content'])
+<section{{ $content->mark('hero') }} class="relative isolate flex min-h-[max(100vh,100dvh)] items-center overflow-hidden bg-black-deep text-white">
+    {{-- Foto latar bawaan masih PLACEHOLDER; admin menggantinya lewat menu Isi Halaman. --}}
+    <img src="{{ $content->image('hero_image') }}" alt="" class="absolute inset-0 -z-30 size-full object-cover" fetchpriority="high" referrerpolicy="no-referrer">
     {{-- Lapisan gelap merata agar teks di tengah terbaca, plus vignette yang menggelapkan tepi. --}}
     <div class="absolute inset-0 -z-20 bg-black-deep/70" aria-hidden="true"></div>
     <div class="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgb(0_0_0/0.65)_100%)]" aria-hidden="true"></div>
@@ -28,22 +29,22 @@
         <div data-hero class="mx-auto flex max-w-4xl flex-col items-center">
             <div class="flex items-center gap-3 sm:gap-4">
                 <span class="h-0.5 w-8 bg-brand-bright sm:w-12" aria-hidden="true"></span>
-                <p class="text-xs font-bold uppercase tracking-[0.25em] text-white sm:text-sm">PT. Bal<span class="text-brand-bright">i</span>yoni Saguna</p>
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-white sm:text-sm">{{ $content->rich('hero_eyebrow', 'text-brand-bright') }}</p>
                 <span class="h-0.5 w-8 bg-brand-bright sm:w-12" aria-hidden="true"></span>
             </div>
             <h1 class="mt-6 font-black leading-[1.05] tracking-tight">
-                <span class="block text-4xl sm:text-5xl lg:text-6xl">One Stop Solution</span>
-                <span class="mt-3 block text-xl text-brand-bright sm:text-2xl lg:text-3xl">Solusi Tuntas, Bahagia Pantas</span>
+                <span class="block text-4xl sm:text-5xl lg:text-6xl">{{ $content->rich('hero_title', 'text-brand-bright') }}</span>
+                <span class="mt-3 block text-xl text-brand-bright sm:text-2xl lg:text-3xl">{{ $content('hero_subtitle') }}</span>
             </h1>
             <p class="mt-7 max-w-2xl text-base leading-relaxed sm:mt-8 sm:text-lg text-white/80">
-                Perusahaan induk dari berbagai holding dan outlet Baliyoni Group. Kami menyediakan peralatan elektronik, perkantoran, pendidikan, pendingin udara, hingga sistem parkir elektronik.
+                {{ $content('hero_description') }}
             </p>
             <div class="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
                 <x-ui.button href="/#layanan">
-                    Lihat Layanan
+                    {{ $content('hero_button_primary') }}
                     <x-ui.icon name="arrow-right" class="size-4" />
                 </x-ui.button>
-                <x-ui.button :href="route('contact')" variant="outline-light">Hubungi Kami</x-ui.button>
+                <x-ui.button :href="route('contact')" variant="outline-light">{{ $content('hero_button_secondary') }}</x-ui.button>
             </div>
         </div>
     </div>

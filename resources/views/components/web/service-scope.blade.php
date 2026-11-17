@@ -1,10 +1,10 @@
-{{-- Props: services (daftar kategori layanan; memakai name, icon, description, activities berisi name, summary opsional (detail dipakai di halaman detail)). Dua bagian berurutan dalam satu pembungkus: Ruang Lingkup (gelap, pemilih kategori) dan Aktivitas Usaha (putih, muncul setelah kategori dipilih; berupa card yang menuju halaman detail aktivitas). Perilaku ada di resources/js/service-scope.js. --}}
-@props(['services'])
-<div x-data="serviceScope" @hashchange.window="fromHash()" @scroll.window.passive="onScroll()">
+{{-- Props: content (PageContentSet halaman Layanan; judul dan petunjuk diatur admin), services (daftar kategori layanan; memakai name, icon, description, activities berisi name, summary opsional (detail dipakai di halaman detail)). Dua bagian berurutan dalam satu pembungkus: Ruang Lingkup (gelap, pemilih kategori) dan Aktivitas Usaha (putih, muncul setelah kategori dipilih; berupa card yang menuju halaman detail aktivitas). Perilaku ada di resources/js/service-scope.js. --}}
+@props(['content', 'services'])
+<div{{ $content->mark('scope') }} x-data="serviceScope" @hashchange.window="fromHash()" @scroll.window.passive="onScroll()">
     <section id="ruang-lingkup" class="scroll-mt-20 bg-black-deep py-16 text-white sm:py-20 lg:py-28">
         <div class="container-site">
-            <x-web.section-title eyebrow="Ruang Lingkup" title="Produk dan Layanan Kami" invert center>
-                Beragam kategori yang dapat dipenuhi dalam satu tempat.
+            <x-web.section-title :eyebrow="$content('scope_eyebrow')" :title="$content->rich('scope_title', 'text-brand-bright')" invert center>
+                {{ $content('scope_description') }}
             </x-web.section-title>
 
             <ul data-reveal-stagger class="mt-10 grid grid-cols-2 pl-px pt-px sm:mt-14 lg:grid-cols-4">
@@ -31,7 +31,7 @@
             <p x-show="active === null" class="flex items-center justify-center gap-2 py-10 text-center text-sm text-muted">
                 {{-- Chevron melompat (seperti tombol gulir di hero) sebagai petunjuk arah; berhenti bila pengguna memilih mengurangi gerakan. --}}
                 <svg class="size-4 shrink-0 motion-safe:animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
-                Pilih salah satu kategori di atas untuk melihat aktivitas usahanya.
+                {{ $content('scope_hint') }}
             </p>
 
             <div x-show="active !== null" x-cloak class="py-12 sm:py-16 lg:py-24">

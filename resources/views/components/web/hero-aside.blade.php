@@ -1,6 +1,6 @@
-{{-- Props: title (baris putih), highlight (baris merah), eyebrow, scrollTo (tautan petunjuk gulir, opsional), scrollLabel (label aksesibilitas tombol gulir). Slot = deskripsi; slot bernama aside = isi sisi kanan (mis. <x-web.gallery-mosaic>). Hero halaman dalam bertema gelap: latar hitam dengan cahaya merah tipis dan kisi samar, teks di kiri, aside di kanan, satu layar penuh. Butuh navbar transparan (transparentNav). --}}
-@props(['title', 'highlight' => null, 'eyebrow' => null, 'scrollTo' => null, 'scrollLabel' => 'Gulir ke bagian berikutnya'])
-<section class="relative isolate overflow-hidden bg-black-deep text-white flex min-h-[max(100vh,100dvh)] items-center">
+{{-- Props: title (teks judul, atau HtmlString berwarna dari PageContentSet::rich()), eyebrow, scrollTo (tautan petunjuk gulir, opsional), scrollLabel (label aksesibilitas tombol gulir). Slot = deskripsi; slot bernama aside = isi sisi kanan (mis. <x-web.gallery-mosaic>). Hero halaman dalam bertema gelap: latar hitam dengan cahaya merah tipis dan kisi samar, teks di kiri, aside di kanan, satu layar penuh. Butuh navbar transparan (transparentNav). --}}
+@props(['title', 'eyebrow' => null, 'scrollTo' => null, 'scrollLabel' => 'Gulir ke bagian berikutnya'])
+<section {{ $attributes }} class="relative isolate overflow-hidden bg-black-deep text-white flex min-h-[max(100vh,100dvh)] items-center">
     {{-- Cahaya merah tipis dari kanan bawah dan garis kisi samar, supaya latar hitam tidak terasa kosong. --}}
     <div class="absolute inset-0 -z-10 bg-[radial-gradient(60rem_40rem_at_85%_100%,color-mix(in_srgb,var(--color-brand)_22%,transparent),transparent)]" aria-hidden="true"></div>
     <div class="absolute inset-0 -z-10 opacity-[0.07] [background-image:linear-gradient(to_right,white_1px,transparent_1px)] [background-size:6rem_100%]" aria-hidden="true"></div>
@@ -17,9 +17,6 @@
             @endif
             <h1 class="mt-4 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
                 <span class="block">{{ $title }}</span>
-                @if ($highlight)
-                    <span class="block text-brand-bright">{{ $highlight }}</span>
-                @endif
             </h1>
             @if (trim($slot))
                 <p class="mt-6 max-w-lg text-base leading-relaxed text-white/80 sm:text-lg">{{ $slot }}</p>
