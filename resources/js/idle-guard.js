@@ -20,8 +20,11 @@ export default ({ timeout, warning, pingUrl, warningUrl }) => ({
         // Memuat halaman dihitung sebagai aktivitas, kecuali peringatan sedang berjalan: berpindah halaman
         // atau memuat ulang tidak boleh mengulang hitungan mundur.
         const warningFrom = (timeout - warning) * 60 * 1000;
+        const idle = Date.now() - this.lastActivity();
 
-        if (Date.now() - this.lastActivity() < warningFrom) {
+        // Halaman ini baru saja diterima server berarti sesi masih sah. Catatan localStorage yang sudah melewati batas
+        // (sisa sesi lama) tidak boleh memicu keluar berulang: server menolak keluar, halaman dimuat ulang, dan seterusnya.
+        if (idle < warningFrom || idle >= timeout * 60 * 1000) {
             this.touch(true);
         }
 
