@@ -82,7 +82,7 @@
                     <div class="w-full sm:w-56">
                         <x-ui.select name="category" :options="$categories->pluck('name', 'id')->all()" :selected="$categoryId" placeholder="Semua kategori" class="!py-2.5" onchange="this.form.submit()" aria-label="Filter kategori usaha" />
                     </div>
-                    <x-admin.search :value="$search" placeholder="Cari nama atau KBLI" />
+                    <x-admin.search :value="$search" placeholder="Cari nama, kategori, atau KBLI" />
                     @if ($filtered || $categoryId)
                         <a href="{{ route('admin.activities.index') }}" class="text-sm font-semibold text-muted transition-colors hover:text-brand">Reset</a>
                     @endif
