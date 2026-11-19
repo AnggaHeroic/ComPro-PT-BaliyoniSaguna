@@ -51,6 +51,21 @@ class ActivityLogPageTest extends TestCase
         $this->get(route('admin.activity-logs.index', ['q' => 'Budi']))->assertSee('Foto Dua')->assertSee('Kategori Satu');
     }
 
+    public function test_keyword_matches_the_description_of_access_and_default_actions(): void
+    {
+        $this->withoutVite();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $log = fn (string $action, string $type = User::class, ?string $label = null) => ActivityLog::create(['user_id' => $user->id, 'action' => $action, 'subject_type' => $type, 'subject_id' => 0, 'subject_label' => $label]);
+        $log(ActivityLog::ACTION_LOGIN);
+        $log(ActivityLog::ACTION_LOGOUT);
+        $log(ActivityLog::ACTION_DEFAULT_CLEARED, AppModelsPage::class, 'Beranda');
+
+        $this->get(route('admin.activity-logs.index', ['q' => 'dashboard']))->assertSee('Masuk ke dashboard')->assertSee('Keluar dari dashboard')->assertDontSee('Menghapus setelan default');
+        $this->get(route('admin.activity-logs.index', ['q' => 'bawaan sistem']))->assertSee('Menghapus setelan default')->assertDontSee('Masuk ke dashboard');
+    }
+
     public function test_keyword_also_matches_the_description_column(): void
     {
         $this->withoutVite();
