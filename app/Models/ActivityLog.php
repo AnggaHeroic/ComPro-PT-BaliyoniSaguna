@@ -209,7 +209,7 @@ class ActivityLog extends Model
             self::ACTION_REORDERED => ['Mengubah urutan '.$menu, filled($this->subject_label) ? $this->subject_label : null],
             self::ACTION_RESET => ["Mengembalikan seluruh {$menu} {$label} ke setelan default", null],
             self::ACTION_DEFAULT => ["Menetapkan {$menu} {$label} yang tersimpan sebagai setelan default baru", null],
-            self::ACTION_DEFAULT_CLEARED => ["Menghapus setelan default kustom {$menu} {$label} (kembali ke default bawaan sistem)", null],
+            self::ACTION_DEFAULT_CLEARED => ["Menghapus setelan default kustom {$menu} {$label}", 'Kembali ke default bawaan sistem'],
             default => [
                 match ($this->action) {
                     self::ACTION_CREATED => 'Menambah',
