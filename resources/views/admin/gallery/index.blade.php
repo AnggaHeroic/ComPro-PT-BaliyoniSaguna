@@ -98,7 +98,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-3 text-muted">{{ $draft->updated_at->locale('id')->translatedFormat('j M Y, H:i') }}</td>
+                                <td class="whitespace-nowrap px-4 py-3 text-muted">{{ \App\Helpers\DateHelper::local($draft->updated_at)->translatedFormat('j M Y, H:i') }}</td>
                                 <td class="px-4 py-3 text-center"><x-ui.badge variant="warning">Draft</x-ui.badge></td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-end gap-2">

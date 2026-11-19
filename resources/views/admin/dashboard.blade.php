@@ -24,7 +24,7 @@
                             <span class="mt-0.5 inline-flex w-16 shrink-0 justify-center px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider {{ $log->actionClass() }}">{{ $log->actionLabel() }}</span>
                             <div class="min-w-0 flex-1">
                                 <p class="text-sm text-black-soft">{{ $main }}</p>
-                                <p class="mt-0.5 text-xs text-muted">{{ $log->user?->name ?? 'Sistem' }} &middot; {{ $log->created_at->locale('id')->diffForHumans() }}</p>
+                                <p class="mt-0.5 text-xs text-muted">{{ $log->user?->name ?? 'Sistem' }} &middot; {{ \App\Helpers\DateHelper::local($log->created_at)->diffForHumans() }}</p>
                             </div>
                         </li>
                     @empty

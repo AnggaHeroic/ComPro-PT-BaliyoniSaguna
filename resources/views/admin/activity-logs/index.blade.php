@@ -59,7 +59,7 @@
                 </x-slot:head>
 
                 @forelse ($logs as $log)
-                    @php($time = $log->created_at->copy()->timezone(config('app.timezone'))->locale('id'))
+                    @php($time = \App\Helpers\DateHelper::local($log->created_at))
                     @php([$main, $note] = $log->detailLines())
                     <tr class="transition-colors hover:bg-gray-tint/60">
                         <td class="whitespace-nowrap px-4 py-3 text-center">

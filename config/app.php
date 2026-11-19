@@ -69,6 +69,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Zona Waktu Tampilan
+    |--------------------------------------------------------------------------
+    |
+    | Waktu tetap disimpan dalam UTC; zona ini dipakai untuk menampilkan jam dan
+    | tanggal kepada admin (Asia/Makassar = WITA, Bali).
+    |
+    */
+
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'Asia/Makassar'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |

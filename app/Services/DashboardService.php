@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
+use App\Helpers\DateHelper;
 
 /**
  * Ringkasan untuk dashboard admin. Tiap kartu membawa nama rute menu pengelolaannya agar bisa diklik.
@@ -25,7 +25,7 @@ class DashboardService
         $activities = $this->activityService->statusCounts();
 
         return [
-            'today' => Carbon::now()->locale('id')->translatedFormat('l, j F Y'),
+            'today' => DateHelper::today()->locale('id')->translatedFormat('l, j F Y'),
             'stats' => [
                 ['label' => 'Kategori Layanan', 'value' => $categories['total'], 'hint' => $this->statusHint($categories), 'icon' => 'layers', 'route' => 'admin.categories.index', 'params' => []],
                 ['label' => 'Aktivitas Usaha', 'value' => $activities['total'], 'hint' => $this->statusHint($activities), 'icon' => 'briefcase', 'route' => 'admin.activities.index', 'params' => []],
