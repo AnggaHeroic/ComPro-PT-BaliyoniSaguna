@@ -150,7 +150,8 @@ class BusinessActivityService
             ->when(filled($search), fn (Builder $query) => $query->where(function (Builder $query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('kbli_code', 'like', "%{$search}%");
+                    ->orWhere('kbli_code', 'like', "%{$search}%")
+                    ->orWhereHas('category', fn (Builder $category) => $category->where('name', 'like', "%{$search}%"));
             }))
             // Kelompok mengikuti urutan kategori (bukan id-nya), jadi mengatur ulang kategori ikut menggeser daftar ini.
             ->orderBy(ServiceCategory::select('sort_order')->whereColumn('service_categories.id', 'business_activities.service_category_id'))

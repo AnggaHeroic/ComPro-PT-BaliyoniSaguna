@@ -42,6 +42,16 @@ class CategoryOrderAndCustomIconTest extends TestCase
         $this->get(route('admin.activities.index'))->assertSeeInOrder(['Aktivitas A', 'Aktivitas B']);
     }
 
+    public function test_activity_search_also_matches_the_category_name(): void
+    {
+        $kantor = $this->category('Peralatan Kantor', 1);
+        $dapur = $this->category('Peralatan Dapur', 2);
+        BusinessActivity::create(['service_category_id' => $kantor->id, 'name' => 'Kursi', 'slug' => 'kursi', 'sort_order' => 1]);
+        BusinessActivity::create(['service_category_id' => $dapur->id, 'name' => 'Panci', 'slug' => 'panci', 'sort_order' => 1]);
+
+        $this->get(route('admin.activities.index', ['q' => 'Kantor']))->assertSee('Kursi')->assertDontSee('Panci');
+    }
+
     public function test_custom_icon_makes_the_list_icon_optional_but_one_of_them_is_required(): void
     {
         Storage::fake('public');
