@@ -8,7 +8,8 @@
     <div class="grid gap-6 sm:grid-cols-2">
         <x-ui.file-upload name="icon_image" label="Ikon kustom (opsional)" :current="$category->icon_image_url" previewClass="size-24" fit="object-contain"
                           hint="Jika diunggah, menggantikan ikon dari daftar. Pakai gambar persegi dengan latar transparan (PNG/WebP)." />
-        <x-admin.icon-picker name="icon" :selected="old('icon', $category->icon ?? array_key_first(\App\Models\ServiceCategory::ICONS))" />
+        {{-- Ikon kustom dan ikon dari daftar saling menggantikan: kategori ber-ikon kustom tidak memilih ikon daftar. --}}
+        <x-admin.icon-picker name="icon" pairedWith="icon_image" :pairedActive="(bool) $category->icon_image" :selected="old('icon', $category->icon_image ? null : ($category->icon ?? array_key_first(\App\Models\ServiceCategory::ICONS)))" />
     </div>
 
     <x-ui.file-upload name="image" label="Gambar" :current="$category->image_url" hint="JPG, PNG, atau WebP, maksimal 4 MB. Otomatis dikompres menjadi WebP." />

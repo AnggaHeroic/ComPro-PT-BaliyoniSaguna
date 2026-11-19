@@ -152,6 +152,8 @@ class BusinessActivityService
                     ->orWhere('slug', 'like', "%{$search}%")
                     ->orWhere('kbli_code', 'like', "%{$search}%");
             }))
+            // Kelompok mengikuti urutan kategori (bukan id-nya), jadi mengatur ulang kategori ikut menggeser daftar ini.
+            ->orderBy(ServiceCategory::select('sort_order')->whereColumn('service_categories.id', 'business_activities.service_category_id'))
             ->orderBy('service_category_id')
             ->ordered();
     }

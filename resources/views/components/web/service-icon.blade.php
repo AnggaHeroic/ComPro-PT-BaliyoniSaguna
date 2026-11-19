@@ -1,5 +1,5 @@
-{{-- Props: name (kunci ikon bawaan, lihat ServiceCategory::ICONS), accent (class stroke untuk detail, default stroke-brand), image (URL ikon kustom unggahan admin; bila ada dipakai menggantikan ikon bawaan). Pada latar gelap (class text-white) ikon kustom dijadikan putih agar tetap terlihat. --}}
-@props(['name', 'accent' => 'stroke-brand', 'image' => null])
+{{-- Props: name (kunci ikon bawaan, lihat ServiceCategory::ICONS), accent (class stroke untuk detail, default stroke-brand), image (URL ikon kustom unggahan admin; bila ada dipakai menggantikan ikon bawaan). Pada latar gelap (class text-white) ikon kustom diberi alas putih agar tetap terlihat. name boleh kosong bila ada image. --}}
+@props(['name' => null, 'accent' => 'stroke-brand', 'image' => null])
 @php
     // Ikon garis kustom (viewBox 48). Warna utama: currentColor; detail memakai class stroke-brand (diganti sesuai $accent).
     $icons = [
@@ -34,7 +34,12 @@
     ];
 @endphp
 @if ($image)
-    <img src="{{ $image }}" alt="" loading="lazy" referrerpolicy="no-referrer" {{ $attributes->class(['shrink-0 object-contain', 'brightness-0 invert' => str_contains((string) $attributes->get('class'), 'text-white')]) }}>
+    @if (str_contains((string) $attributes->get('class'), 'text-white'))
+        {{-- Di latar gelap, ikon kustom (gambar apa pun, juga yang tidak transparan) ditaruh pada alas putih agar selalu terlihat. --}}
+        <span {{ $attributes->class('inline-flex shrink-0 items-center justify-center bg-white p-0.5') }}><img src="{{ $image }}" alt="" loading="lazy" referrerpolicy="no-referrer" class="size-full object-contain"></span>
+    @else
+        <img src="{{ $image }}" alt="" loading="lazy" referrerpolicy="no-referrer" {{ $attributes->class('shrink-0 object-contain') }}>
+    @endif
 @else
 <svg {{ $attributes->class('shrink-0') }} viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! str_replace('stroke-brand', $accent, $icons[$name] ?? '') !!}</svg>
 @endif
