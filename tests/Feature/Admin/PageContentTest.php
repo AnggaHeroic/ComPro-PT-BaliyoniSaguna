@@ -168,6 +168,19 @@ class PageContentTest extends TestCase
         $this->assertNull(Page::where('slug', 'home')->first()->content);
     }
 
+    public function test_clear_default_log_puts_the_fallback_note_under_the_sentence(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $this->save(['hero_title' => 'Judul Kustom']);
+        $this->post(route('admin.pages.default.set', 'home'));
+        $this->delete(route('admin.pages.default.clear', 'home'));
+
+        $this->assertSame(
+            ['Menghapus setelan default kustom isi halaman "Beranda"', 'Kembali ke default bawaan sistem'],
+            ActivityLog::latest('id')->first()->detailLines(),
+        );
+    }
+
     public function test_set_default_then_reset_and_clear_default(): void
     {
         $this->withoutVite();
