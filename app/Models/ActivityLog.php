@@ -124,13 +124,13 @@ class ActivityLog extends Model
             self::ACTION_CREATED => ['Ditambah', 'bg-green-100 text-green-800', 'M12 5v14M5 12h14'],
             self::ACTION_UPDATED => ['Diubah', 'bg-amber-100 text-amber-800', 'M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16zM14 6l4 4'],
             self::ACTION_DELETED => ['Dihapus', 'bg-red-100 text-red-800', 'M5 7h14M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3'],
-            self::ACTION_REORDERED => ['Urutan', 'bg-gray-200 text-gray-800', 'M8 4v16m0 0-3-3m3 3 3-3M16 20V4m0 0-3 3m3-3 3 3'],
-            self::ACTION_RESET => ['Reset default', 'bg-yellow-100 text-yellow-800', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5'],
+            self::ACTION_REORDERED => ['Urutan', 'bg-gray-800 text-white', 'M8 4v16m0 0-3-3m3 3 3-3M16 20V4m0 0-3 3m3-3 3 3'],
+            self::ACTION_RESET => ['Reset default', 'bg-fuchsia-100 text-fuchsia-800', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5'],
             self::ACTION_DEFAULT => ['Setel default', 'bg-indigo-100 text-indigo-800', 'M12 3l2.7 5.5 6 .9-4.4 4.2 1 6L12 16.8 6.7 19.6l1-6L3.3 9.4l6-.9L12 3Z'],
-            self::ACTION_DEFAULT_CLEARED => ['Hapus default', 'bg-indigo-100 text-indigo-800', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5'],
+            self::ACTION_DEFAULT_CLEARED => ['Hapus default', 'bg-teal-100 text-teal-800', 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5'],
             self::ACTION_LOGIN => ['Masuk', 'bg-sky-100 text-sky-800', 'M15 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3'],
             self::ACTION_LOGOUT => ['Keluar', 'bg-gray-100 text-gray-700', 'M9 21H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h4M16 17l5-5-5-5M21 12H9'],
-            self::ACTION_TIMEOUT => ['Keluar otomatis', 'bg-amber-100 text-amber-800', 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'],
+            self::ACTION_TIMEOUT => ['Keluar otomatis', 'bg-orange-200 text-orange-900', 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'],
         ];
     }
 
