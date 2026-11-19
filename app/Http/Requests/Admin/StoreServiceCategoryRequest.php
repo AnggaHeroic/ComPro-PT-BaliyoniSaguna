@@ -25,7 +25,18 @@ class StoreServiceCategoryRequest extends FormRequest
             'remove_image' => $this->boolean('remove_image'),
             'remove_icon_image' => $this->boolean('remove_icon_image'),
             'description' => filled($this->input('description')) ? trim((string) $this->input('description')) : null,
+            'icon' => $this->input('icon') ?: null,
         ]);
+    }
+
+    /** Ikon kustom akan ada setelah disimpan: baru diunggah, atau yang lama dan tidak dihapus. */
+    private function hasCustomIcon(): bool
+    {
+        if ($this->hasFile('icon_image')) {
+            return true;
+        }
+
+        return filled($this->route('category')?->icon_image) && ! $this->boolean('remove_icon_image');
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
@@ -34,7 +45,8 @@ class StoreServiceCategoryRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'icon' => ['required', 'string', Rule::in(array_keys(ServiceCategory::ICONS))],
+            // Ikon dari daftar wajib hanya bila tidak ada ikon kustom.
+            'icon' => [Rule::requiredIf(! $this->hasCustomIcon()), 'nullable', 'string', Rule::in(array_keys(ServiceCategory::ICONS))],
             'status' => ['required', Rule::in(['published', 'draft'])],
             'image' => ['nullable', ...UploadHelper::IMAGE_RULES],
             'remove_image' => ['boolean'],
