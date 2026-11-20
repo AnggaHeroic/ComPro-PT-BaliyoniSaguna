@@ -66,6 +66,22 @@ class ActivityLogPageTest extends TestCase
         $this->get(route('admin.activity-logs.index', ['q' => 'bawaan sistem']))->assertSee('Menghapus setelan default')->assertDontSee('Masuk ke dashboard');
     }
 
+    public function test_times_are_shown_in_the_local_timezone_while_stored_in_utc(): void
+    {
+        $this->withoutVite();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $log = ActivityLog::create(['user_id' => $user->id, 'action' => ActivityLog::ACTION_LOGIN, 'subject_type' => User::class, 'subject_id' => 0]);
+        $log->forceFill(['created_at' => '2026-11-19 03:21:54'])->saveQuietly(); // UTC
+
+        $this->get(route('admin.activity-logs.index'))->assertSee('11:21:54')->assertDontSee('03:21:54');
+
+        // Filter tanggal memakai hari menurut zona waktu setempat: 11:21 WITA tanggal 19 masih termasuk "19".
+        $this->get(route('admin.activity-logs.index', ['dari' => '2026-11-19', 'sampai' => '2026-11-19']))->assertSee('11:21:54');
+        $this->get(route('admin.activity-logs.index', ['dari' => '2026-11-18', 'sampai' => '2026-11-18']))->assertDontSee('11:21:54');
+    }
+
     public function test_keyword_also_matches_the_description_column(): void
     {
         $this->withoutVite();

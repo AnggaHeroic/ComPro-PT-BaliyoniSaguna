@@ -3,6 +3,6 @@
 @if ($log)
     <p class="flex items-center gap-2 text-xs text-muted">
         <x-ui.icon name="history" class="size-4" />
-        Terakhir diubah {{ $log->created_at->locale('id')->translatedFormat('j F Y, H:i') }} oleh {{ $log->user?->name ?? 'Sistem' }}
+        Terakhir diubah {{ \App\Helpers\DateHelper::local($log->created_at)->translatedFormat('j F Y, H:i') }} oleh {{ $log->user?->name ?? 'Sistem' }}
     </p>
 @endif

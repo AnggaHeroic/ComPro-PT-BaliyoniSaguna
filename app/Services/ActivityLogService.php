@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\DateHelper;
 use App\Models\ActivityLog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -80,8 +81,8 @@ class ActivityLogService
             ->when($groupActions, fn (Builder $query) => $query->whereIn('action', $groupActions))
             ->when($subjectType, fn (Builder $query) => $query->where('subject_type', $subjectType))
             ->when($filters['action'] ?? null, fn (Builder $query, string $action) => $query->where('action', $action))
-            ->when($from, fn (Builder $query) => $query->where('created_at', '>=', $from->copy()->startOfDay()))
-            ->when($to, fn (Builder $query) => $query->where('created_at', '<=', $to->copy()->endOfDay()))
+            ->when($from, fn (Builder $query) => $query->where('created_at', '>=', DateHelper::dayBoundary($from->toDateString())))
+            ->when($to, fn (Builder $query) => $query->where('created_at', '<=', DateHelper::dayBoundary($to->toDateString(), true)))
             ->when($search !== '', fn (Builder $query) => $this->matchSearch($query, $search));
     }
 
@@ -142,18 +143,18 @@ class ActivityLogService
     }
 
     /**
-     * Pintasan tanggal untuk filter, dihitung dari hari ini (zona waktu aplikasi).
+     * Pintasan tanggal untuk filter, dihitung dari hari ini (zona waktu tampilan).
      *
      * @return list<array{label: string, from: string, to: string}>
      */
     public function datePresets(): array
     {
-        $today = now()->toDateString();
+        $today = DateHelper::today()->toDateString();
 
         return [
             ['label' => 'Hari ini', 'from' => $today, 'to' => $today],
-            ['label' => '7 hari terakhir', 'from' => now()->subDays(6)->toDateString(), 'to' => $today],
-            ['label' => '30 hari terakhir', 'from' => now()->subDays(29)->toDateString(), 'to' => $today],
+            ['label' => '7 hari terakhir', 'from' => DateHelper::today()->subDays(6)->toDateString(), 'to' => $today],
+            ['label' => '30 hari terakhir', 'from' => DateHelper::today()->subDays(29)->toDateString(), 'to' => $today],
         ];
     }
 
@@ -168,6 +169,6 @@ class ActivityLogService
 
     private function date(?string $value): ?Carbon
     {
-        return filled($value) ? Carbon::parse($value, config('app.timezone')) : null;
+        return filled($value) ? Carbon::parse($value, config('app.display_timezone')) : null;
     }
 }
