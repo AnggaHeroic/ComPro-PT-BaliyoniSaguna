@@ -35,7 +35,8 @@
                         </span>
 
                         {{-- Ringkasan: dua kartu kecil (nama aktivitas dan kategori) tepat di atas deskripsi. --}}
-                        <dl class="mt-6 grid gap-3 sm:grid-cols-2">
+                        {{-- Kode KBLI (bila ada) berupa kartu kecil di samping kartu kategori, bukan baris baru. --}}
+                        <dl @class(['mt-6 grid gap-3', 'sm:grid-cols-2' => ! $activity['kbli'], 'sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_fit-content(14rem)]' => $activity['kbli']])>
                             <div class="border border-black-soft/10 bg-gray-tint px-4 py-3">
                                 <dt class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Aktivitas Usaha</dt>
                                 <dd class="mt-1 text-sm font-semibold leading-6 text-black-soft">{{ $activity['name'] }}</dd>
@@ -45,9 +46,9 @@
                                 <dd class="mt-1 text-sm font-semibold leading-6 text-black-soft"><a href="{{ route('services').'#ruang-lingkup-'.$serviceSlug }}" class="transition-colors hover:text-brand">{{ $service['name'] }}</a></dd>
                             </div>
                             @if ($activity['kbli'])
-                                <div class="border border-black-soft/10 bg-gray-tint px-4 py-3 sm:col-span-2">
+                                <div class="border border-black-soft/10 bg-gray-tint px-4 py-3">
                                     <dt class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Kode KBLI</dt>
-                                    <dd class="mt-1 font-mono text-sm font-semibold leading-6 text-black-soft">{{ $activity['kbli'] }}</dd>
+                                    <dd class="mt-1 break-all font-mono text-sm font-semibold leading-6 text-black-soft">{{ $activity['kbli'] }}</dd>
                                 </div>
                             @endif
                         </dl>
