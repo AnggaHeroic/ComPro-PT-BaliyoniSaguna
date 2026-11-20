@@ -1,4 +1,4 @@
-{{-- Props: eyebrow (label kecil), title (wajib), invert (untuk latar gelap), center, width (class lebar maksimum, default max-w-2xl). Slot = deskripsi singkat. --}}
+{{-- Props: eyebrow (label kecil), title (wajib; teks, atau HtmlString berwarna dari PageContentSet::rich()), invert (untuk latar gelap), center, width (class lebar maksimum, default max-w-2xl). Slot = deskripsi singkat. --}}
 @props(['eyebrow' => null, 'title', 'invert' => false, 'center' => false, 'width' => 'max-w-2xl'])
 <div data-reveal {{ $attributes->class([$width, 'mx-auto text-center' => $center]) }}>
     @if ($eyebrow)

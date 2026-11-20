@@ -1,14 +1,14 @@
 @extends('layouts.public', ['transparentNav' => true, 'title' => $activity['name'], 'description' => $activity['summary'] ?? 'Aktivitas usaha '.$service['name'].' PT Baliyoni Saguna: '.$activity['name'].'.'])
 
 @section('content')
-    @php($serviceSlug = Str::slug($service['name']))
-    <x-web.detail-header :title="$activity['name']" :eyebrow="$service['name']" :image="$service['image']" :crumbs="[
+    @php($serviceSlug = $service['slug'])
+    <x-web.detail-header :title="$activity['name']" :eyebrow="$service['name']" :image="$activity['image']" :crumbs="[
         ['label' => 'Layanan', 'href' => route('services')],
         ['label' => $service['name'], 'href' => route('services').'#ruang-lingkup-'.$serviceSlug],
         ['label' => $activity['name'], 'href' => null],
     ]">
         <x-slot:icon>
-            <x-web.service-icon :name="$service['icon']" accent="stroke-brand-bright" class="size-full" />
+            <x-web.service-icon :name="$service['icon']" :image="$service['icon_image']" accent="stroke-brand-bright" class="size-full" />
         </x-slot:icon>
         {{ $activity['summary'] ?? 'Aktivitas usaha pada kategori '.$service['name'].'.' }}
     </x-web.detail-header>
@@ -18,20 +18,20 @@
             {{-- Isi utama: artikel aktivitas (foto, deskripsi, ringkasan; tata letak diadaptasi dari halaman detail aktivitas PT Bali Oase Semesta), lalu navigasi dan aktivitas lain dalam kategori yang sama. --}}
             <div class="lg:col-span-8">
                 <article>
-                    {{-- Foto PLACEHOLDER sementara (Unsplash). Ganti dengan foto resmi perusahaan bila tersedia. --}}
-                    @if ($service['image'])
+                    {{-- Foto aktivitas (atau foto kategorinya bila belum diunggah), dari database. --}}
+                    @if ($activity['image'])
                         <div class="relative aspect-[16/9] overflow-hidden bg-black-deep" aria-hidden="true">
-                            <img src="https://images.unsplash.com/photo-{{ $service['image'] }}?auto=format&fit=crop&w=1200&h=675&q=75" alt="" width="1200" height="675" loading="lazy" referrerpolicy="no-referrer" class="size-full object-cover">
+                            <img src="{{ $activity['image'] }}" alt="" width="1200" height="675" loading="lazy" referrerpolicy="no-referrer" class="size-full object-cover">
                             <div class="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black-deep/60 to-transparent"></div>
                             <div class="absolute left-0 top-0 h-1 w-24 bg-brand"></div>
                             <div class="absolute right-6 top-6 size-8 border-r-2 border-t-2 border-white/80"></div>
                         </div>
                     @endif
 
-                    <div @class(['border border-black-soft/10 bg-white px-6 pb-8 sm:px-10 sm:pb-10', 'border-t-0' => $service['image'], 'border-t-4 border-t-brand pt-8' => ! $service['image']])>
+                    <div @class(['border border-black-soft/10 bg-white px-6 pb-8 sm:px-10 sm:pb-10', 'border-t-0' => $activity['image'], 'border-t-4 border-t-brand pt-8' => ! $activity['image']])>
                         {{-- Ikon bulat menumpang di sambungan foto dan panel. --}}
-                        <span @class(['relative z-10 flex size-16 items-center justify-center rounded-full bg-black-soft text-white ring-4 ring-white', '-mt-8' => $service['image']]) aria-hidden="true">
-                            <x-web.service-icon :name="$service['icon']" accent="stroke-brand-bright" class="size-9" />
+                        <span @class(['relative z-10 flex size-16 items-center justify-center rounded-full bg-black-soft text-white ring-4 ring-white', '-mt-8' => $activity['image']]) aria-hidden="true">
+                            <x-web.service-icon :name="$service['icon']" :image="$service['icon_image']" accent="stroke-brand-bright" class="size-9" />
                         </span>
 
                         {{-- Ringkasan: dua kartu kecil (nama aktivitas dan kategori) tepat di atas deskripsi. --}}
@@ -44,6 +44,12 @@
                                 <dt class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Kategori Usaha</dt>
                                 <dd class="mt-1 text-sm font-semibold leading-6 text-black-soft"><a href="{{ route('services').'#ruang-lingkup-'.$serviceSlug }}" class="transition-colors hover:text-brand">{{ $service['name'] }}</a></dd>
                             </div>
+                            @if ($activity['kbli'])
+                                <div class="border border-black-soft/10 bg-gray-tint px-4 py-3 sm:col-span-2">
+                                    <dt class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Kode KBLI</dt>
+                                    <dd class="mt-1 font-mono text-sm font-semibold leading-6 text-black-soft">{{ $activity['kbli'] }}</dd>
+                                </div>
+                            @endif
                         </dl>
 
                         <h2 class="mt-10 text-xs font-bold uppercase tracking-[0.18em] text-brand">Deskripsi Aktivitas Usaha</h2>
@@ -58,7 +64,7 @@
                 {{-- Navigasi antar aktivitas dalam kategori; kotak kosong dijaga agar tombol berikutnya tetap di kanan; ditaruh tepat di bawah penjelasan. --}}
                 <div class="mt-12 grid gap-4 sm:grid-cols-2">
                     @if ($previous)
-                        <a href="{{ route('services.show', ['service' => $serviceSlug, 'activity' => Str::slug($previous['name'])]) }}" class="group border border-black-soft/15 p-5 transition-colors hover:border-brand">
+                        <a href="{{ route('services.show', ['service' => $serviceSlug, 'activity' => $previous['slug']]) }}" class="group border border-black-soft/15 p-5 transition-colors hover:border-brand">
                             <span class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Sebelumnya</span>
                             <span class="mt-2 block text-sm font-bold transition-colors group-hover:text-brand">{{ $previous['name'] }}</span>
                         </a>
@@ -66,7 +72,7 @@
                         <span class="hidden sm:block" aria-hidden="true"></span>
                     @endif
                     @if ($next)
-                        <a href="{{ route('services.show', ['service' => $serviceSlug, 'activity' => Str::slug($next['name'])]) }}" class="group border border-black-soft/15 p-5 text-left transition-colors hover:border-brand sm:text-right">
+                        <a href="{{ route('services.show', ['service' => $serviceSlug, 'activity' => $next['slug']]) }}" class="group border border-black-soft/15 p-5 text-left transition-colors hover:border-brand sm:text-right">
                             <span class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Berikutnya</span>
                             <span class="mt-2 block text-sm font-bold transition-colors group-hover:text-brand">{{ $next['name'] }}</span>
                         </a>
@@ -78,7 +84,7 @@
                     <ol class="mt-6 divide-y divide-black-soft/10 border-y border-black-soft/10">
                         @foreach ($activities as $item)
                             <li>
-                                <a href="{{ route('services.show', ['service' => $serviceSlug, 'activity' => Str::slug($item['name'])]) }}"
+                                <a href="{{ route('services.show', ['service' => $serviceSlug, 'activity' => $item['slug']]) }}"
                                    @if ($loop->iteration === $number) aria-current="page" @endif
                                    class="group flex items-center gap-4 px-2 py-4 transition-colors hover:bg-gray-tint aria-[current=page]:bg-gray-tint aria-[current=page]:shadow-[inset_3px_0_0_0_var(--color-brand)]">
                                     <span class="w-8 shrink-0 font-display text-sm font-black text-brand">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
@@ -109,7 +115,7 @@
 
                 <a href="{{ route('services', ['kategori' => $serviceSlug]).'#ruang-lingkup' }}" class="group block border border-black-soft/10 bg-gray-tint p-6">
                     <span class="flex items-center gap-4">
-                        <x-web.service-icon :name="$service['icon']" accent="stroke-brand" class="size-10 shrink-0 text-black-soft" />
+                        <x-web.service-icon :name="$service['icon']" :image="$service['icon_image']" accent="stroke-brand" class="size-10 shrink-0 text-black-soft" />
                         <span>
                             <span class="block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Kategori</span>
                             <span class="mt-1 block font-display text-base font-bold leading-snug">{{ $service['name'] }}</span>

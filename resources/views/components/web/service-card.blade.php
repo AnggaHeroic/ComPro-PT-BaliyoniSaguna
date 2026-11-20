@@ -5,12 +5,12 @@
 <li data-carousel-item
     class="group/card relative isolate aspect-[2/3] shrink-0 basis-[260px] overflow-hidden bg-black-soft sm:basis-[300px] lg:basis-[320px]">
     {{-- Menuju halaman Layanan dengan kategori ini terpilih (hash yang sama dengan menu Layanan di navbar). --}}
-    <a href="{{ route('services') }}#ruang-lingkup-{{ Str::slug($service['name']) }}" draggable="false" class="absolute inset-0 block">
+    <a href="{{ route('services') }}#ruang-lingkup-{{ $service['slug'] }}" draggable="false" class="absolute inset-0 block">
         {{-- Area foto: penuh saat diam, menyusut ke atas panel saat hover. Foto di-crop ulang (object-cover) mengikuti ukurannya. --}}
         <div class="absolute inset-x-0 top-0 bottom-0 overflow-hidden transition-[bottom] duration-500 ease-out reveal:bottom-[36%]">
             @if ($service['image'])
-                {{-- Foto PLACEHOLDER (Picsum). Ganti dengan foto resmi perusahaan bila tersedia. --}}
-                <img src="https://images.unsplash.com/photo-{{ $service['image'] }}?auto=format&fit=crop&w=640&h=960&q=75" alt="" width="640" height="960" loading="lazy" draggable="false" referrerpolicy="no-referrer"
+                {{-- Foto dari database (unggahan admin, atau placeholder bawaan sampai diganti). --}}
+                <img src="{{ $service['image'] }}" alt="" width="640" height="960" loading="lazy" draggable="false" referrerpolicy="no-referrer"
                      class="size-full select-none object-cover transition-transform duration-500 ease-out reveal:scale-105">
             @else
                 {{-- Latar polos sampai foto resmi tersedia. --}}
@@ -28,7 +28,7 @@
 
             {{-- Lingkaran ikon: di atas judul saat diam; saat hover naik dan bertumpu di garis batas foto dan panel putih. --}}
             <span class="absolute left-1/2 top-14 flex size-12 -translate-x-1/2 items-center justify-center rounded-full border border-white/30 bg-black-deep/40 backdrop-blur-sm transition-[top,translate,background-color,border-color] duration-500 ease-out reveal:top-0 reveal:-translate-y-1/2 reveal:border-white reveal:bg-black-soft">
-                <x-web.service-icon :name="$service['icon']" accent="stroke-brand-bright" class="size-7 text-white" />
+                <x-web.service-icon :name="$service['icon']" :image="$service['icon_image']" accent="stroke-brand-bright" class="size-7 text-white" />
             </span>
             {{-- Ruang judul untuk dua baris, judul di tengahnya. --}}
             <div class="flex min-h-11 items-center justify-center">

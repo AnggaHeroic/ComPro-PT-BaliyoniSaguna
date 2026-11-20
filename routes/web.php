@@ -13,3 +13,6 @@ Route::get('/layanan/{service}/{activity}', [ServiceController::class, 'show'])-
 Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
 Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
 Route::get('/kontak', [ContactController::class, 'index'])->name('contact');
+
+require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';

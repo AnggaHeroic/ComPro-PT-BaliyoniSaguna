@@ -1,0 +1,38 @@
+@extends('layouts.guest', ['title' => 'Masuk'])
+
+@section('content')
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-brand">Panel Administrasi</p>
+    <h1 class="mt-3 text-3xl font-black leading-[1.1] tracking-tight text-black-soft sm:text-4xl">Masuk</h1>
+    <p class="mt-3 text-sm leading-relaxed text-muted">Gunakan akun pengelola untuk mengakses dashboard. Akses terbatas untuk pengelola resmi.</p>
+
+    {{-- Peringatan kunci login hilang sendiri setelah 10 detik. --}}
+    {{-- Pesan setelah keluar otomatis karena tidak aktif. --}}
+    @if (session('status'))
+        <div role="status" class="mt-6 flex items-start gap-3 border border-black-soft/15 bg-gray-tint px-4 py-3 text-sm font-medium text-black-soft">
+            <x-ui.icon name="history" class="mt-0.5 size-4 shrink-0 text-brand" />
+            <p>{{ session('status') }}</p>
+        </div>
+    @endif
+
+    @error('lockout')
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 10000)" x-show="show" x-transition.opacity.duration.300ms role="alert"
+             class="mt-6 flex items-start gap-3 border border-brand/30 bg-brand/5 px-4 py-3 text-sm font-medium text-brand">
+            <x-ui.icon name="warning" class="mt-0.5 size-4 shrink-0" />
+            <p class="flex-1">{{ $message }}</p>
+            <button type="button" @click="show = false" class="-mr-1 shrink-0 p-0.5 text-brand/70 transition-colors hover:text-brand" aria-label="Tutup peringatan">
+                <x-ui.icon name="close" class="size-4" />
+            </button>
+        </div>
+    @enderror
+
+    <form method="POST" action="{{ route('login') }}" class="mt-8 space-y-5" novalidate>
+        @csrf
+        <x-ui.input name="email" type="email" label="Email" icon="mail" :value="old('email')" required autofocus autocomplete="username" placeholder="nama@perusahaan.com" />
+        <x-ui.input name="password" type="password" label="Kata Sandi" icon="lock" required autocomplete="current-password" placeholder="Masukkan kata sandi" />
+
+        <x-ui.button type="submit" class="mt-2 w-full !py-3.5 uppercase tracking-wider shadow-[0_8px_20px_-8px_rgb(217_0_0/0.7)]">
+            Masuk
+            <x-ui.icon name="arrow-right" class="size-4" />
+        </x-ui.button>
+    </form>
+@endsection

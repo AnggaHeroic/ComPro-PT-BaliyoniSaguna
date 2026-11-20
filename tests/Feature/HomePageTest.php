@@ -2,11 +2,24 @@
 
 namespace Tests\Feature;
 
+use App\Services\CompanyService;
+use Database\Seeders\SiteContentSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
+    use RefreshDatabase;
+
+    // Halaman publik membaca kategori dan aktivitas dari database.
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(SiteContentSeeder::class);
+    }
+
     public function test_home_page_shows_company_sections(): void
     {
         $this->withoutVite();
@@ -49,11 +62,13 @@ class HomePageTest extends TestCase
 
         $response = $this->get(route('home'));
 
+        $company = app(CompanyService::class)->profile();
+
         $response->assertSee('Hubungi Kami');
-        $response->assertSee('https://wa.me/'.ltrim(config('company.mobile_href'), '+'), false);
-        $response->assertSee('tel:'.config('company.phone_href'), false);
-        $response->assertSee('mailto:'.config('company.email'), false);
-        $response->assertSee(config('company.description'));
-        $this->assertSame(2, substr_count($response->getContent(), 'mailto:'.config('company.email')));
+        $response->assertSee($company['mobile_url'], false);
+        $response->assertSee('tel:'.$company['phone_href'], false);
+        $response->assertSee('mailto:'.$company['email'], false);
+        $response->assertSee($company['description']);
+        $this->assertSame(2, substr_count($response->getContent(), 'mailto:'.$company['email']));
     }
 }
