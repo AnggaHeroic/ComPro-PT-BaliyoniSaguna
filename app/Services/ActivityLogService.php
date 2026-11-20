@@ -98,12 +98,12 @@ class ActivityLogService
             ActivityLog::ACTION_UPDATED => ['mengubah', 'diubah'],
             ActivityLog::ACTION_DELETED => ['menghapus', 'dihapus'],
             ActivityLog::ACTION_REORDERED => ['urutan', 'mengubah urutan'],
-            ActivityLog::ACTION_RESET => ['reset', 'mengembalikan', 'setelan default'],
-            ActivityLog::ACTION_DEFAULT => ['setel default', 'menetapkan', 'setelan default'],
-            ActivityLog::ACTION_DEFAULT_CLEARED => ['hapus default', 'default kustom'],
-            ActivityLog::ACTION_LOGIN => ['masuk', 'login'],
-            ActivityLog::ACTION_LOGOUT => ['keluar', 'logout'],
-            ActivityLog::ACTION_TIMEOUT => ['keluar otomatis', 'tidak aktif'],
+            ActivityLog::ACTION_RESET => ['reset', 'mengembalikan seluruh', 'setelan default', 'ke setelan default'],
+            ActivityLog::ACTION_DEFAULT => ['setel default', 'menetapkan', 'setelan default baru', 'yang tersimpan'],
+            ActivityLog::ACTION_DEFAULT_CLEARED => ['hapus default', 'menghapus setelan default kustom', 'default kustom', 'kembali ke default bawaan sistem'],
+            ActivityLog::ACTION_LOGIN => ['masuk', 'login', 'masuk ke dashboard'],
+            ActivityLog::ACTION_LOGOUT => ['keluar', 'logout', 'keluar dari dashboard'],
+            ActivityLog::ACTION_TIMEOUT => ['keluar otomatis', 'tidak aktif', 'keluar otomatis karena tidak aktif'],
         ])->filter(fn (array $words) => collect($words)->contains(fn (string $word) => str_contains($word, $term)))->keys();
 
         $subjectTypes = collect(ActivityLog::SUBJECT_LABELS)
