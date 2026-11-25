@@ -20,14 +20,14 @@ class AuditTuningTest extends TestCase
         $this->actingAs(User::factory()->create());
     }
 
-    public function test_button_text_fields_are_limited_to_twenty_characters(): void
+    public function test_button_text_fields_are_limited_to_thirty_characters(): void
     {
         $buttons = collect(config('page_contents'))
             ->flatMap(fn ($page) => collect($page['sections'] ?? [])->flatMap(fn ($section) => $section['fields'] ?? []))
             ->filter(fn ($field) => str_starts_with($field['label'] ?? '', 'Tombol'));
 
         $this->assertGreaterThanOrEqual(10, $buttons->count());
-        $buttons->each(fn ($field) => $this->assertSame(20, $field['max']));
+        $buttons->each(fn ($field) => $this->assertSame(30, $field['max']));
     }
 
     public function test_redirect_helper_sets_flash_messages(): void
