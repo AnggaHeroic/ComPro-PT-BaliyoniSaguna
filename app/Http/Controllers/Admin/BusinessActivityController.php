@@ -20,7 +20,7 @@ use Throwable;
 
 class BusinessActivityController extends Controller
 {
-    private const FIELDS = ['service_category_id', 'name', 'kbli_code', 'summary', 'detail', 'is_published'];
+    private const FIELDS = ['service_category_id', 'name', 'summary', 'detail', 'is_published'];
 
     public function __construct(
         private BusinessActivityService $activityService,
@@ -69,7 +69,7 @@ class BusinessActivityController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withInput()->with('error', 'Gagal menyimpan aktivitas.');
+            return RedirectHelper::failure('Gagal menyimpan aktivitas.', true);
         }
 
         return RedirectHelper::afterSave('admin.activities.index', $activity->is_published, 'Aktivitas berhasil ditambahkan.', ['category' => $activity->service_category_id]);
@@ -91,7 +91,7 @@ class BusinessActivityController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withInput()->with('error', 'Gagal memperbarui aktivitas.');
+            return RedirectHelper::failure('Gagal memperbarui aktivitas.', true);
         }
 
         return RedirectHelper::afterSave('admin.activities.index', $activity->is_published, 'Aktivitas berhasil diperbarui.', ['category' => $activity->service_category_id]);
@@ -106,10 +106,10 @@ class BusinessActivityController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Gagal menghapus aktivitas.');
+            return RedirectHelper::failure('Gagal menghapus aktivitas.');
         }
 
-        return redirect()->route('admin.activities.index', ['category' => $categoryId])->with('success', 'Aktivitas berhasil dihapus.');
+        return RedirectHelper::success('admin.activities.index', 'Aktivitas berhasil dihapus.', ['category' => $categoryId]);
     }
 
     public function reorder(ReorderActivitiesRequest $request): RedirectResponse
@@ -117,13 +117,13 @@ class BusinessActivityController extends Controller
         try {
             $this->activityService->reorder($request->validated('orders'));
         } catch (ValidationException $e) {
-            return redirect()->route('admin.activities.index')->with('error', $e->validator->errors()->first('order'));
+            return RedirectHelper::failureTo('admin.activities.index', $e->validator->errors()->first('order'));
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Gagal menyimpan urutan aktivitas.');
+            return RedirectHelper::failure('Gagal menyimpan urutan aktivitas.');
         }
 
-        return redirect()->route('admin.activities.index')->with('success', 'Urutan aktivitas disimpan.');
+        return RedirectHelper::success('admin.activities.index', 'Urutan aktivitas disimpan.');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\RedirectHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PreviewPageContentRequest;
 use App\Http\Requests\Admin\UpdatePageContentRequest;
@@ -58,15 +59,13 @@ class PageContentController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withInput()->with('error', 'Gagal menyimpan isi halaman.');
+            return RedirectHelper::failure('Gagal menyimpan isi halaman.', true);
         }
 
         // Tetap di bagian yang sedang diedit.
         $section = $request->input('bagian');
 
-        return redirect()
-            ->route('admin.pages.edit', array_filter(['page' => $page, 'bagian' => is_string($section) ? $section : null]))
-            ->with('success', 'Isi halaman berhasil disimpan.');
+        return RedirectHelper::success('admin.pages.edit', 'Isi halaman berhasil disimpan.', array_filter(['page' => $page, 'bagian' => is_string($section) ? $section : null]));
     }
 
     /**
@@ -115,9 +114,9 @@ class PageContentController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', $failure);
+            return RedirectHelper::failure($failure);
         }
 
-        return redirect()->route('admin.pages.edit', $page)->with('success', $success);
+        return RedirectHelper::success('admin.pages.edit', $success, ['page' => $page]);
     }
 }

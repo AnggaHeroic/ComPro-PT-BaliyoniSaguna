@@ -59,7 +59,7 @@ class ServiceCategoryController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withInput()->with('error', 'Gagal menyimpan kategori.');
+            return RedirectHelper::failure('Gagal menyimpan kategori.', true);
         }
 
         return RedirectHelper::afterSave('admin.categories.index', $category->is_published, 'Kategori berhasil ditambahkan.');
@@ -87,7 +87,7 @@ class ServiceCategoryController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withInput()->with('error', 'Gagal memperbarui kategori.');
+            return RedirectHelper::failure('Gagal memperbarui kategori.', true);
         }
 
         return RedirectHelper::afterSave('admin.categories.index', $category->is_published, 'Kategori berhasil diperbarui.');
@@ -99,14 +99,14 @@ class ServiceCategoryController extends Controller
             $this->categoryService->delete($category);
         } catch (ActionBlockedException $e) {
             // Pesan ini sengaja ditulis untuk admin (kategori masih berisi aktivitas), jadi aman ditampilkan.
-            return back()->with('error', $e->getMessage());
+            return RedirectHelper::failure($e->getMessage());
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Gagal menghapus kategori.');
+            return RedirectHelper::failure('Gagal menghapus kategori.');
         }
 
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus.');
+        return RedirectHelper::success('admin.categories.index', 'Kategori berhasil dihapus.');
     }
 
     public function reorder(ReorderRequest $request): RedirectResponse
@@ -114,13 +114,13 @@ class ServiceCategoryController extends Controller
         try {
             $this->categoryService->reorder($request->validated('order'));
         } catch (ValidationException $e) {
-            return redirect()->route('admin.categories.index')->with('error', $e->validator->errors()->first('order'));
+            return RedirectHelper::failureTo('admin.categories.index', $e->validator->errors()->first('order'));
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Gagal menyimpan urutan kategori.');
+            return RedirectHelper::failure('Gagal menyimpan urutan kategori.');
         }
 
-        return redirect()->route('admin.categories.index')->with('success', 'Urutan kategori disimpan.');
+        return RedirectHelper::success('admin.categories.index', 'Urutan kategori disimpan.');
     }
 }
