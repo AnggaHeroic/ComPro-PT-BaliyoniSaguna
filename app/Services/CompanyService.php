@@ -110,7 +110,7 @@ class CompanyService
      * Kategori terbit beserta aktivitas terbitnya (dari database), urut sesuai pengaturan admin.
      * 'image' kategori/aktivitas berupa URL penuh atau null; aktivitas tanpa foto memakai foto kategorinya.
      *
-     * @return list<array{name: string, slug: string, icon: string, icon_image: ?string, image: ?string, description: string, activities: list<array{name: string, slug: string, kbli: ?string, summary: ?string, detail: ?list<string>, image: ?string}>}>
+     * @return list<array{name: string, slug: string, icon: string, icon_image: ?string, image: ?string, description: string, activities: list<array{name: string, slug: string, summary: ?string, detail: ?list<string>, image: ?string}>}>
      */
     public function services(): array
     {
@@ -126,7 +126,6 @@ class CompanyService
                 'activities' => $category->activities->map(fn (BusinessActivity $activity) => [
                     'name' => $activity->name,
                     'slug' => $activity->slug,
-                    'kbli' => $activity->kbli_code,
                     'summary' => $activity->summary,
                     'detail' => $this->paragraphs($activity->detail),
                     'image' => $activity->image_url ?? $category->image_url,

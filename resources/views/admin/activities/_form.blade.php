@@ -5,11 +5,6 @@
 
     <x-ui.input name="name" label="Nama aktivitas" :value="old('name', $activity->name)" required maxlength="255" placeholder="Mis. Penjualan laptop, komputer, dan printer" />
 
-    <div class="max-w-xs">
-        <x-ui.input name="kbli_code" label="Kode KBLI (opsional)" :value="old('kbli_code', $activity->kbli_code)" maxlength="10" placeholder="Mis. 47411" />
-        <p class="mt-2 text-xs text-muted">Boleh dikosongkan. Bila diisi, tampil di halaman detail aktivitas.</p>
-    </div>
-
     <x-ui.textarea name="summary" label="Ringkasan" rows="2" maxlength="500" hint="Maksimal 500 karakter. Tampil di kartu aktivitas dan bagian atas halaman detail.">{{ old('summary', $activity->summary) }}</x-ui.textarea>
 
     <x-ui.textarea name="detail" label="Detail" rows="8" maxlength="10000" hint="Pisahkan paragraf dengan satu baris kosong. Jika dikosongkan, halaman detail menampilkan teks contoh.">{{ old('detail', $activity->detail) }}</x-ui.textarea>
