@@ -22,7 +22,6 @@ class StoreBusinessActivityRequest extends FormRequest
         $this->merge([
             'is_published' => $this->input('status') === 'published',
             'remove_image' => $this->boolean('remove_image'),
-            'kbli_code' => filled($this->input('kbli_code')) ? trim((string) $this->input('kbli_code')) : null,
             'summary' => filled($this->input('summary')) ? trim((string) $this->input('summary')) : null,
             'detail' => filled($this->input('detail')) ? trim((string) $this->input('detail')) : null,
         ]);
@@ -34,8 +33,6 @@ class StoreBusinessActivityRequest extends FormRequest
         return [
             'service_category_id' => ['required', 'integer', Rule::exists('service_categories', 'id')],
             'name' => ['required', 'string', 'max:255'],
-            // KBLI selalu string (bukan integer); boleh dikosongkan sampai kode resminya tersedia.
-            'kbli_code' => ['nullable', 'string', 'max:10', 'regex:/^[A-Za-z0-9.\-]+$/'],
             'summary' => ['nullable', 'string', 'max:500'],
             'detail' => ['nullable', 'string', 'max:10000'],
             'status' => ['required', Rule::in(['published', 'draft'])],
@@ -51,7 +48,6 @@ class StoreBusinessActivityRequest extends FormRequest
         return [
             'service_category_id' => 'Kategori',
             'name' => 'Nama aktivitas',
-            'kbli_code' => 'Kode KBLI',
             'summary' => 'Ringkasan',
             'detail' => 'Detail',
             'status' => 'Status',

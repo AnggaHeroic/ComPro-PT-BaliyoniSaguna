@@ -6,16 +6,32 @@
  * merender halaman publik dan menyisakan bagian itu saja. Iframe selebar 1280 px lalu diperkecil agar muat.
  */
 const DESKTOP_WIDTH = 1280;
+// Skala terbesar pratinjau (setara kotak 720 px). Kotak yang lebih lebar tidak memperbesar gambar, tetapi memperlebar
+// area tampil iframe, sehingga pratinjau melebar ke samping tanpa bertambah tinggi.
+const MAX_SCALE = 0.5625;
 
-export default ({ url, section, tab }) => ({
+export default ({ url, section, tab, maxHeight = null }) => ({
     open: true,
     loading: false,
     requested: false,
     dirty: false, // ada isian yang diubah sejak halaman dibuka
     scale: 0.5,
+    frameWidth: DESKTOP_WIDTH,
     height: 400,
     timer: null,
     frameName: `preview-${tab}-${section}`, // sama dengan atribut name iframe di komponen (harus ada sejak HTML dimuat, bukan lewat binding); unik per tab dan bagian
+
+    /** Tinggi kotak: setinggi isi, tetapi tidak melebihi batas (bila ada). */
+    get boxHeight() {
+        const natural = Math.max(this.height * this.scale, 120);
+
+        return maxHeight ? Math.min(natural, maxHeight) : natural;
+    },
+
+    /** Isi lebih panjang dari batas, jadi bagian bawahnya terpotong. */
+    get cropped() {
+        return Boolean(maxHeight) && this.height * this.scale > maxHeight;
+    },
 
     init() {
         const form = this.$el.closest('form');
@@ -40,7 +56,18 @@ export default ({ url, section, tab }) => ({
     rescale() {
         const width = this.$refs.box.clientWidth;
 
-        if (width > 0) this.scale = width / DESKTOP_WIDTH;
+        if (width <= 0) return;
+
+        this.scale = Math.min(width / DESKTOP_WIDTH, MAX_SCALE);
+
+        const frameWidth = Math.round(width / this.scale);
+
+        if (frameWidth === this.frameWidth) return;
+
+        // Lebar iframe berubah, jadi isi halaman tersusun ulang dan tingginya perlu diukur lagi.
+        this.frameWidth = frameWidth;
+        this.$refs.frame.style.width = `${frameWidth}px`;
+        this.fit();
     },
 
     load() {
@@ -73,6 +100,15 @@ export default ({ url, section, tab }) => ({
         if (!this.requested || !doc?.body) return;
 
         this.loading = false;
+        this.fit();
+    },
+
+    /** Sesuaikan tinggi iframe dengan isi bagian yang dipratinjau. */
+    fit() {
+        const frame = this.$refs.frame;
+        const doc = frame.contentDocument;
+
+        if (!this.requested || !doc?.body) return;
 
         // Yang diukur bagian yang dipratinjau, bukan body (body punya tinggi minimum satu layar sehingga menyisakan ruang kosong).
         // Dua kali ukur: bagian dengan tinggi minimum (mis. hero) menyesuaikan diri dengan tinggi viewport iframe.
@@ -84,6 +120,5 @@ export default ({ url, section, tab }) => ({
 
         this.height = bodyHeight();
         frame.style.height = `${this.height}px`;
-        this.rescale();
     },
 });

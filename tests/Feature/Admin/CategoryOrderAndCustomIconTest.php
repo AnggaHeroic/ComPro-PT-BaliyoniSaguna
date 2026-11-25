@@ -86,7 +86,7 @@ class CategoryOrderAndCustomIconTest extends TestCase
     public function test_public_pages_show_a_custom_icon_without_a_list_icon_and_not_as_a_white_silhouette(): void
     {
         $category = $this->category('Berikon', 1, ['icon' => null, 'icon_image' => 'category-icons/x.webp']);
-        BusinessActivity::create(['service_category_id' => $category->id, 'name' => 'Aktivitas X', 'slug' => 'aktivitas-x', 'sort_order' => 1, 'kbli_code' => '12345']);
+        BusinessActivity::create(['service_category_id' => $category->id, 'name' => 'Aktivitas X', 'slug' => 'aktivitas-x', 'sort_order' => 1]);
 
         $url = Storage::disk('public')->url('category-icons/x.webp');
 

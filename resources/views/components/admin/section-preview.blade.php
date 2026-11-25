@@ -1,6 +1,6 @@
-{{-- Props: url (rute pratinjau), section (nama target pratinjau), tab (kunci tab/bagian form yang memuatnya; default = section). Pratinjau satu bagian halaman publik dengan isian form yang belum disimpan; dikirim lewat form ke iframe, bukan fetch. --}}
-@props(['url', 'section', 'tab' => null])
-<div x-data="sectionPreview({ url: @js($url), section: @js($section), tab: @js($tab ?? $section) })"
+{{-- Props: url (rute pratinjau), section (nama target pratinjau), tab (kunci tab/bagian form yang memuatnya; default = section), maxHeight (batas tinggi kotak dalam px; isi yang lebih panjang dipotong). Pratinjau satu bagian halaman publik dengan isian form yang belum disimpan; dikirim lewat form ke iframe, bukan fetch. --}}
+@props(['url', 'section', 'tab' => null, 'maxHeight' => null])
+<div x-data="sectionPreview({ url: @js($url), section: @js($section), tab: @js($tab ?? $section), maxHeight: @js($maxHeight) })"
      x-effect="active === @js($tab ?? $section) && ! requested && schedule(0)"
      class="mb-8 border border-black-soft/10 bg-white">
     <div class="flex flex-col gap-3 border-b border-black-soft/10 bg-gray-tint px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
@@ -21,9 +21,11 @@
         </div>
     </div>
 
-    <div x-show="open" x-ref="box" class="relative overflow-hidden bg-gray-tint" :style="{ height: Math.max(height * scale, 120) + 'px' }">
+    <div x-show="open" x-ref="box" class="group/preview relative overflow-hidden bg-gray-tint" :style="{ height: boxHeight + 'px' }">
         <iframe x-ref="frame" name="preview-{{ $tab ?? $section }}-{{ $section }}" title="Pratinjau bagian" tabindex="-1" @load="measure()"
                 class="pointer-events-none absolute left-0 top-0 w-[1280px] origin-top-left border-0 bg-white" :style="{ transform: `scale(${scale})` }"></iframe>
+
+        <div x-show="cropped" x-cloak class="pointer-events-none absolute inset-x-0 top-0 flex h-14 items-start justify-center bg-linear-to-b from-black-soft/70 to-transparent pt-2.5 text-[11px] font-semibold text-white opacity-0 transition-opacity duration-200 group-hover/preview:opacity-100">Pratinjau dipotong agar tidak terlalu panjang</div>
 
         <div x-show="loading" x-cloak class="absolute inset-0 flex items-center justify-center bg-white/70 text-xs font-semibold text-muted">Menyiapkan pratinjau…</div>
     </div>

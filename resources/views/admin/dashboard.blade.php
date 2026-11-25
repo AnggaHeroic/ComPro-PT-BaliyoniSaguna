@@ -20,10 +20,10 @@
                 <ul class="flex flex-1 flex-col divide-y divide-black-soft/10">
                     @forelse ($recentLogs as $log)
                         @php([$main] = $log->detailLines())
-                        <li class="flex flex-1 items-center gap-4 px-5 py-3.5 transition-colors hover:bg-gray-tint/60 sm:px-6">
+                        <li class="flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-gray-tint/60 sm:px-6">
                             <span class="mt-0.5 inline-flex w-16 shrink-0 justify-center px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider {{ $log->actionClass() }}">{{ $log->actionLabel() }}</span>
                             <div class="min-w-0 flex-1">
-                                <p class="text-sm text-black-soft">{{ $main }}</p>
+                                <p class="truncate text-sm text-black-soft" title="{{ $main }}">{{ $main }}</p>
                                 <p class="mt-0.5 text-xs text-muted">{{ $log->user?->name ?? 'Sistem' }} &middot; {{ \App\Helpers\DateHelper::local($log->created_at)->diffForHumans() }}</p>
                             </div>
                         </li>

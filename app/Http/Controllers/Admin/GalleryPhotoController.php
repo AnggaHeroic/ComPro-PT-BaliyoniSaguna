@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\RedirectHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ListFilterRequest;
 use App\Http\Requests\Admin\ReorderRequest;
@@ -46,11 +47,10 @@ class GalleryPhotoController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Gagal mengunggah foto. Tidak ada foto yang tersimpan.');
+            return RedirectHelper::failure('Gagal mengunggah foto. Tidak ada foto yang tersimpan.');
         }
 
-        return redirect()->route('admin.gallery.index')
-            ->with('success', $photos->count().' foto berhasil diunggah. Ubah judul dan keterangannya lewat tombol pensil pada foto.');
+        return RedirectHelper::success('admin.gallery.index', $photos->count().' foto berhasil diunggah. Ubah judul dan keterangannya lewat tombol pensil pada foto.');
     }
 
     public function edit(GalleryPhoto $photo): View
@@ -68,10 +68,10 @@ class GalleryPhotoController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->withInput()->with('error', 'Gagal memperbarui foto.');
+            return RedirectHelper::failure('Gagal memperbarui foto.', true);
         }
 
-        return redirect()->route('admin.gallery.index')->with('success', 'Foto berhasil diperbarui.');
+        return RedirectHelper::success('admin.gallery.index', 'Foto berhasil diperbarui.');
     }
 
     public function destroy(GalleryPhoto $photo): RedirectResponse
@@ -81,10 +81,10 @@ class GalleryPhotoController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Gagal menghapus foto.');
+            return RedirectHelper::failure('Gagal menghapus foto.');
         }
 
-        return redirect()->route('admin.gallery.index')->with('success', 'Foto berhasil dihapus.');
+        return RedirectHelper::success('admin.gallery.index', 'Foto berhasil dihapus.');
     }
 
     public function reorder(ReorderRequest $request): RedirectResponse
@@ -92,13 +92,13 @@ class GalleryPhotoController extends Controller
         try {
             $this->photoService->reorder($request->validated('order'));
         } catch (ValidationException $e) {
-            return redirect()->route('admin.gallery.index')->with('error', $e->validator->errors()->first('order'));
+            return RedirectHelper::failureTo('admin.gallery.index', $e->validator->errors()->first('order'));
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'Gagal menyimpan urutan foto.');
+            return RedirectHelper::failure('Gagal menyimpan urutan foto.');
         }
 
-        return redirect()->route('admin.gallery.index')->with('success', 'Urutan foto disimpan.');
+        return RedirectHelper::success('admin.gallery.index', 'Urutan foto disimpan.');
     }
 }

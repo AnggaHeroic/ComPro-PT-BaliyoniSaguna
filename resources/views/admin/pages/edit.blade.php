@@ -3,7 +3,9 @@
 {{-- Variabel: $page (slug), $record (model Page), $definition (config/page_contents.php), $content (PageContentSet), $sections (kunci bagian), $initialSection, $lastChange. --}}
 @section('content')
     <div class="space-y-6">
-        <x-admin.page-header eyebrow="Isi Halaman" :title="$definition['label']" :description="$definition['description']" />
+        <div class="mx-auto max-w-5xl">
+            <x-admin.page-header eyebrow="Isi Halaman" :title="$definition['label']" :description="$definition['description']" />
+        </div>
 
         <form method="POST" action="{{ route('admin.pages.update', $page) }}" enctype="multipart/form-data" data-unsaved-guard @if ($errors->any()) data-unsaved-dirty @endif
               x-data="pageEditor({ active: @js($initialSection), sections: @js($sections) })" @invalid.capture="onInvalid($event)">
@@ -12,7 +14,7 @@
             {{-- Bagian yang sedang dibuka, agar setelah Simpan halaman kembali ke bagian yang sama. --}}
             <input type="hidden" name="bagian" :value="active">
 
-            <div class="max-w-3xl" x-ref="top">
+            <div class="mx-auto max-w-5xl" x-ref="top">
                 {{-- Pilih bagian --}}
                 <div class="border border-black-soft/10 bg-white p-4 sm:p-5">
                     <h2 class="text-sm font-bold text-black-soft">Bagian halaman</h2>
@@ -45,7 +47,7 @@
                                     <div class="mt-5">
                                         @if ($section['preview'] ?? true)
                                             @php($target = is_string($section['preview'] ?? null) ? $section['preview'] : $sectionKey)
-                                            <x-admin.section-preview :url="route('admin.pages.preview', ['page' => $page, 'section' => $target])" :section="$target" :tab="$sectionKey" />
+                                            <x-admin.section-preview :url="route('admin.pages.preview', ['page' => $page, 'section' => $target])" :section="$target" :tab="$sectionKey" :max-height="$section['preview_max'] ?? null" />
                                         @else
                                             <p class="mb-6 bg-gray-tint px-3 py-2 text-xs text-muted">{{ $section['note'] ?? 'Bagian ini tidak memiliki pratinjau.' }}</p>
                                         @endif
@@ -103,7 +105,7 @@
 
             {{-- Bilah simpan: ikut menggulir lalu menempel di dasar layar selama form belum habis. --}}
             <div class="sticky bottom-0 z-10 -mx-5 mt-8 border-t border-black-soft/10 bg-white/95 px-5 py-5 backdrop-blur sm:-mx-8 sm:px-8">
-                <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-3">
+                <div class="mx-auto flex max-w-5xl flex-wrap items-center gap-3">
                     <x-ui.button type="submit" class="uppercase tracking-wider">Simpan</x-ui.button>
                     <x-ui.button :href="route('admin.dashboard')" variant="outline" class="uppercase tracking-wider" data-unsaved-skip>Batal</x-ui.button>
                     <p class="text-xs text-muted max-sm:hidden">Perubahan baru tampil di website setelah Anda menekan Simpan.</p>
@@ -112,7 +114,7 @@
         </form>
 
         {{-- Setelan default halaman --}}
-        <section class="max-w-3xl border border-black-soft/15 bg-white">
+        <section class="mx-auto max-w-5xl border border-black-soft/15 bg-white">
             <header class="border-b border-black-soft/10 px-5 py-4 sm:px-6">
                 <h2 class="text-xs font-bold uppercase tracking-[0.14em] text-black-soft">Setelan default</h2>
                 <p class="mt-1 text-xs leading-5 text-muted">
@@ -159,6 +161,6 @@
             </div>
         </section>
 
-        <x-admin.last-changed :log="$lastChange" />
+        <div class="mx-auto max-w-5xl"><x-admin.last-changed :log="$lastChange" /></div>
     </div>
 @endsection

@@ -7,6 +7,7 @@ use App\Models\ServiceCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -27,7 +28,7 @@ class CatalogExtrasTest extends TestCase
         return ServiceCategory::create(['name' => $name, 'slug' => str($name)->slug()->toString(), 'icon' => 'office', 'sort_order' => 1, 'is_published' => true]);
     }
 
-    public function test_forms_show_status_cards_icon_picker_custom_icon_and_kbli(): void
+    public function test_forms_show_status_cards_icon_picker_and_custom_icon(): void
     {
         $category = $this->category();
 
@@ -36,7 +37,7 @@ class CatalogExtrasTest extends TestCase
             ->assertSee('iconPicker', false)->assertSee('name="icon_image"', false);
 
         $this->get(route('admin.activities.create', ['category' => $category->id]))
-            ->assertSee('name="kbli_code"', false)->assertSee('name="status" value="draft"', false);
+            ->assertSee('name="status" value="draft"', false);
     }
 
     public function test_icon_whitelist_includes_the_new_icons_and_each_has_a_drawing(): void
@@ -80,30 +81,19 @@ class CatalogExtrasTest extends TestCase
         $this->get(route('services'))->assertSee('category-icons/ikon-kustom.webp', false);
     }
 
-    public function test_kbli_is_saved_validated_searched_and_shown_publicly(): void
+    public function test_kbli_no_longer_exists_in_database_form_or_public_page(): void
     {
         $category = $this->category();
-        $payload = ['service_category_id' => $category->id, 'name' => 'Penjualan furnitur', 'status' => 'published'];
 
-        $this->post(route('admin.activities.store'), $payload + ['kbli_code' => '47591']);
-        $this->post(route('admin.activities.store'), ['name' => 'Tanpa kode'] + $payload);
-        $this->post(route('admin.activities.store'), ['kbli_code' => 'a b!'] + $payload)->assertSessionHasErrors('kbli_code');
-        $this->post(route('admin.activities.store'), ['kbli_code' => '123456789012'] + $payload)->assertSessionHasErrors('kbli_code');
+        $this->assertFalse(Schema::hasColumn('business_activities', 'kbli_code'));
 
-        $activity = BusinessActivity::firstWhere('kbli_code', '47591');
+        $this->post(route('admin.activities.store'), ['service_category_id' => $category->id, 'name' => 'Penjualan furnitur', 'status' => 'published', 'kbli_code' => '47591'])->assertSessionHasNoErrors();
+        $activity = BusinessActivity::firstWhere('name', 'Penjualan furnitur');
         $this->assertNotNull($activity);
-        $this->assertNull(BusinessActivity::firstWhere('name', 'Tanpa kode')?->kbli_code ?? null);
 
-        $this->get(route('admin.activities.index', ['q' => '47591']))->assertSee('47591');
-        $this->get(route('services.show', ['service' => $category->slug, 'activity' => $activity->slug]))->assertSee('Kode KBLI')->assertSee('47591');
-    }
-
-    public function test_kbli_is_hidden_on_the_public_page_when_empty(): void
-    {
-        $category = $this->category();
-        $activity = BusinessActivity::create(['service_category_id' => $category->id, 'name' => 'Tanpa Kode', 'slug' => 'tanpa-kode', 'sort_order' => 1]);
-
-        $this->get(route('services.show', ['service' => $category->slug, 'activity' => $activity->slug]))->assertOk()->assertDontSee('Kode KBLI');
+        $this->get(route('admin.activities.create'))->assertDontSee('KBLI');
+        $this->get(route('admin.activities.index'))->assertDontSee('KBLI');
+        $this->get(route('services.show', ['service' => $category->slug, 'activity' => $activity->slug]))->assertOk()->assertDontSee('KBLI');
     }
 
     public function test_success_message_is_a_popup_not_an_inline_banner(): void

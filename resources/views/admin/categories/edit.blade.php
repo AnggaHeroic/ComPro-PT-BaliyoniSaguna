@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'Ubah Kategori Usaha'])
 
 @section('content')
-    <div class="space-y-6">
+    <div class="space-y-6 min-[1472px]:pl-16">
         <x-admin.page-header eyebrow="Kategori Usaha" title="Ubah Kategori Usaha" :description="$category->name">
             <x-ui.button :href="route('admin.categories.index')" variant="outline" class="!py-2.5 uppercase tracking-wider">
                 <x-ui.icon name="arrow-left" class="size-4" />

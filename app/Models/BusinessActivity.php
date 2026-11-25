@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['service_category_id', 'name', 'slug', 'kbli_code', 'summary', 'detail', 'image', 'sort_order', 'is_published'])]
+#[Fillable(['service_category_id', 'name', 'slug', 'summary', 'detail', 'image', 'sort_order', 'is_published'])]
 class BusinessActivity extends Model
 {
     use LogsActivity, ResolvesImageUrl;
