@@ -60,7 +60,7 @@
 
                 @forelse ($logs as $log)
                     @php($time = \App\Helpers\DateHelper::local($log->created_at))
-                    @php([$main, $note] = $log->detailLines())
+                    @php([$main, $note, $detail] = $log->detailLines())
                     <tr class="transition-colors hover:bg-gray-tint/60">
                         <td class="whitespace-nowrap px-4 py-3 text-center">
                             <p class="font-semibold text-black-soft">{{ $time->translatedFormat('d M Y') }}</p>
@@ -76,10 +76,13 @@
                         <td class="px-4 py-3 text-center">
                             <span class="inline-flex bg-gray-tint px-2 py-0.5 text-xs font-semibold text-muted">{{ $log->subjectName() }}</span>
                         </td>
-                        <td class="min-w-64 px-4 py-3 text-center">
-                            <p class="text-black-soft">{{ $main }}</p>
+                        <td class="w-full min-w-64 max-w-0 px-4 py-3 text-center">
+                            <p class="truncate text-black-soft" title="{{ $main }}">{{ $main }}</p>
                             @if ($note)
-                                <p class="mt-0.5 text-xs text-muted">{{ $note }}</p>
+                                <p class="mt-0.5 truncate text-xs text-muted" title="{{ $note }}">{{ $note }}</p>
+                            @endif
+                            @if ($detail)
+                                <x-admin.log-detail :detail="$detail" />
                             @endif
                         </td>
                     </tr>

@@ -166,7 +166,7 @@ class AdminSessionAndActivityTest extends TestCase
 
         $this->put(route('admin.activities.reorder'), ['orders' => [$a->id => [$y->id, $x->id]]]);
         $this->assertSame(BusinessActivity::class, $this->lastLog()->subject_type);
-        $this->assertSame(['Mengubah urutan aktivitas usaha', 'Kategori: Alat A'], $this->lastLog()->detailLines());
+        $this->assertSame(['Mengubah urutan aktivitas usaha', 'Kategori: Alat A', null], $this->lastLog()->detailLines());
 
         $this->put(route('admin.gallery.reorder'), ['order' => [$q->id, $p->id]]);
         $this->assertSame(GalleryPhoto::class, $this->lastLog()->subject_type);

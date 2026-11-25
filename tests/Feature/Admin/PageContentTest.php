@@ -176,7 +176,7 @@ class PageContentTest extends TestCase
         $this->delete(route('admin.pages.default.clear', 'home'));
 
         $this->assertSame(
-            ['Menghapus setelan default kustom isi halaman "Beranda"', 'Kembali ke default bawaan sistem'],
+            ['Menghapus setelan default kustom isi halaman "Beranda"', 'Kembali ke default bawaan sistem', null],
             ActivityLog::latest('id')->first()->detailLines(),
         );
     }

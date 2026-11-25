@@ -43,9 +43,16 @@ trait LogsActivity
     protected static function logActivity(Model $model, string $action): void
     {
         $changes = null;
+        $previous = null;
 
         if ($action === ActivityLog::ACTION_UPDATED) {
             $changes = $model->activityChanges(Arr::except($model->getChanges(), ['updated_at']));
+
+            // Nilai lama hanya untuk kolom biasa bernilai sederhana (bukan array/json), agar "Detail" di riwayat bisa menampilkan dari-menjadi.
+            $previous = array_filter(
+                array_intersect_key($model->getOriginal(), $changes),
+                fn ($value) => is_scalar($value) || $value === null,
+            ) ?: null;
 
             // Perubahan urutan (seret-dan-lepas) menyentuh banyak baris sekaligus; tidak dicatat satu per satu.
             if (array_keys($changes) === [] || array_keys($changes) === ['sort_order']) {
@@ -60,6 +67,7 @@ trait LogsActivity
             'subject_id' => $model->getKey(),
             'subject_label' => mb_substr($model->activityLabel(), 0, 255),
             'changes' => $changes,
+            'previous' => $previous,
         ]);
     }
 }

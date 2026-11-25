@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\ActivityLog;
 use App\Models\GalleryPhoto;
+use App\Models\Page;
 use App\Models\ServiceCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -33,7 +34,7 @@ class ActivityLogPageTest extends TestCase
 
         $this->get(route('admin.activity-logs.index'))
             ->assertOk()->assertSee('Budi Admin')->assertSee('Peralatan Uji')->assertSee('Ditambah')->assertSee('Diubah')
-            ->assertSee('Mengubah kategori usaha &quot;Peralatan Uji Baru&quot;', false)->assertSee('Yang diubah: Nama');
+            ->assertSee('Mengubah kategori usaha &quot;Peralatan Uji&quot;', false)->assertSee('Yang diubah: Nama');
     }
 
     public function test_filters_by_action_menu_and_keyword(): void
@@ -60,7 +61,7 @@ class ActivityLogPageTest extends TestCase
         $log = fn (string $action, string $type = User::class, ?string $label = null) => ActivityLog::create(['user_id' => $user->id, 'action' => $action, 'subject_type' => $type, 'subject_id' => 0, 'subject_label' => $label]);
         $log(ActivityLog::ACTION_LOGIN);
         $log(ActivityLog::ACTION_LOGOUT);
-        $log(ActivityLog::ACTION_DEFAULT_CLEARED, AppModelsPage::class, 'Beranda');
+        $log(ActivityLog::ACTION_DEFAULT_CLEARED, Page::class, 'Beranda');
 
         $this->get(route('admin.activity-logs.index', ['q' => 'dashboard']))->assertSee('Masuk ke dashboard')->assertSee('Keluar dari dashboard')->assertDontSee('Menghapus setelan default');
         $this->get(route('admin.activity-logs.index', ['q' => 'bawaan sistem']))->assertSee('Menghapus setelan default')->assertDontSee('Masuk ke dashboard');

@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 // Tidak boleh memakai trait LogsActivity (menghindari rekursi).
-#[Fillable(['user_id', 'action', 'subject_type', 'subject_id', 'subject_label', 'changes'])]
+#[Fillable(['user_id', 'action', 'subject_type', 'subject_id', 'subject_label', 'changes', 'previous'])]
 class ActivityLog extends Model
 {
     public const ACTION_CREATED = 'created';
@@ -49,7 +50,6 @@ class ActivityLog extends Model
         'description' => 'Deskripsi',
         'icon' => 'Ikon',
         'icon_image' => 'Ikon kustom',
-        'kbli_code' => 'Kode KBLI',
         'title' => 'Judul',
         'image' => 'Gambar',
         'is_published' => 'Status',
@@ -60,7 +60,7 @@ class ActivityLog extends Model
 
     protected function casts(): array
     {
-        return ['changes' => 'array'];
+        return ['changes' => 'array', 'previous' => 'array'];
     }
 
     public function user(): BelongsTo
@@ -193,23 +193,70 @@ class ActivityLog extends Model
     }
 
     /**
-     * Keterangan dua baris untuk tabel: kalimat utama dan catatan (kolom yang diubah) bila ada.
+     * Penjabaran tiap kolom yang diubah ("Nama: "lama" → "baru""), digabung satu baris; null bila tidak ada rinciannya
+     * (mis. catatan lama sebelum nilai lama disimpan, atau perubahan isi halaman yang hanya mencatat nama bagian).
+     */
+    public function changeDetail(): ?string
+    {
+        $previous = $this->getAttribute('previous');
+        $changes = $this->getAttribute('changes') ?? [];
+
+        if ($this->action !== self::ACTION_UPDATED || ! is_array($previous)) {
+            return null;
+        }
+
+        $parts = [];
+
+        foreach ($previous as $field => $old) {
+            if (! array_key_exists($field, $changes)) {
+                continue;
+            }
+
+            $parts[] = (self::FIELD_LABELS[$field] ?? $field).': '.$this->describeChange($field, $old, $changes[$field]);
+        }
+
+        return $parts === [] ? null : implode(' · ', $parts);
+    }
+
+    private function describeChange(string $field, mixed $old, mixed $new): string
+    {
+        return match ($field) {
+            'is_published' => ($old ? 'Terbit' : 'Draft').' → '.($new ? 'Terbit' : 'Draft'),
+            'image', 'icon_image' => match (true) {
+                blank($old) => 'ditambahkan',
+                blank($new) => 'dihapus',
+                default => 'diganti',
+            },
+            'service_category_id' => 'dipindah ke kategori lain',
+            default => $this->shorten($old).' → '.$this->shorten($new),
+        };
+    }
+
+    private function shorten(mixed $value): string
+    {
+        return blank($value) ? '(kosong)' : '"'.Str::limit((string) $value, 40).'"';
+    }
+
+    /**
+     * Keterangan untuk tabel: kalimat utama, catatan kolom yang diubah, dan rincian dari-menjadi (bila ada).
      *
-     * @return array{0: string, 1: ?string}
+     * @return array{0: string, 1: ?string, 2: ?string}
      */
     public function detailLines(): array
     {
         $menu = mb_strtolower($this->subjectName());
-        $label = '"'.$this->subject_label.'"';
+        // Pada perubahan, kalimat utama merujuk ke nama sebelum diubah; nama barunya ada di rincian "Detail".
+        $previous = $this->action === self::ACTION_UPDATED ? ($this->getAttribute('previous') ?? []) : [];
+        $label = '"'.(filled($previous['name'] ?? $previous['title'] ?? null) ? ($previous['name'] ?? $previous['title']) : $this->subject_label).'"';
 
         return match ($this->action) {
-            self::ACTION_LOGIN => ['Masuk ke dashboard', null],
-            self::ACTION_LOGOUT => ['Keluar dari dashboard', null],
-            self::ACTION_TIMEOUT => ['Keluar otomatis karena tidak aktif selama '.(($this->getAttribute('changes') ?? [])['minutes'] ?? '?').' menit', null],
-            self::ACTION_REORDERED => ['Mengubah urutan '.$menu, filled($this->subject_label) ? $this->subject_label : null],
-            self::ACTION_RESET => ["Mengembalikan seluruh {$menu} {$label} ke setelan default", null],
-            self::ACTION_DEFAULT => ["Menetapkan {$menu} {$label} yang tersimpan sebagai setelan default baru", null],
-            self::ACTION_DEFAULT_CLEARED => ["Menghapus setelan default kustom {$menu} {$label}", 'Kembali ke default bawaan sistem'],
+            self::ACTION_LOGIN => ['Masuk ke dashboard', null, null],
+            self::ACTION_LOGOUT => ['Keluar dari dashboard', null, null],
+            self::ACTION_TIMEOUT => ['Keluar otomatis karena tidak aktif selama '.(($this->getAttribute('changes') ?? [])['minutes'] ?? '?').' menit', null, null],
+            self::ACTION_REORDERED => ['Mengubah urutan '.$menu, filled($this->subject_label) ? $this->subject_label : null, null],
+            self::ACTION_RESET => ["Mengembalikan seluruh {$menu} {$label} ke setelan default", null, null],
+            self::ACTION_DEFAULT => ["Menetapkan {$menu} {$label} yang tersimpan sebagai setelan default baru", null, null],
+            self::ACTION_DEFAULT_CLEARED => ["Menghapus setelan default kustom {$menu} {$label}", 'Kembali ke default bawaan sistem', null],
             default => [
                 match ($this->action) {
                     self::ACTION_CREATED => 'Menambah',
@@ -217,6 +264,7 @@ class ActivityLog extends Model
                     default => 'Mengubah',
                 }.' '.$menu.' '.$label,
                 $this->changedFields() === [] ? null : 'Yang diubah: '.implode(', ', $this->changedFields()),
+                $this->changeDetail(),
             ],
         };
     }
