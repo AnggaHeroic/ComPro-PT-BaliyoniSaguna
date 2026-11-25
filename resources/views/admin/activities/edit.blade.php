@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'Ubah Aktivitas'])
 
 @section('content')
-    <div class="space-y-6">
+    <div class="space-y-6 min-[1472px]:pl-16">
         <x-admin.page-header eyebrow="Aktivitas Usaha" title="Ubah Aktivitas" :description="$activity->name">
             <x-ui.button :href="route('admin.activities.index', ['category' => $activity->service_category_id])" variant="outline" class="!py-2.5 uppercase tracking-wider">
                 <x-ui.icon name="arrow-left" class="size-4" />

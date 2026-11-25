@@ -7,7 +7,7 @@
         $categoryName = $categoryId ? ($categories->firstWhere('id', $categoryId)?->name) : null;
     @endphp
 
-    <div class="space-y-6">
+    <div class="mx-auto max-w-5xl space-y-6">
         <x-admin.page-header eyebrow="Konten" title="Aktivitas Usaha" :description="$categoryName ? 'Kategori: '.$categoryName : 'Kelola aktivitas usaha di setiap kategori.'">
             <x-ui.button :href="route('admin.activities.create', array_filter(['category' => $categoryId]))" class="!py-2.5 uppercase tracking-wider">
                 <x-ui.icon name="plus" class="size-4" />
@@ -48,7 +48,6 @@
                                     <th class="px-4 py-3">Pindah</th>
                                     <th class="px-4 py-3">No</th>
                                     <th class="px-4 py-3">Aktivitas</th>
-                                    <th class="px-4 py-3">KBLI</th>
                                     <th class="px-4 py-3 text-center">Status</th>
                                 </x-slot:head>
 
@@ -56,11 +55,10 @@
                                     <tr data-id="{{ $activity->id }}" data-group="{{ $group->id }}">
                                         <td class="px-4 py-3"><x-admin.reorder-handle :label="$activity->name" /></td>
                                         <td class="px-4 py-3 font-semibold text-muted" data-position>{{ $loop->iteration }}</td>
-                                        <td class="px-4 py-3">
-                                            <p class="font-semibold leading-snug text-black-soft">{{ $activity->name }}</p>
-                                            <p class="mt-0.5 font-mono text-xs text-muted">{{ $activity->slug }}</p>
+                                        <td class="max-w-xs px-4 py-3">
+                                            <p class="truncate font-semibold leading-snug text-black-soft" title="{{ $activity->name }}">{{ $activity->name }}</p>
+                                            <p class="mt-0.5 truncate font-mono text-xs text-muted" title="{{ $activity->slug }}">{{ $activity->slug }}</p>
                                         </td>
-                                        <td class="px-4 py-3 font-mono text-xs text-muted">{{ $activity->kbli_code ?? '-' }}</td>
                                         <td class="px-4 py-3 text-center">
                                             <x-ui.badge :variant="$activity->is_published ? 'success' : 'warning'">{{ $activity->is_published ? 'Terbit' : 'Draft' }}</x-ui.badge>
                                         </td>
@@ -82,7 +80,7 @@
                     <div class="w-full sm:w-56">
                         <x-ui.select name="category" :options="$categories->pluck('name', 'id')->all()" :selected="$categoryId" placeholder="Semua kategori" class="!py-2.5" onchange="this.form.submit()" aria-label="Filter kategori usaha" />
                     </div>
-                    <x-admin.search :value="$search" placeholder="Cari nama, kategori, atau KBLI" />
+                    <x-admin.search :value="$search" placeholder="Cari nama atau kategori" />
                     @if ($filtered || $categoryId)
                         <a href="{{ route('admin.activities.index') }}" class="text-sm font-semibold text-muted transition-colors hover:text-brand">Reset</a>
                     @endif
@@ -100,7 +98,6 @@
                         <th class="px-4 py-3">No</th>
                         <th class="px-4 py-3">Aktivitas</th>
                         <th class="px-4 py-3">Kategori Usaha</th>
-                        <th class="px-4 py-3">KBLI</th>
                         <th class="px-4 py-3 text-center">Status</th>
                         <th class="px-4 py-3 text-right">Aksi</th>
                     </x-slot:head>
@@ -108,12 +105,11 @@
                     @forelse ($activities as $activity)
                         <tr class="transition-colors hover:bg-gray-tint/60">
                             <td class="px-4 py-3 font-semibold text-muted">{{ $activity->sort_order }}</td>
-                            <td class="px-4 py-3">
-                                <p class="font-semibold leading-snug text-black-soft">{{ $activity->name }}</p>
-                                <p class="mt-0.5 font-mono text-xs text-muted">{{ $activity->slug }}</p>
+                            <td class="max-w-xs px-4 py-3">
+                                <p class="truncate font-semibold leading-snug text-black-soft" title="{{ $activity->name }}">{{ $activity->name }}</p>
+                                <p class="mt-0.5 truncate font-mono text-xs text-muted" title="{{ $activity->slug }}">{{ $activity->slug }}</p>
                             </td>
-                            <td class="px-4 py-3 text-muted">{{ $activity->category->name }}</td>
-                            <td class="px-4 py-3 font-mono text-xs text-muted">{{ $activity->kbli_code ?? '-' }}</td>
+                            <td class="max-w-48 truncate px-4 py-3 text-muted" title="{{ $activity->category->name }}">{{ $activity->category->name }}</td>
                             <td class="px-4 py-3 text-center">
                                 <x-ui.badge :variant="$activity->is_published ? 'success' : 'warning'">{{ $activity->is_published ? 'Terbit' : 'Draft' }}</x-ui.badge>
                             </td>
@@ -126,7 +122,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-14 text-center text-muted">
+                            <td colspan="5" class="px-4 py-14 text-center text-muted">
                                 @if ($search !== '')
                                     Tidak ada aktivitas yang cocok dengan "{{ $search }}".
                                 @elseif ($status)

@@ -9,7 +9,7 @@ return [
     // 'image' = ID foto PLACEHOLDER dari Unsplash (bagian setelah 'photo-' pada URL images.unsplash.com; null = latar polos), ganti dengan foto resmi nanti. 'description' = deskripsi singkat (draf, perlu ditinjau). Ganti href ke route() saat halamannya ada.
     // 'activities' = aktivitas usaha per kategori (halaman Layanan), tiap butir berisi 'name', 'detail', dan (opsional) 'summary' (ringkasan 1-2 baris di card). PLACEHOLDER: nama disusun dari
     // nama kategori, BUKAN data resmi; ganti dengan aktivitas usaha perusahaan. 'detail' (penjelasan di halaman detail; teks, atau daftar paragraf) null = tampil
-    // 3 paragraf contoh dari 'activity_placeholder' di bawah. Kode KBLI sengaja belum ditampilkan sampai datanya diberikan perusahaan.
+    // 3 paragraf contoh dari 'activity_placeholder' di bawah.
     'services' => [
         ['name' => 'Peralatan Elektronik', 'icon' => 'electronics', 'image' => '1519389950473-47ba0277781c', 'description' => 'Perangkat elektronik untuk rumah, kantor, dan instansi.', 'activities' => [
             ['name' => 'Penjualan laptop, komputer, dan printer', 'detail' => null],
@@ -139,7 +139,7 @@ return [
     // Tautan navigasi utama. Item dengan 'mega' => true menampilkan dropdown kategori layanan.
     'nav' => [
         ['label' => 'Beranda', 'href' => '/', 'match' => 'home'],
-        ['label' => 'Tentang Kami', 'href' => '/tentang-kami', 'match' => 'about'],
+        ['label' => 'Tentang', 'href' => '/tentang-kami', 'match' => 'about'],
         ['label' => 'Layanan', 'href' => '/layanan', 'match' => 'services*', 'mega' => true],
         ['label' => 'Galeri', 'href' => '/galeri', 'match' => 'gallery'],
     ],

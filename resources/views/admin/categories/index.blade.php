@@ -6,11 +6,11 @@
         $total = $reorder ? $categories->count() : $categories->total();
     @endphp
 
-    <div class="space-y-6">
+    <div class="mx-auto max-w-5xl space-y-6">
         <x-admin.page-header eyebrow="Konten" title="Kategori Usaha" description="Kelola kategori usaha (produk dan layanan) yang tampil di website.">
             <x-ui.button :href="route('admin.categories.create')" class="!py-2.5 uppercase tracking-wider">
                 <x-ui.icon name="plus" class="size-4" />
-                Tambah Kategori Usaha
+                Tambah Kategori
             </x-ui.button>
         </x-admin.page-header>
 
@@ -72,7 +72,7 @@
                             <td class="px-4 py-3"><x-admin.reorder-handle :label="$category->name" /></td>
                         @endif
                         <td class="px-4 py-3 font-semibold text-muted" data-position>{{ $category->sort_order }}</td>
-                        <td class="px-4 py-3">
+                        <td class="max-w-xs px-4 py-3">
                             <div class="flex items-center gap-3">
                                 <span class="flex size-12 shrink-0 items-center justify-center overflow-hidden bg-gray-tint">
                                     @if ($category->image_url)
@@ -82,8 +82,8 @@
                                     @endif
                                 </span>
                                 <div class="min-w-0">
-                                    <p class="font-semibold leading-snug text-black-soft">{{ $category->name }}</p>
-                                    <p class="mt-0.5 font-mono text-xs text-muted">{{ $category->slug }}</p>
+                                    <p class="truncate font-semibold leading-snug text-black-soft" title="{{ $category->name }}">{{ $category->name }}</p>
+                                    <p class="mt-0.5 truncate font-mono text-xs text-muted" title="{{ $category->slug }}">{{ $category->slug }}</p>
                                 </div>
                             </div>
                         </td>

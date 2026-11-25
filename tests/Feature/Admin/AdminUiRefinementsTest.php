@@ -215,10 +215,10 @@ class AdminUiRefinementsTest extends TestCase
         sort($sorted);
         $this->assertSame($sorted, $positions);
 
-        // Riwayat Aktivitas ada di grup Utama (tepat di bawah Dashboard), jadi tidak ada grup Sistem lagi.
-        $this->assertLessThan(strpos($html, 'Isi Halaman'), strpos($html, 'Riwayat Aktivitas'));
-        $this->assertLessThan(strpos($html, 'Riwayat Aktivitas'), strpos($html, 'Dashboard'));
-        $this->assertStringNotContainsString('>Sistem</p>', $html);
+        // Riwayat Aktivitas ada di grup Sistem, paling bawah setelah semua menu Isi Halaman.
+        $this->assertStringContainsString('>Sistem</p>', $html);
+        $this->assertLessThan(strpos($html, 'Riwayat Aktivitas'), strpos($html, route('admin.pages.edit', 'general')));
+        $this->assertLessThan(strpos($html, 'Riwayat Aktivitas'), strpos($html, '>Sistem</p>'));
     }
 
     public function test_every_list_search_has_a_search_button(): void
@@ -246,7 +246,7 @@ class AdminUiRefinementsTest extends TestCase
         $this->assertStringContainsString('scrollbar-dark', $html);
         $this->assertStringContainsString('>Utama</p>', $html);
         $this->assertStringNotContainsString('>Menu</p>', $html);
-        $this->assertSame(3, preg_match_all('/<p class="[^"]*text-brand-bright[^"]*">(Utama|Konten|Isi Halaman)<\/p>/', $html));
+        $this->assertSame(4, preg_match_all('/<p class="[^"]*text-brand-bright[^"]*">(Utama|Konten|Isi Halaman|Sistem)<\/p>/', $html));
         $this->assertStringNotContainsString('text-white/40">Konten', $html);
     }
 }
